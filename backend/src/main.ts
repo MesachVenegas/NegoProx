@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import { envs } from './domain/config';
+import { envs } from '@shared/config';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
