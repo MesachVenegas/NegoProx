@@ -1,0 +1,217 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  BUSINESS
+}
+
+enum Status {
+  PENDING
+  CONFIRMED
+  PROGRESS
+  COMPLETED
+  CANCELED
+}
+
+enum MessageStatus {
+  PENDING
+  SENT
+  READ
+  ARCHIVED
+}
+
+model User {
+  id                String              @id @default(cuid())
+  name              String
+  last_name         String?
+  email             String
+  email_confirmed   Boolean             @default(false)
+  phone             String?
+  password          String?
+  user_role         Role                @default(USER)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  accounts          Account[]
+  business          Business[]
+  verificationToken VerificationToken[]
+  dates             Date[]
+  works             Work[]
+  reviews           Review[]
+  messagesSent      Message[]           @relation("SenderMessages")
+  messagesReceived  Message[]           @relation("ReceiverMessages")
+  Conversation      Conversation[]
+}
+
+model Account {
+  id          String   @id @default(cuid())
+  provider    String
+  provider_id String
+  user_id     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id])
+}
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  user_id   String
+  token     String
+  token_exp DateTime
+  used      Boolean  @default(false)
+
+  user User @relation(fields: [user_id], references: [id])
+}
+
+model Business {
+  id                String         @id @default(cuid())
+  name              String         @unique
+  description       String
+  address           String
+  phone             String
+  email             String
+  latitude          Float
+  longitude         Float
+  business_img      String?
+  user_id           String
+  isPendingDeletion Boolean        @default(false)
+  deletionDeadLine  DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  Service           Service[]
+  Date              Date[]
+  Work              Work[]
+  Review            Review[]
+  Conversation      Conversation[] @relation("BusinessConversation")
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, name])
+}
+
+model BusinessHistory {
+  id          String   @id @default(cuid())
+  owner_id    String
+  owner_name  String
+  business_id String
+  name        String
+  deletedAt   DateTime @default(now())
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  business_id String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Date        Date[]
+
+  business Business @relation(fields: [business_id], references: [id])
+
+  @@unique([business_id, name])
+}
+
+model Date {
+  id          String    @id @default(cuid())
+  date        DateTime
+  status      Status    @default(PENDING)
+  client_id   String
+  service_id  String
+  business_id String
+  cancel_at   DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  Work        Work[]
+  Message     Message[]
+
+  client   User     @relation(fields: [client_id], references: [id])
+  service  Service  @relation(fields: [service_id], references: [id])
+  business Business @relation(fields: [business_id], references: [id])
+
+  @@index([client_id, service_id, business_id])
+}
+
+model Work {
+  id          String    @id @default(cuid())
+  description String
+  status      Status    @default(PENDING)
+  client_id   String
+  business_id String
+  date_id     String
+  closedAt    DateTime?
+  completedAt DateTime?
+  Review      Review[]
+  Message     Message[]
+
+  client   User     @relation(fields: [client_id], references: [id])
+  business Business @relation(fields: [business_id], references: [id], onDelete: Restrict)
+  date     Date     @relation(fields: [date_id], references: [id])
+
+  @@index([client_id, business_id])
+  @@index([status, business_id])
+  @@index([status])
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  rate        Float
+  comment     String
+  client_id   String
+  business_id String
+  work_id     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  client   User     @relation(fields: [client_id], references: [id])
+  business Business @relation(fields: [business_id], references: [id])
+  work     Work     @relation(fields: [work_id], references: [id])
+
+  @@index([client_id, business_id])
+  @@index([work_id])
+}
+
+model Message {
+  id             String        @id @default(cuid())
+  content        String
+  status         MessageStatus @default(PENDING)
+  read_at        DateTime?
+  timestamp      DateTime      @default(now())
+  sender_id      String
+  receiver_id    String
+  work_id        String?
+  date_id        String?
+  conversationId String?
+
+  sender       User          @relation("SenderMessages", fields: [sender_id], references: [id])
+  receiver     User          @relation("ReceiverMessages", fields: [receiver_id], references: [id])
+  work         Work?         @relation(fields: [work_id], references: [id])
+  date         Date?         @relation(fields: [date_id], references: [id])
+  Conversation Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([sender_id, receiver_id])
+  @@index([sender_id, work_id, date_id])
+}
+
+model Conversation {
+  id            String    @id @default(cuid())
+  user_id       String
+  business_id   String
+  lastMesage_id String?
+  messages      Message[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user     User     @relation(fields: [user_id], references: [id])
+  business Business @relation("BusinessConversation", fields: [business_id], references: [id])
+
+  @@index([user_id, business_id])
+}
