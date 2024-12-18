@@ -1,10 +1,12 @@
 import { Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
+import { HashPassword } from '../../../shared/utils';
+
 const prisma = new PrismaClient();
 
 export async function usersSeed() {
-  const hashedPassword = 'SecuredPassword!';
+  const hashedPassword = HashPassword('123456!');
 
   try {
     await prisma.user.upsert({
@@ -28,7 +30,7 @@ export async function usersSeed() {
         last_name: 'Doe',
         email: 'jane.doe@example.com',
         password: hashedPassword,
-        phone: '1234567890',
+        phone: '2345678901',
       },
     });
 
@@ -41,7 +43,7 @@ export async function usersSeed() {
         email: 'alice.chen@example.com',
         email_confirmed: true,
         password: hashedPassword,
-        phone: '1234567890',
+        phone: '3456789012',
         business: {
           create: {
             name: 'Alice Business',
