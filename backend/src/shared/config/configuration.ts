@@ -27,7 +27,7 @@ const envVars = Joi.object({
   APP_PORT: Joi.number().default(8000),
   APP_URL: Joi.string().default('http://localhost:3000'),
   APP_DEFAULT_VERSION: Joi.string().default('1'),
-  // DATABASE_URL: Joi.string().uri().required(),
+  DATABASE_URL: Joi.string().uri().required(),
   JWT_SECRET: Joi.string().min(10).required(),
   JWT_DURATION: Joi.string().default('1d'),
   // GOOGLE_CLIENT_ID: Joi.string().required(),
