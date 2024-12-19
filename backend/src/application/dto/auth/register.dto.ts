@@ -1,5 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
-import { Exclude, Expose } from 'class-transformer';
 import {
   IsEmail,
   IsEnum,
@@ -11,24 +11,29 @@ import {
 } from 'class-validator';
 
 export class RegisterDto {
+  @ApiProperty({ example: 'John' })
   @IsString()
   @IsNotEmpty()
   name: string;
 
+  @ApiProperty({ example: 'John' })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
   last_name: string;
 
+  @ApiProperty({ example: 'jhon.doe@example.com' })
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
+  @ApiProperty({ example: Role.USER, enum: [Role], required: false })
   @IsOptional()
   @IsEnum(Role)
   @IsString()
   user_role: Role;
 
+  @ApiProperty({ example: 'Secure12345!' })
   @IsString()
   @MinLength(6)
   @Matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$/, {
@@ -36,15 +41,4 @@ export class RegisterDto {
       'Password must contain at least one uppercase letter, one lowercase letter, one number, and be at least 6 characters long',
   })
   password: string;
-}
-
-@Exclude()
-export class UserRegisteredDTO {
-  @Expose() id: string;
-  @Expose() email: string;
-  @Expose() name: string;
-  @Expose() last_name: string;
-  @Expose() phone: string;
-  @Expose() createdAt: Date;
-  @Expose() updatedAt: Date;
 }
