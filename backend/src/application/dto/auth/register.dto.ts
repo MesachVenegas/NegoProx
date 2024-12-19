@@ -1,4 +1,5 @@
 import { Role } from '@prisma/client';
+import { Exclude, Expose } from 'class-transformer';
 import {
   IsEmail,
   IsEnum,
@@ -35,4 +36,15 @@ export class RegisterDto {
       'Password must contain at least one uppercase letter, one lowercase letter, one number, and be at least 6 characters long',
   })
   password: string;
+}
+
+@Exclude()
+export class UserRegisteredDTO {
+  @Expose() id: string;
+  @Expose() email: string;
+  @Expose() name: string;
+  @Expose() last_name: string;
+  @Expose() phone: string;
+  @Expose() createdAt: Date;
+  @Expose() updatedAt: Date;
 }
