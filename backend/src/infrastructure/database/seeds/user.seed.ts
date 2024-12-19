@@ -6,7 +6,7 @@ import { HashPassword } from '../../../shared/utils';
 const prisma = new PrismaClient();
 
 export async function usersSeed() {
-  const hashedPassword = HashPassword('123456!');
+  const hashedPassword = HashPassword('Secure123!');
 
   try {
     await prisma.user.upsert({
@@ -42,6 +42,7 @@ export async function usersSeed() {
         last_name: 'Chen',
         email: 'alice.chen@example.com',
         email_confirmed: true,
+        user_role: 'BUSINESS',
         password: hashedPassword,
         phone: '3456789012',
         business: {
