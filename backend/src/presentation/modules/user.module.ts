@@ -4,7 +4,7 @@ import { UserController } from '@presentation/controllers/user/user.controller';
 import { VerifyUserUseCase } from '@app/use-cases/user/verify-email.use-case';
 import { UserRepository } from '@infrastructure/repositories/user.repository';
 import { JwtService } from '@nestjs/jwt';
-import { MailModule } from './mail.module';
+import { MailModule } from './email.module';
 
 @Module({
   imports: [MailModule],
