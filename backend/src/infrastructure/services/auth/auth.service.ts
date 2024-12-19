@@ -2,8 +2,8 @@ import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
 
 import { LoginDto } from '@app/dto/auth';
-import { LoginUserUseCase } from '@app/use-cases/login-user.use-case';
 import { User } from '@core/entities/user.entity';
+import { LoginUserUseCase } from '@app/use-cases/login-user.use-case';
 
 @Injectable()
 export class AuthService {
