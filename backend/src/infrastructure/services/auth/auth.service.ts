@@ -2,7 +2,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
 
 import { LoginDto } from '@app/dto/auth';
-import { User } from '@core/entities/user.entity';
+import { User } from '@domain/entities/user.entity';
 import { LoginUserUseCase } from '@app/use-cases/login-user.use-case';
 
 @Injectable()

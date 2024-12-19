@@ -20,7 +20,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@app/*": ["src/application/*"],
-      "@core/*": ["src/core/*"],
+      "@domain/*": ["src/Domain/*"],
       "@infrastructure/*": ["src/infrastructure/*"],
       "@presentation/*": ["src/presentation/*"],
       "@shared/*": ["src/shared/*"]
