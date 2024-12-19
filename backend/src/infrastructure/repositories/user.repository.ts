@@ -38,4 +38,11 @@ export class UserRepository implements UserRepositoryInterface {
   async findUserById(id: string): Promise<User | null> {
     return this.prisma.user.findUnique({ where: { id } });
   }
+
+  async markEmailAsConfirmed(id: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id },
+      data: { email_confirmed: true },
+    });
+  }
 }
