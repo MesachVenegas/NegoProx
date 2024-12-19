@@ -1,6 +1,11 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 
-import { authResponseDto, LoginDto, RegisterDto } from '@app/dto/auth';
+import {
+  authResponseDto,
+  LoginDto,
+  RegisterDto,
+  RegisterDtoResponse,
+} from '@app/dto/auth';
 import { AuthService } from '@infrastructure/services/auth/auth.service';
 import {
   ApiResponse,
@@ -31,11 +36,11 @@ export class AuthController {
   @ApiResponse({
     status: 201,
     description: 'User created successfully',
-    type: authResponseDto,
+    type: RegisterDtoResponse,
   })
   @ApiConflictResponse({ description: 'User already exists' })
   @ApiBadRequestResponse({ description: 'Invalid data' })
-  async register(@Body() data: RegisterDto): Promise<authResponseDto> {
+  async register(@Body() data: RegisterDto): Promise<RegisterDtoResponse> {
     return this.authService.register(data);
   }
 }

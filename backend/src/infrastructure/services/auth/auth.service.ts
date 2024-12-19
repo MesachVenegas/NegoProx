@@ -16,17 +16,20 @@ export class AuthService {
   async login(data: LoginDto) {
     const user = await this.loginUserUseCase.execute(data);
 
-    return this.generateToken(user);
+    return { access_token: this.generateToken(user) };
   }
 
   async register(data: RegisterDto) {
-    const user = await this.registerUserUseCase.execute(data);
+    const entry = await this.registerUserUseCase.execute(data);
 
-    return this.generateToken(user);
+    return {
+      access_token: this.generateToken(entry.user),
+      message: entry.message,
+    };
   }
 
   private generateToken(user: Partial<User>) {
     const payload = { sub: user.id, email: user.email, role: user.user_role };
-    return { access_token: this.jwtService.sign(payload) };
+    return this.jwtService.sign(payload);
   }
 }

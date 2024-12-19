@@ -8,6 +8,7 @@ import { LoginUserUseCase, RegisterUserUseCase } from '@app/use-cases/user';
 import { UserRepository } from '@infrastructure/repositories/user.repository';
 import { AuthController } from '@presentation/controllers/auth/auth.controller';
 import { JwtBearerStrategy } from '@infrastructure/services/auth/strategy/jwt-bearer.strategy';
+import { EmailService } from '@infrastructure/email/services/email.service';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { JwtBearerStrategy } from '@infrastructure/services/auth/strategy/jwt-be
   controllers: [AuthController],
   providers: [
     AuthService,
+    EmailService,
     UserRepository,
     LoginUserUseCase,
     RegisterUserUseCase,
