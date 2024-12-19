@@ -17,7 +17,9 @@ export class LoginDto {
 }
 
 export class authResponseDto {
-  @ApiProperty()
-  @IsString()
+  @ApiProperty({
+    example:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbTR2bXd0NWYwMDAwa211YzRiMW93aGFvIiwiZW1haWwiOiJtZXNhY2gudmVuZWdhc0Bob3RtYWlsLmNvbSIsImlhdCI6MTczNDYzMTY3MywiZXhwIjoxNzM0NjM1MjczfQ.zJF0puP3WWdnMqnPnrxLYSXO3lBaITTLbXhLeAo5ql8',
+  })
   access_token: string;
 }
