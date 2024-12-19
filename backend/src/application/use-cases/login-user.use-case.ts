@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 import { LoginDto } from '@app/dto/auth';
 import { ValidatePassword } from '@shared/utils';
@@ -11,7 +15,11 @@ export class LoginUserUseCase {
   async execute(dto: LoginDto) {
     const user = await this.userRepository.findUserByEmail(dto.email);
 
-    if (!user || !ValidatePassword(dto.password, user.password)) {
+    if (!user) {
+      throw new NotFoundException('User not found or not exists');
+    }
+
+    if (!ValidatePassword(dto.password, user.password)) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
