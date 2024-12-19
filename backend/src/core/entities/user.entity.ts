@@ -1,6 +1,6 @@
 import { Role } from '@prisma/client';
 
-export class UserEntity {
+export class User {
   constructor(
     public id: string,
     public name: string,
