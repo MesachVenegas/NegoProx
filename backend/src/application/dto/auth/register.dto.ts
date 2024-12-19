@@ -9,6 +9,7 @@ import {
   Matches,
   MinLength,
 } from 'class-validator';
+import { authResponseDto } from './login.dto';
 
 export class RegisterDto {
   @ApiProperty({ example: 'John' })
@@ -27,7 +28,7 @@ export class RegisterDto {
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty({ example: Role.USER, enum: [Role], required: false })
+  @ApiProperty({ enum: Role, example: Role.USER, required: false })
   @IsOptional()
   @IsEnum(Role)
   @IsString()
@@ -41,4 +42,9 @@ export class RegisterDto {
       'Password must contain at least one uppercase letter, one lowercase letter, one number, and be at least 6 characters long',
   })
   password: string;
+}
+
+export class RegisterDtoResponse extends authResponseDto {
+  @ApiProperty({ example: 'Verify email sent' })
+  message: string;
 }
