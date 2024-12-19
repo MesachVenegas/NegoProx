@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { AuthModule } from '@presentation/modules/auth.module';
 
-import { PrismaModule } from '@presentation/modules/prisma.module';
+import { AuthModule } from '@presentation/modules/auth.module';
 import { UserModule } from '@presentation/modules/user.module';
+import { PrismaModule } from '@presentation/modules/prisma.module';
 
 @Module({
   imports: [
