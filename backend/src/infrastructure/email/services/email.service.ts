@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { MailerService } from '@nestjs-modules/mailer';
-import { User } from '@domain/entities/user.entity';
 import Handlebars from 'handlebars';
+import { MailerService } from '@nestjs-modules/mailer';
+
+import { User } from '@domain/entities';
 
 @Injectable()
 export class EmailService {
@@ -18,12 +19,22 @@ export class EmailService {
     return fs.promises.readFile(templatePath, 'utf8');
   }
 
-  async sendVerificationEmail(
+  /**
+   * Sends an email with a verification link to the user
+   * @param user The user to send the email to
+   * @param url The verification link
+   * @param logoUrl The URL of the logo of the application
+   * @param subject The subject of the email
+   * @param templateName The name of the template to use
+   */
+  async sendEmailWithTokenVerification(
     user: Partial<User>,
     url: string,
     logoUrl: string,
+    subject: string,
+    templateName: string,
   ) {
-    const template = await this.getTemplate('verify-email');
+    const template = await this.getTemplate(templateName);
     const compiledTemplate = Handlebars.compile(template);
 
     const fullName = `${user.name} ${user.last_name}`;
@@ -35,7 +46,7 @@ export class EmailService {
 
     await this.mailerService.sendMail({
       to: user.email,
-      subject: 'Verify your email',
+      subject: subject,
       html: message,
     });
   }
