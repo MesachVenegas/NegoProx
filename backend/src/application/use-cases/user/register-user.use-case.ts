@@ -39,10 +39,12 @@ export class RegisterUserUseCase {
 
     const verificationUrl = `${envs.app.frontVerificationUrl}${token}`;
 
-    await this.emailService.sendVerificationEmail(
+    await this.emailService.sendEmailWithTokenVerification(
       user,
       verificationUrl,
       logoUrl,
+      'Verifica tu correo',
+      'verify-email',
     );
 
     return {
