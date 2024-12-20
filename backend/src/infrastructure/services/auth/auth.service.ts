@@ -1,8 +1,8 @@
 import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
 
+import { UserRegisteredDTO } from '@app/dto/user';
 import { LoginDto, RegisterDto } from '@app/dto/auth';
-import { User } from '../../../Domain/entities/user.entity';
 import { RegisterUserUseCase, LoginUserUseCase } from '@app/use-cases/user';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class AuthService {
     };
   }
 
-  private generateToken(user: Partial<User>) {
+  private generateToken(user: Partial<UserRegisteredDTO>) {
     const payload = { sub: user.id, email: user.email, role: user.user_role };
     return this.jwtService.sign(payload);
   }

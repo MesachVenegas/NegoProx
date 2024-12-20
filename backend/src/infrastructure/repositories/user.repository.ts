@@ -5,6 +5,7 @@ import { Prisma } from '@prisma/client';
 import { User } from '../../Domain/entities/user.entity';
 import { UserRepositoryInterface } from '@app/interfaces/user';
 import { PrismaService } from '@infrastructure/database/prisma.service';
+import { RegisterDto } from '@app/dto/auth';
 
 @Injectable()
 export class UserRepository implements UserRepositoryInterface {
@@ -17,7 +18,7 @@ export class UserRepository implements UserRepositoryInterface {
    * @returns {Promise<User>}
    * @throws {ConflictException} if the user already exists
    */
-  async create(user: Prisma.UserCreateInput): Promise<User> {
+  async create(user: RegisterDto): Promise<User> {
     try {
       return this.prisma.user.create({ data: user });
     } catch (error) {
