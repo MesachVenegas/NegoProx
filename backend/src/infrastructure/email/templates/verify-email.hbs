@@ -31,9 +31,13 @@
         <p>Para completar tu registro, por favor confirma tu correo electrónico
           haciendo clic en el siguiente botón de verificación.
         </p>
-        <small>El enlace expira en 20 minutos</small>
 
-        <a href='{{verificationUrl}}' class='cta-button'>Verificar mi correo</a>
+        <div
+          style='display: flex; flex-direction: column; align-items: center; justify-content: center'
+        >
+          <a href='{{verificationUrl}}' class='cta-button'>Verificar mi correo</a>
+          <small>El enlace expira en 20 minutos</small>
+        </div>
 
         <p>Si no pudiste hacer clic en el botón de verificación, por favor copia
           y pega el siguiente enlace en tu navegador:</p>
