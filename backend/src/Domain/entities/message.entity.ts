@@ -1,4 +1,4 @@
-import { MessageStatusType } from '@domain/enums/message-status.enum';
+import { MessageStatusType } from '@domain/enums';
 
 export class Message {
   constructor(

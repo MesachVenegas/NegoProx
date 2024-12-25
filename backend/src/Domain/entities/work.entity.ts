@@ -1,6 +1,6 @@
-import { StatusType } from '@domain/enums/status.enum';
-import { Message } from './message.entity';
 import { Review } from './review.entity';
+import { StatusType } from '@domain/enums';
+import { Message } from './message.entity';
 
 export class Work {
   constructor(

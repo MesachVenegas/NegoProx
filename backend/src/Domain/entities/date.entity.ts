@@ -1,6 +1,6 @@
 import { Work } from './work.entity';
 import { Message } from './message.entity';
-import { StatusType } from '@domain/enums/status.enum';
+import { StatusType } from '@domain/enums';
 
 export class Date {
   constructor(

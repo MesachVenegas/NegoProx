@@ -1,7 +1,7 @@
-import { RoleType } from '../enums';
 import { Work } from './work.entity';
 import { Date } from './date.entity';
 import { Review } from './review.entity';
+import { RoleType } from '@domain/enums';
 import { Message } from './message.entity';
 import { Account } from './account.entity';
 import { Business } from './business.entity';
@@ -29,4 +29,8 @@ export class User {
     public messagesReceived?: Message[],
     public conversations?: Conversation[],
   ) {}
+
+  hasRole(role: RoleType) {
+    return this.user_role.includes(role);
+  }
 }
