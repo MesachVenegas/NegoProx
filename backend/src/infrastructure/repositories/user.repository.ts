@@ -1,26 +1,22 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
+import { plainToInstance } from 'class-transformer';
 
-import { User } from '../../Domain/entities/user.entity';
-import { UserRepositoryInterface } from '@app/interfaces/user';
-import { PrismaService } from '@infrastructure/database/prisma.service';
+import { User } from '@domain/entities';
 import { RegisterDto } from '@app/dto/auth';
+import { UserRepositoryInterface } from '@domain/interfaces/user';
+import { PrismaService } from '@infrastructure/database/prisma.service';
 
 @Injectable()
 export class UserRepository implements UserRepositoryInterface {
   constructor(private readonly prisma: PrismaService) {}
 
-  /**
-   * Creates a new user.
-   *
-   * @param {Prisma.UserCreateInput} user
-   * @returns {Promise<User>}
-   * @throws {ConflictException} if the user already exists
-   */
   async create(user: RegisterDto): Promise<User> {
     try {
-      return this.prisma.user.create({ data: user });
+      const userCreated = await this.prisma.user.create({ data: user });
+
+      return userCreated ? plainToInstance(User, userCreated) : null;
     } catch (error) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -33,17 +29,26 @@ export class UserRepository implements UserRepositoryInterface {
   }
 
   async findUserByEmail(email?: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { email } });
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    return user ? plainToInstance(User, user) : null;
   }
 
   async findUserById(id: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { id } });
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    return user ? plainToInstance(User, user) : null;
   }
 
   async markEmailAsConfirmed(id: string): Promise<void> {
     await this.prisma.user.update({
       where: { id },
       data: { email_confirmed: true },
+    });
+  }
+
+  async resetPassword(id: string, password: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id },
+      data: { password },
     });
   }
 }
