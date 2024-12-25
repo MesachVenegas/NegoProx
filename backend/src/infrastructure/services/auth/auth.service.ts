@@ -4,9 +4,10 @@ import { Injectable } from '@nestjs/common';
 import { UserRegisteredDTO } from '@app/dto/user';
 import { LoginDto, RegisterDto } from '@app/dto/auth';
 import { RegisterUserUseCase, LoginUserUseCase } from '@app/use-cases/user';
+import { AuthServiceInterface } from '@app/interfaces/auth-service.interface';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements AuthServiceInterface {
   constructor(
     private readonly jwtService: JwtService,
     private readonly loginUserUseCase: LoginUserUseCase,
