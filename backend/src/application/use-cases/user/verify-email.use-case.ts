@@ -1,9 +1,10 @@
-import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import {
   BadRequestException,
   ConflictException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 
 import { envs } from '@shared/config';
 import { UserRepository } from '@infrastructure/repositories/user.repository';
@@ -23,13 +24,13 @@ export class VerifyUserUseCase {
       });
     } catch (error) {
       if (error instanceof TokenExpiredError) {
-        throw new BadRequestException('Token expired');
+        throw new ConflictException('Token expired');
       }
       throw new BadRequestException('Invalid token');
     }
 
     const existUser = await this.userRepository.findUserById(decoded.sub);
-    if (!existUser) throw new ConflictException('User not found or not exists');
+    if (!existUser) throw new NotFoundException('User not found or not exists');
     if (existUser.email_confirmed) {
       throw new ConflictException('Email already confirmed');
     }
