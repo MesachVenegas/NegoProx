@@ -45,11 +45,11 @@ export class UserController {
   @Post('reset-password')
   @ApiOkResponse({ description: 'Password reset successfully' })
   @ApiConflictResponse({
-    description: 'Token expired or User not found or not exists',
+    description: 'Token expired, invalid token or User not found or not exists',
     type: VerifyEmailErrorResponseDto,
   })
   @ApiBadRequestResponse({
-    description: 'Invalid token or no token provided',
+    description: 'No token provided',
     type: VerifyEmailErrorResponseDto,
   })
   async resetPassword(
