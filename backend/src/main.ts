@@ -38,6 +38,7 @@ async function bootstrap() {
     .setDescription(`${envs.app.description}`)
     .setVersion(`${envs.app.default_version}`)
     .addBearerAuth()
+    .addOAuth2()
     .build();
   const document = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);

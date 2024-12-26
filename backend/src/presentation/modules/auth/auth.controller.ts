@@ -45,7 +45,7 @@ export class AuthController {
     return this.authService.register(data);
   }
 
-  @Post('request-reset')
+  @Post('renew-password')
   @ApiNotFoundResponse({ description: 'User not found' })
   async requestPasswordReset(
     @Body() data: EmailRequestDto,
