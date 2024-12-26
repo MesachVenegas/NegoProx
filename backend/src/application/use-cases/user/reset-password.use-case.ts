@@ -7,8 +7,7 @@ import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 
 import { envs } from '@shared/config';
 import { HashPassword } from '@shared/utils';
-import { UserRepository } from '@infrastructure/repositories/user.repository';
-import { ResetPasswordDto } from '@app/dto/user';
+import { UserRepository } from '@infrastructure/repositories';
 
 @Injectable()
 export class ResetPasswordUseCase {
@@ -17,7 +16,7 @@ export class ResetPasswordUseCase {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async execute(token: string, password: ResetPasswordDto['password']) {
+  async execute(token: string, password: string) {
     let decoded: any;
     try {
       decoded = await this.jwtService.verify(token, {
