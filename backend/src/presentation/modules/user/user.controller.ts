@@ -3,22 +3,21 @@ import {
   Body,
   Controller,
   Get,
-  Param,
   Post,
   Query,
 } from '@nestjs/common';
-
-import { UserService } from '@infrastructure/services/user/user.service';
-import { ResetPasswordDto } from '@app/dto/user';
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
+
 import {
+  ResetPasswordDto,
   VerifyEmailErrorResponseDto,
   VerifyEmailResponseDto,
-} from '@app/dto/user/verify-email.dto';
+} from '@app/dto/user';
+import { UserService } from '@infrastructure/services/user/user.service';
 
 @Controller('user')
 export class UserController {
@@ -54,9 +53,11 @@ export class UserController {
     type: VerifyEmailErrorResponseDto,
   })
   async resetPassword(
-    @Param('token') token: string,
+    @Query('token') token: string,
     @Body() data: ResetPasswordDto,
   ) {
-    await this.userService.renewPassword(token, data);
+    if (!token) throw new BadRequestException('No token provided');
+    await this.userService.renewPassword(token, data.password);
+    return { message: 'Password reset successfully' };
   }
 }
