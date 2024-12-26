@@ -4,7 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { UserRegisteredDTO } from '@app/dto/user';
 import { LoginDto, RegisterDto } from '@app/dto/auth';
 import { RegisterUserUseCase, LoginUserUseCase } from '@app/use-cases/user';
-import { AuthServiceInterface } from '@app/interfaces/auth-service.interface';
+import { AuthServiceInterface } from '@app/interfaces/auth/auth-service.interface';
+import { RequestResetPasswordUseCase } from '@app/use-cases/user/request-reset-password.use-case';
 
 @Injectable()
 export class AuthService implements AuthServiceInterface {
@@ -12,6 +13,7 @@ export class AuthService implements AuthServiceInterface {
     private readonly jwtService: JwtService,
     private readonly loginUserUseCase: LoginUserUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
+    private readonly requestResetPasswordUseCase: RequestResetPasswordUseCase,
   ) {}
 
   async login(data: LoginDto) {
@@ -29,6 +31,15 @@ export class AuthService implements AuthServiceInterface {
     };
   }
 
+  async requestPasswordReset(email: string): Promise<{ message: string }> {
+    return this.requestResetPasswordUseCase.execute(email);
+  }
+
+  /**
+   * Generates a JWT token for the given user.
+   * @param user The user to generate the token for.
+   * @returns The generated JWT token.
+   */
   private generateToken(user: Partial<UserRegisteredDTO>) {
     const payload = { sub: user.id, email: user.email, role: user.user_role };
     return this.jwtService.sign(payload);

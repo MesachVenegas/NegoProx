@@ -2,6 +2,7 @@ import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 
 import {
   authResponseDto,
+  EmailRequestDto,
   LoginDto,
   RegisterDto,
   RegisterDtoResponse,
@@ -42,5 +43,13 @@ export class AuthController {
   @ApiBadRequestResponse({ description: 'Invalid data' })
   async register(@Body() data: RegisterDto): Promise<RegisterDtoResponse> {
     return this.authService.register(data);
+  }
+
+  @Post('request-reset')
+  @ApiNotFoundResponse({ description: 'User not found' })
+  async requestPasswordReset(
+    @Body() data: EmailRequestDto,
+  ): Promise<{ message: string }> {
+    return this.authService.requestPasswordReset(data.email);
   }
 }
