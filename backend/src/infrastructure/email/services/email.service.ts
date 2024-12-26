@@ -40,7 +40,7 @@ export class EmailService {
     const fullName = `${user.name} ${user.last_name}`;
     const message = compiledTemplate({
       name: fullName,
-      verificationUrl: url,
+      url: url,
       logoUrl,
     });
 
