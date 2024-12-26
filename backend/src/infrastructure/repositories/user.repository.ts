@@ -5,7 +5,7 @@ import { plainToInstance } from 'class-transformer';
 
 import { User } from '@domain/entities';
 import { RegisterDto } from '@app/dto/auth';
-import { UserRepositoryInterface } from '@domain/interfaces/user';
+import { UserRepositoryInterface } from '@domain/interfaces';
 import { PrismaService } from '@infrastructure/database/prisma.service';
 
 @Injectable()

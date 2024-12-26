@@ -2,13 +2,17 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
+import {
+  LoginUserUseCase,
+  RegisterUserUseCase,
+  RequestResetPasswordUseCase,
+} from '@app/use-cases/user';
 import { envs } from '@shared/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from '@infrastructure/services/auth/auth.service';
-import { LoginUserUseCase, RegisterUserUseCase } from '@app/use-cases/user';
+import { EmailService } from '@infrastructure/email/services/email.service';
 import { UserRepository } from '@infrastructure/repositories/user.repository';
 import { JwtBearerStrategy } from '@infrastructure/services/auth/strategy/jwt-bearer.strategy';
-import { EmailService } from '@infrastructure/email/services/email.service';
 
 @Module({
   imports: [
@@ -24,8 +28,9 @@ import { EmailService } from '@infrastructure/email/services/email.service';
     EmailService,
     UserRepository,
     LoginUserUseCase,
-    RegisterUserUseCase,
     JwtBearerStrategy,
+    RegisterUserUseCase,
+    RequestResetPasswordUseCase,
   ],
   exports: [AuthService],
 })
