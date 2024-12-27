@@ -16,6 +16,7 @@ export class User {
     public email_confirmed: boolean,
     public phone: string | null,
     public password: string | null,
+    public profile_img: string | null,
     public user_role: RoleType,
     public createdAt: Date,
     public updatedAt: Date,
