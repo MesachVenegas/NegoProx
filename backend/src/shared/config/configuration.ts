@@ -22,9 +22,9 @@ interface EnvVariables {
   EMAIL_PASSWORD: string;
   EMAIL_SECURE: boolean;
 
-  // GOOGLE_CLIENT_ID: string;
-  // GOOGLE_CLIENT_SECRET: string;
-  // GOOGLE_CALLBACK_URL: string;
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
+  GOOGLE_CALLBACK_URL: string;
 
   // CLOUDINARY_KEY: string;
   // CLOUDINARY_SECRET: string;
@@ -54,9 +54,9 @@ const envVars = Joi.object({
   EMAIL_USERNAME: Joi.string().required(),
   EMAIL_PASSWORD: Joi.string().required(),
   EMAIL_SECURE: Joi.boolean().default(true),
-  // GOOGLE_CLIENT_ID: Joi.string().required(),
-  // GOOGLE_CLIENT_SECRET: Joi.string().required(),
-  // GOOGLE_CALLBACK_URL: Joi.string().required(),
+  GOOGLE_CLIENT_ID: Joi.string().required(),
+  GOOGLE_CLIENT_SECRET: Joi.string().required(),
+  GOOGLE_CALLBACK_URL: Joi.string().required(),
   // CLOUDINARY_KEY: Joi.string().required(),
   // CLOUDINARY_SECRET: Joi.string().required(),
   // CLOUDINARY_NAME: Joi.string().required(),
@@ -98,9 +98,9 @@ export const envs = {
   //   secret: envVariables.CLOUDINARY_SECRET,
   //   name: envVariables.CLOUDINARY_NAME,
   // },
-  // google: {
-  //   clientId: envVariables.GOOGLE_CLIENT_ID,
-  //   clientSecret: envVariables.GOOGLE_CLIENT_SECRET,
-  //   callbackUrl: envVariables.GOOGLE_CALLBACK_URL,
-  // },
+  google: {
+    clientId: envVariables.GOOGLE_CLIENT_ID,
+    clientSecret: envVariables.GOOGLE_CLIENT_SECRET,
+    callbackUrl: envVariables.GOOGLE_CALLBACK_URL,
+  },
 };
