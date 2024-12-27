@@ -1,4 +1,20 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiResponse,
+  ApiNotFoundResponse,
+  ApiUnauthorizedResponse,
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+} from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 import {
   authResponseDto,
@@ -8,17 +24,23 @@ import {
   RegisterDtoResponse,
 } from '@app/dto/auth';
 import { AuthService } from '@infrastructure/services/auth/auth.service';
-import {
-  ApiResponse,
-  ApiNotFoundResponse,
-  ApiUnauthorizedResponse,
-  ApiBadRequestResponse,
-  ApiConflictResponse,
-} from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async googleLogin(@Req() _req: Request) {}
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleLoginCallback(@Req() req: any) {
+    const token = this.authService.googleAuthCallback(req.user);
+
+    return { access_token: token };
+  }
 
   @Post('login')
   @HttpCode(200)
