@@ -32,6 +32,7 @@ model User {
   id               String         @id @default(cuid())
   name             String
   last_name        String?
+  profile_img      String?
   email            String         @unique
   email_confirmed  Boolean        @default(false)
   phone            String?
@@ -52,7 +53,7 @@ model User {
 model Account {
   id            String   @id @default(cuid())
   provider      String
-  provider_id   String
+  provider_id   String   @unique
   user_id       String
   access_token  String
   refresh_token String
