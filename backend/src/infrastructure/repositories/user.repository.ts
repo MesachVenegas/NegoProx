@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { plainToInstance } from 'class-transformer';
 
 import { User } from '@domain/entities';
-import { RegisterDto } from '@app/dto/auth';
+import { OAuthRegisterDto, RegisterDto } from '@app/dto/auth';
 import { UserRepositoryInterface } from '@domain/interfaces';
 import { PrismaService } from '@infrastructure/database/prisma.service';
 
@@ -15,6 +15,29 @@ export class UserRepository implements UserRepositoryInterface {
   async create(user: RegisterDto): Promise<User> {
     try {
       const userCreated = await this.prisma.user.create({ data: user });
+
+      return userCreated ? plainToInstance(User, userCreated) : null;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('User already exists');
+      }
+      throw error;
+    }
+  }
+
+  async userOAthCreate(user: Partial<OAuthRegisterDto>): Promise<User> {
+    try {
+      const userCreated = await this.prisma.user.create({
+        data: {
+          name: user.name,
+          last_name: user.last_name,
+          email: user.email,
+          profile_img: user.profile_img,
+        },
+      });
 
       return userCreated ? plainToInstance(User, userCreated) : null;
     } catch (error) {
