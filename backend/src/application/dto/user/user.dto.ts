@@ -8,7 +8,8 @@ export class UserRegisteredDTO {
   @Expose() name: string;
   @Expose() last_name: string;
   @Expose() user_role: RoleType;
-  @Expose() phone: string;
+  @Expose() profile_img?: string;
+  @Expose() phone?: string;
   @Expose() createdAt: Date;
   @Expose() updatedAt: Date;
 }

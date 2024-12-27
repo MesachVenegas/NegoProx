@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUrl,
   Matches,
   MinLength,
 } from 'class-validator';
@@ -34,6 +35,12 @@ export class RegisterDto {
   @IsString()
   user_role: Role;
 
+  @ApiProperty({ example: 'https://example.com/profile.jpg' })
+  @IsString()
+  @IsUrl()
+  @IsOptional()
+  profile_img: string;
+
   @ApiProperty({ example: 'Secure12345!' })
   @IsString()
   @MinLength(6)
@@ -43,6 +50,8 @@ export class RegisterDto {
   })
   password: string;
 }
+
+export class OAuthRegisterDto extends RegisterDto {}
 
 export class RegisterDtoResponse extends authResponseDto {
   @ApiProperty({ example: 'Verify email sent' })
