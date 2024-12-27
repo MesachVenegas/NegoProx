@@ -3,7 +3,11 @@ import { Injectable } from '@nestjs/common';
 
 import { UserRegisteredDTO } from '@app/dto/user';
 import { LoginDto, RegisterDto } from '@app/dto/auth';
-import { RegisterUserUseCase, LoginUserUseCase } from '@app/use-cases/user';
+import {
+  RegisterUserUseCase,
+  LoginUserUseCase,
+  GoogleAuthUseCase,
+} from '@app/use-cases/user';
 import { AuthServiceInterface } from '@app/interfaces/auth/auth-service.interface';
 import { RequestResetPasswordUseCase } from '@app/use-cases/user/request-reset-password.use-case';
 
@@ -14,7 +18,13 @@ export class AuthService implements AuthServiceInterface {
     private readonly loginUserUseCase: LoginUserUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
     private readonly requestResetPasswordUseCase: RequestResetPasswordUseCase,
+    private readonly GoogleAuthUseCase: GoogleAuthUseCase,
   ) {}
+
+  async googleAuthCallback(data: any) {
+    const user = await this.GoogleAuthUseCase.execute(data.user);
+    return { access_token: this.generateToken(user) };
+  }
 
   async login(data: LoginDto) {
     const user = await this.loginUserUseCase.execute(data);
