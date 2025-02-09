@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum Role {
+  USER
+  ADMIN
+  BUSINESS
+}
+
+model User {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  name       String?
+  last_name  String?
+  phone      String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  bussinesses  Business[]
+  appointments Appointment[]
+
+  @@map("user")
+  @@index([email])
+}
+
+model Business {
+  id         String   @id @default(cuid())
+  name       String
+  address    String
+  latitude   Decimal  @db.Decimal(10, 6)
+  longitude  Decimal  @db.Decimal(10, 6)
+  user_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  services Service[]
+  user     User      @relation(fields: [user_id], references: [id])
+
+  @@map("business")
+  @@index([name])
+  @@index([latitude, longitude])
+}
+
+model Service {
+  id           String   @id @default(cuid())
+  name         String
+  price        Decimal  @db.Decimal(10, 2)
+  duration     Int
+  bussiness_id String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  appointments Appointment[]
+  bussiness    Business      @relation(fields: [bussiness_id], references: [id])
+
+  @@map("service")
+  @@index([name])
+}
+
+model Appointment {
+  id           String            @id @default(cuid())
+  date         DateTime
+  status       AppointmentStatus @default(PENDING)
+  client_id    String
+  service_id   String
+  created_at   DateTime          @default(now())
+  updated_at   DateTime          @updatedAt
+  cancelled_at DateTime?
+
+  client  User    @relation(fields: [client_id], references: [id])
+  service Service @relation(fields: [service_id], references: [id])
+
+  @@index([client_id, status])
+  @@index([service_id, date])
+  @@map("appointment")
+}
