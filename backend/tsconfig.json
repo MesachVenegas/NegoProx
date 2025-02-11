@@ -20,10 +20,10 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["src/*"],
-      "@core": ["src/core"],
-      "@infrastructure": ["src/infrastructure"],
-      "@presentation": ["src/presentation"],
-      "@shared": ["src/shared"]
+      "@core/*": ["src/core/*"],
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@presentation/*": ["src/presentation/*"],
+      "@shared/*": ["src/shared/*"]
     }
   }
 }
