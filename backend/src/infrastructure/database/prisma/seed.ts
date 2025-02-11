@@ -177,7 +177,7 @@ async function main() {
       initDate: new Date(),
       clientId: clientUser.id,
       businessId: business.id,
-      dateId: appointment.id,
+      appointmentId: appointment.id,
       payment: {
         create: {
           amount: 300.5,
