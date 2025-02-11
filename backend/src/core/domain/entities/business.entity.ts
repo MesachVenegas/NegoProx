@@ -1,56 +1,32 @@
+import { BusinessCategory, BusinessImage, Service } from '@prisma/client';
+import { User } from './user.entity';
+import { Appointment } from './appointment.entity';
+import { Work } from './work.entity';
+import { Availability } from './availability.entity';
+import { Payment } from './payment.entity';
+import { Review } from './review.entity';
+
 export class Business {
-  private _id: string;
-  private _name: string;
-  private _address: string;
-  private _latitude: number;
-  private _longitude: number;
-  private _userId: string;
-  private _createdAt: Date;
-  private _updatedAt: Date;
-
   constructor(
-    id: string,
-    name: string,
-    address: string,
-    latitude: number,
-    longitude: number,
-    userId: string,
-    createdAt: Date = new Date(),
-    updatedAt: Date = new Date(),
-  ) {
-    this._id = id;
-    this._name = name;
-    this._address = address;
-    this._latitude = latitude;
-    this._longitude = longitude;
-    this._userId = userId;
-    this._createdAt = createdAt;
-    this._updatedAt = updatedAt;
-  }
-
-  public updateBusiness(data: {
-    name?: string;
-    address?: string;
-    latitude?: number;
-    longitude?: number;
-  }): void {
-    if (data.name) this._name = data.name;
-    if (data.address) this._address = data.address;
-    if (data.latitude) this._latitude = data.latitude;
-    if (data.longitude) this._longitude = data.longitude;
-    this._updatedAt = new Date();
-  }
-
-  public toJSON() {
-    return {
-      id: this._id,
-      name: this._name,
-      address: this._address,
-      latitude: this._latitude,
-      longitude: this._longitude,
-      userId: this._userId,
-      createdAt: this._createdAt.toISOString(),
-      updatedAt: this._updatedAt.toISOString(),
-    };
-  }
+    public readonly id: string,
+    public name: string,
+    public createdAt: Date = new Date(),
+    public updatedAt: Date = new Date(),
+    public user: User,
+    public userId: string,
+    public services: Service[],
+    public appointments: Appointment[],
+    public works: Work[],
+    public categories: BusinessCategory[],
+    public availability: Availability[],
+    public images: BusinessImage[],
+    public payments: Payment[],
+    public reviews: Review[],
+    public description?: string,
+    public address?: string,
+    public latitude?: number,
+    public longitude?: number,
+    public phone?: string,
+    public imgProfile?: string,
+  ) {}
 }
