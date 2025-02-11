@@ -118,7 +118,7 @@ model BusinessProfile {
 model Service {
   id           String         @id @default(uuid())
   name         String
-  price        Decimal
+  price        Decimal        @db.Decimal(10, 2)
   description  String?
   time         Int
   business     Business       @relation(fields: [businessId], references: [id])
