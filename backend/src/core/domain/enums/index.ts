@@ -1,2 +1,2 @@
-export * from './appointment_status.enum';
+export * from './status.enum';
 export * from './role.enum';
