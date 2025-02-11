@@ -176,7 +176,7 @@ model Work {
 
 model Payment {
   id            String   @id @default(uuid())
-  amount        Decimal
+  amount        Decimal  @db.Decimal(10, 2)
   status        String
   paymentMethod String   @map("payment_method")
   transactionId String?  @unique @map("transaction_id")
