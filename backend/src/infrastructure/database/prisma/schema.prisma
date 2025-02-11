@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,83 +7,301 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum AppointmentStatus {
-  PENDING
-  CONFIRMED
-  CANCELLED
-  COMPLETED
-}
-
 enum Role {
   USER
-  ADMIN
   BUSINESS
+  ADMIN
+}
+
+enum Status {
+  Progress
+  Pending
+  Confirm
+  Finish
+  Cancelled
+}
+
+enum MessageStatus {
+  PENDING
+  SENT
+  READ
+  ARCHIVED
 }
 
 model User {
-  id         String   @id @default(cuid())
-  email      String   @unique
-  name       String?
-  last_name  String?
-  phone      String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id                      String         @id @default(uuid())
+  name                    String
+  lastName                String         @map("last_name")
+  email                   String         @unique
+  emailVerified           Boolean        @default(false) @map("email_verified")
+  phone                   String?        @unique
+  userType                Role           @default(USER) @map("user_type")
+  registerAt              DateTime       @default(now()) @map("register_at")
+  userProfile             UserProfile?
+  accounts                Account[]
+  businesses              Business[]
+  sentMessages            Message[]      @relation("SentMessages")
+  receivedMessages        Message[]      @relation("ReceivedMessages")
+  clientDates             Appointment[]
+  clientWorks             Work[]
+  payments                Payment[]
+  reviews                 Review[]
+  tokenVersion            TokenVersion?
+  conversationsAsClient   Conversation[] @relation("ClientConversations")
+  conversationsAsBusiness Conversation[] @relation("BusinessConversations")
+  Verification            Verification[]
 
-  bussinesses  Business[]
-  appointments Appointment[]
+  @@map("users")
+}
 
-  @@map("user")
-  @@index([email])
+model UserProfile {
+  id             String   @id @default(uuid())
+  profilePicture String?  @map("profile_picture")
+  bio            String?
+  address        String?
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @map("updated_at")
+  user           User     @relation(fields: [userId], references: [id])
+  userId         String   @unique
+
+  @@map("user_profiles")
 }
 
 model Business {
-  id         String   @id @default(cuid())
-  name       String
-  address    String
-  latitude   Decimal  @db.Decimal(10, 6)
-  longitude  Decimal  @db.Decimal(10, 6)
-  user_id    String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id              String             @id @default(uuid())
+  name            String             @unique
+  description     String?
+  address         String?
+  latitude        Decimal?
+  longitude       Decimal?
+  phone           String?
+  imgProfile      String?            @map("img_profile")
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime           @default(now()) @map("updated_at")
+  user            User               @relation(fields: [userId], references: [id])
+  userId          String
+  services        Service[]
+  dates           Appointment[]
+  works           Work[]
+  businessProfile BusinessProfile?
+  categories      BusinessCategory[]
+  availability    Availability[]
+  images          BusinessImage[]
+  payments        Payment[]
+  reviews         Review[]
 
-  services Service[]
-  user     User      @relation(fields: [user_id], references: [id])
-
-  @@map("business")
-  @@index([name])
   @@index([latitude, longitude])
+  @@map("businesses")
+}
+
+model BusinessProfile {
+  id          String   @id @default(uuid())
+  bannerImage String?  @map("banner_image")
+  website     String?
+  socialMedia Json?    @map("social_media")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+  business    Business @relation(fields: [businessId], references: [id])
+  businessId  String   @unique
+
+  @@map("business_profiles")
 }
 
 model Service {
-  id           String   @id @default(cuid())
+  id           String         @id @default(uuid())
   name         String
-  price        Decimal  @db.Decimal(10, 2)
-  duration     Int
-  bussiness_id String
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  price        Decimal
+  description  String?
+  time         Int
+  business     Business       @relation(fields: [businessId], references: [id])
+  businessId   String
+  dates        Appointment[]
+  Availability Availability[]
 
-  appointments Appointment[]
-  bussiness    Business      @relation(fields: [bussiness_id], references: [id])
-
-  @@map("service")
-  @@index([name])
+  @@unique([name, businessId])
+  @@map("services")
 }
 
 model Appointment {
-  id           String            @id @default(cuid())
-  date         DateTime
-  status       AppointmentStatus @default(PENDING)
-  client_id    String
-  service_id   String
-  created_at   DateTime          @default(now())
-  updated_at   DateTime          @updatedAt
-  cancelled_at DateTime?
+  id         String    @id @default(uuid())
+  datetime   DateTime
+  state      Status    @default(Pending)
+  client     User      @relation(fields: [clientId], references: [id])
+  clientId   String
+  service    Service   @relation(fields: [serviceId], references: [id])
+  serviceId  String
+  business   Business  @relation(fields: [businessId], references: [id])
+  businessId String
+  work       Work?
+  Message    Message[]
 
-  client  User    @relation(fields: [client_id], references: [id])
-  service Service @relation(fields: [service_id], references: [id])
+  @@map("appointments")
+}
 
-  @@index([client_id, status])
-  @@index([service_id, date])
-  @@map("appointment")
+model Work {
+  id          String       @id @default(uuid())
+  description String?
+  status      Status
+  initDate    DateTime     @map("init_date")
+  endDate     DateTime?    @map("end_date")
+  client      User         @relation(fields: [clientId], references: [id])
+  clientId    String
+  business    Business     @relation(fields: [businessId], references: [id])
+  businessId  String
+  date        Appointment? @relation(fields: [dateId], references: [id])
+  dateId      String?      @unique
+  payment     Payment?
+  review      Review?
+  Message     Message[]
+
+  @@index([clientId, businessId])
+  @@index([status, businessId])
+  @@index([status])
+  @@map("works")
+}
+
+model Payment {
+  id            String   @id @default(uuid())
+  amount        Decimal
+  status        String
+  paymentMethod String   @map("payment_method")
+  transactionId String?  @unique @map("transaction_id")
+  timestamp     DateTime @default(now())
+  work          Work     @relation(fields: [workId], references: [id])
+  workId        String   @unique
+  client        User     @relation(fields: [clientId], references: [id])
+  clientId      String
+  business      Business @relation(fields: [businessId], references: [id])
+  businessId    String
+
+  @@map("payments")
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  rate       Int
+  comment    String?
+  reviewedAt DateTime @default(now()) @map("reviewed_at")
+  work       Work     @relation(fields: [workId], references: [id])
+  workId     String   @unique
+  client     User     @relation(fields: [clientId], references: [id])
+  clientId   String
+  business   Business @relation(fields: [businessId], references: [id])
+  businessId String
+
+  @@index([clientId, businessId])
+  @@map("reviews")
+}
+
+model Message {
+  id             String         @id @default(uuid())
+  content        String
+  timestamp      DateTime       @default(now())
+  status         MessageStatus  @default(PENDING)
+  readAt         DateTime?      @map("read_at")
+  sender         User           @relation(fields: [senderId], references: [id], name: "SentMessages")
+  senderId       String
+  receiver       User           @relation(fields: [receiverId], references: [id], name: "ReceivedMessages")
+  receiverId     String
+  work           Work?          @relation(fields: [workId], references: [id])
+  workId         String?
+  date           Appointment?   @relation(fields: [dateId], references: [id])
+  dateId         String?
+  conversation   Conversation?  @relation(fields: [conversationId], references: [id], name: "ConversationMessages")
+  conversationId String?
+  lastMessage    Conversation[] @relation(name: "ConversationLastMessage")
+
+  @@index([senderId, receiverId])
+  @@map("messages")
+}
+
+model Conversation {
+  id             String    @id @default(uuid())
+  client         User      @relation(fields: [clientId], references: [id], name: "ClientConversations")
+  clientId       String
+  businessUser   User      @relation(fields: [businessUserId], references: [id], name: "BusinessConversations")
+  businessUserId String
+  messages       Message[] @relation("ConversationMessages")
+  lastMessage    Message?  @relation(fields: [lastMessageId], references: [id], name: "ConversationLastMessage")
+  lastMessageId  String?
+
+  @@unique([clientId, businessUserId])
+  @@map("conversations")
+}
+
+model Account {
+  id           String   @id @default(uuid())
+  provider     String
+  providerId   String?  @map("provider_id")
+  passwordHash String?  @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @map("updated_at")
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+
+  @@unique([provider, providerId])
+  @@unique([userId, provider])
+  @@map("accounts")
+}
+
+model TokenVersion {
+  id        String   @id @default(uuid())
+  version   Int      @default(1)
+  updatedAt DateTime @default(now()) @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+
+  @@map("token_versions")
+}
+
+model Category {
+  id         String             @id @default(uuid())
+  name       String             @unique
+  businesses BusinessCategory[]
+
+  @@map("categories")
+}
+
+model BusinessCategory {
+  business   Business @relation(fields: [businessId], references: [id])
+  businessId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+
+  @@id([businessId, categoryId])
+  @@map("business_categories")
+}
+
+model BusinessImage {
+  id         String   @id @default(uuid())
+  imageUrl   String   @map("image_url")
+  order      Int      @default(0)
+  business   Business @relation(fields: [businessId], references: [id])
+  businessId String
+
+  @@map("business_images")
+}
+
+model Availability {
+  id         String   @id @default(uuid())
+  dayOfWeek  Int      @map("day_of_week")
+  startTime  DateTime @map("start_time")
+  endTime    DateTime @map("end_time")
+  business   Business @relation(fields: [businessId], references: [id])
+  businessId String
+  service    Service? @relation(fields: [serviceId], references: [id])
+  serviceId  String?
+
+  @@map("availabilities")
+}
+
+model Verification {
+  id       String   @id @default(uuid())
+  token    String
+  tokenExp DateTime @map("token_exp")
+  used     Boolean  @default(false)
+  user     User     @relation(fields: [userId], references: [id])
+  userId   String
+
+  @@map("verifications")
 }
