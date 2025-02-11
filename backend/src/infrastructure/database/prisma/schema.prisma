@@ -51,6 +51,10 @@ model User {
   conversationsAsBusiness Conversation[] @relation("BusinessConversations")
   Verification            Verification[]
 
+  @@index([id]) // search by id
+  @@index([email]) // search by email
+  @@index([phone]) // search by phone
+  @@index([userType]) // search by userType
   @@map("users")
 }
 
@@ -64,6 +68,7 @@ model UserProfile {
   user           User     @relation(fields: [userId], references: [id])
   userId         String   @unique
 
+  @@index([userId]) // search by user id
   @@map("user_profiles")
 }
 
@@ -90,7 +95,10 @@ model Business {
   payments        Payment[]
   reviews         Review[]
 
-  @@index([latitude, longitude])
+  @@index([latitude, longitude]) // search by latitude and longitude
+  @@index([createdAt]) // search by createdAt
+  @@index([address]) // search by address
+  @@index([name]) // search by name
   @@map("businesses")
 }
 
@@ -118,7 +126,9 @@ model Service {
   dates        Appointment[]
   Availability Availability[]
 
-  @@unique([name, businessId])
+  @@unique([name, businessId]) // search by name and business id
+  @@index([price]) // search by price
+  @@index([time]) // search by time
   @@map("services")
 }
 
@@ -135,6 +145,8 @@ model Appointment {
   work       Work?
   Message    Message[]
 
+  @@index([datetime]) // search by datetime range
+  @@index([state]) // search by appointment state
   @@map("appointments")
 }
 
@@ -154,9 +166,11 @@ model Work {
   review      Review?
   Message     Message[]
 
-  @@index([clientId, businessId])
-  @@index([status, businessId])
-  @@index([status])
+  @@index([clientId, businessId]) // search by client id and business id
+  @@index([status, businessId]) // search by status and business id
+  @@index([status]) // search by status
+  @@index([initDate, endDate]) // search by init date and end date
+  @@index([clientId, status]) // search by client id and status
   @@map("works")
 }
 
@@ -174,6 +188,8 @@ model Payment {
   business      Business @relation(fields: [businessId], references: [id])
   businessId    String
 
+  @@index([timestamp]) // search by payment timestamp
+  @@index([status, paymentMethod]) // search by payment status and payment method
   @@map("payments")
 }
 
@@ -189,6 +205,8 @@ model Review {
   business   Business @relation(fields: [businessId], references: [id])
   businessId String
 
+  @@index([rate]) // search by rate and calculate average
+  @@index([reviewedAt]) // order by reviewed at
   @@index([clientId, businessId])
   @@map("reviews")
 }
@@ -211,7 +229,9 @@ model Message {
   conversationId String?
   lastMessage    Conversation[] @relation(name: "ConversationLastMessage")
 
-  @@index([senderId, receiverId])
+  @@index([senderId, receiverId]) // search by sender id and receiver id
+  @@index([status, readAt]) // search by status and read at
+  @@index([timestamp]) // order by timestamp
   @@map("messages")
 }
 
@@ -226,6 +246,8 @@ model Conversation {
   lastMessageId  String?
 
   @@unique([clientId, businessUserId])
+  @@index([lastMessageId]) // quick update of last message
+  @@index([clientId, businessUserId]) // search by client id and business user id
   @@map("conversations")
 }
 
@@ -268,7 +290,8 @@ model BusinessCategory {
   category   Category @relation(fields: [categoryId], references: [id])
   categoryId String
 
-  @@id([businessId, categoryId])
+  @@id([businessId, categoryId]) // set primary key by business id and category id combination
+  @@index([categoryId]) // search by category id
   @@map("business_categories")
 }
 
@@ -279,6 +302,7 @@ model BusinessImage {
   business   Business @relation(fields: [businessId], references: [id])
   businessId String
 
+  @@index([order, businessId]) // search images by order and business id
   @@map("business_images")
 }
 
@@ -292,6 +316,9 @@ model Availability {
   service    Service? @relation(fields: [serviceId], references: [id])
   serviceId  String?
 
+  @@index([startTime, endTime]) // search by start time and end time
+  @@index([dayOfWeek]) // search by day and calculate availability
+  @@index([serviceId]) // search by service id
   @@map("availabilities")
 }
 
