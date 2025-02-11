@@ -42,7 +42,7 @@ model User {
   businesses              Business[]
   sentMessages            Message[]      @relation("SentMessages")
   receivedMessages        Message[]      @relation("ReceivedMessages")
-  clientDates             Appointment[]
+  clientAppointments      Appointment[]
   clientWorks             Work[]
   payments                Payment[]
   reviews                 Review[]
@@ -86,7 +86,7 @@ model Business {
   user            User               @relation(fields: [userId], references: [id])
   userId          String
   services        Service[]
-  dates           Appointment[]
+  appointments    Appointment[]
   works           Work[]
   businessProfile BusinessProfile?
   categories      BusinessCategory[]
@@ -123,7 +123,7 @@ model Service {
   time         Int
   business     Business       @relation(fields: [businessId], references: [id])
   businessId   String
-  dates        Appointment[]
+  appointments Appointment[]
   Availability Availability[]
 
   @@unique([name, businessId]) // search by name and business id
@@ -143,7 +143,7 @@ model Appointment {
   business   Business  @relation(fields: [businessId], references: [id])
   businessId String
   work       Work?
-  Message    Message[]
+  Messages   Message[]
 
   @@index([datetime]) // search by datetime range
   @@index([state]) // search by appointment state
@@ -151,20 +151,20 @@ model Appointment {
 }
 
 model Work {
-  id          String       @id @default(uuid())
-  description String?
-  status      Status
-  initDate    DateTime     @map("init_date")
-  endDate     DateTime?    @map("end_date")
-  client      User         @relation(fields: [clientId], references: [id])
-  clientId    String
-  business    Business     @relation(fields: [businessId], references: [id])
-  businessId  String
-  date        Appointment? @relation(fields: [dateId], references: [id])
-  dateId      String?      @unique
-  payment     Payment?
-  review      Review?
-  Message     Message[]
+  id            String       @id @default(uuid())
+  description   String?
+  status        Status
+  initDate      DateTime     @map("init_date")
+  endDate       DateTime?    @map("end_date")
+  client        User         @relation(fields: [clientId], references: [id])
+  clientId      String
+  business      Business     @relation(fields: [businessId], references: [id])
+  businessId    String
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
+  appointmentId String?      @unique
+  payment       Payment?
+  review        Review?
+  Message       Message[]
 
   @@index([clientId, businessId]) // search by client id and business id
   @@index([status, businessId]) // search by status and business id
@@ -223,8 +223,8 @@ model Message {
   receiverId     String
   work           Work?          @relation(fields: [workId], references: [id])
   workId         String?
-  date           Appointment?   @relation(fields: [dateId], references: [id])
-  dateId         String?
+  appointment    Appointment?   @relation(fields: [appointmentId], references: [id])
+  appointmentId  String?
   conversation   Conversation?  @relation(fields: [conversationId], references: [id], name: "ConversationMessages")
   conversationId String?
   lastMessage    Conversation[] @relation(name: "ConversationLastMessage")
@@ -277,9 +277,9 @@ model TokenVersion {
 }
 
 model Category {
-  id         String             @id @default(uuid())
-  name       String             @unique
-  businesses BusinessCategory[]
+  id                   String             @id @default(uuid())
+  name                 String             @unique
+  businessesCategories BusinessCategory[]
 
   @@map("categories")
 }
