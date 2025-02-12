@@ -20,11 +20,12 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "prisma": {
-    "schema": "./src/infrastructure/database/prisma/schema.prisma",
-    "seed": "ts-node ./src/infrastructure/database/prisma/seed.ts"
+    "schema": "./src/prisma/schema.prisma",
+    "seed": "ts-node ./src/prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/passport": "^11.0.5",
@@ -35,7 +36,6 @@
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
-    "dotenv": "^16.4.7",
     "joi": "^17.13.3",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
