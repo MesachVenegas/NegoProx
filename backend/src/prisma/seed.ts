@@ -1,5 +1,5 @@
+import { hashPassword } from '@/shared/common/utils/hash.util';
 import { PrismaClient } from '@prisma/client';
-import { hashPassword } from '../../../shared/utils/hash.util';
 
 const prisma = new PrismaClient();
 
@@ -31,13 +31,13 @@ async function main() {
       lastName: 'Apellido',
       email: 'cliente@negoprox.com',
       phone: '+1234567890',
+      password: hashedPassword,
       userType: 'USER',
       emailVerified: true,
       accounts: {
         create: {
           provider: 'local',
           providerId: 'cliente@negoprox.com',
-          passwordHash: hashedPassword,
         },
       },
       userProfile: {
@@ -67,6 +67,7 @@ async function main() {
       name: 'Dueño de Negocio',
       lastName: 'Ejemplo',
       email: 'negocio@negoprox.com',
+      password: hashedPassword,
       phone: '+0987654321',
       userType: 'BUSINESS',
       emailVerified: true,
@@ -74,7 +75,6 @@ async function main() {
         create: {
           provider: 'local',
           providerId: 'negocio@negoprox.com',
-          passwordHash: hashedPassword,
         },
       },
       userProfile: {
