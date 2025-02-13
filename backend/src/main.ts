@@ -26,7 +26,7 @@ async function bootstrap() {
   });
 
   await app.listen(process.env.PORT ?? 8000, () => {
-    Logger.debug(
+    Logger.log(
       `🚀 Application is running on: http://localhost:${process.env.APP_PORT ?? 8000}/api/v${process.env.APP_VERSION}`,
     );
   });
