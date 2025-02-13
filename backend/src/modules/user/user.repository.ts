@@ -31,6 +31,10 @@ export class UserRepository implements IUserRepository {
       where: {
         OR: [{ id: query.id }, { email: query.email }, { phone: query.phone }],
       },
+      include: {
+        userProfile: { omit: { userId: true } },
+        accounts: { omit: { userId: true } },
+      },
     });
     return user ? new User(user) : null;
   }
