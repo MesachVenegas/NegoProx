@@ -8,10 +8,12 @@ import { AppController } from './app.controller';
 import { envSchema } from './config/config.schema';
 import configuration from './config/configuration';
 import { PrismaModule } from './prisma/prisma.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
     PrismaModule,
+    UserModule,
     ThrottlerModule.forRoot([
       {
         ttl: 60,
