@@ -1,3 +1,5 @@
+import { Account } from '../account/account.entity';
+import { UserProfile } from '../user-profile/user-profile.entity';
 import { UpdateProfile } from './user.interface';
 import { Role, TRole } from '@/shared/constants/role.enum';
 
@@ -7,10 +9,12 @@ export class User {
   public lastName: string;
   public email: string;
   public emailVerified: boolean;
-  private password?: string;
-  public phone?: string | null;
+  private password: string;
+  public phone: string | null;
   public userType: TRole;
   public registeredAt: Date;
+  public userProfile?: UserProfile | null;
+  public accounts?: Account[] | null;
   constructor(partial: Partial<User>) {
     this.id = partial.id ?? '';
     this.name = partial.name ?? 'No Name';
@@ -20,6 +24,8 @@ export class User {
     this.phone = partial.phone || null;
     this.userType = partial.userType || Role.USER;
     this.registeredAt = partial.registeredAt ?? new Date();
+    this.userProfile = partial.userProfile ?? null;
+    this.accounts = partial.accounts ?? null;
   }
 
   updateProfile(data: Partial<UpdateProfile>): void {
