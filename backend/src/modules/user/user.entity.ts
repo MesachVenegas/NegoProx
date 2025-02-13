@@ -12,6 +12,7 @@ export class User {
   public userType: TRole;
   public registeredAt: Date;
   constructor(partial: Partial<User>) {
+    this.id = partial.id ?? '';
     this.name = partial.name ?? 'No Name';
     this.lastName = partial.lastName ?? 'No Last Name';
     this.email = partial.email ?? '';
