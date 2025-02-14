@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
 import { User } from './user.entity';
-import { FindQuery, IUserRepository } from './user.interface';
 import { PrismaService } from '@/prisma/prisma.service';
+import { FindQuery } from './interfaces/common.interface';
+import { IUserRepository } from './interfaces/repository.interface';
 import { NotFoundException } from '@/shared/exceptions/not-found.exception';
 
 @Injectable()
