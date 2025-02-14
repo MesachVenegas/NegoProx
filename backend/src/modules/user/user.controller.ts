@@ -1,6 +1,14 @@
-import { Controller, Get, NotFoundException, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { UserService } from './user.service';
-import { FindQuery } from './user.interface';
+import { FindQuery } from './interfaces/common.interface';
+import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -17,6 +25,12 @@ export class UserController {
   async getUser(@Query() query: FindQuery) {
     const user = await this.userService.findUserByQuery(query);
     if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
+  @Post('register')
+  async registerLocalUser(@Body() data: RegisterLocalUserDto) {
+    const user = await this.userService.createLocalUser(data);
     return user;
   }
 }
