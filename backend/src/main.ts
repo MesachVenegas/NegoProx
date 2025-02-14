@@ -1,16 +1,23 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
 import {
   ClassSerializerInterceptor,
   Logger,
   ValidationPipe,
 } from '@nestjs/common';
+
+import { AppModule } from './app.module';
 import { VersioningType } from '@nestjs/common';
+import { HttpExceptionFilter } from '@shared/exceptions/http-exceptions.filter';
+import { ResponseInterceptor } from '@shared/interceptors/response.interceptor';
+import { PrismaExceptionFilter } from '@shared/exceptions/prisma-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors('*');
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new PrismaExceptionFilter());
+  app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.setGlobalPrefix('api');
   app.useGlobalPipes(
@@ -31,4 +38,6 @@ async function bootstrap() {
     );
   });
 }
-bootstrap();
+bootstrap().catch((e) => {
+  Logger.error(e);
+});
