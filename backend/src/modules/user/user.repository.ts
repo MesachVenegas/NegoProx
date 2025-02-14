@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from './user.entity';
 import { FindQuery, IUserRepository } from './user.interface';
 import { PrismaService } from '@/prisma/prisma.service';
+import { NotFoundException } from '@/shared/exceptions/not-found.exception';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -36,7 +37,8 @@ export class UserRepository implements IUserRepository {
         accounts: { omit: { userId: true } },
       },
     });
-    return user ? new User(user) : null;
+    if (!user) throw new NotFoundException('User not found');
+    return new User(user);
   }
 
   /**
