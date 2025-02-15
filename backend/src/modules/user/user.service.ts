@@ -57,4 +57,11 @@ export class UserService {
     const user = await this.repo.update(dto, id);
     return new UserProfileAccDto(user);
   }
+
+  async disable(id: string): Promise<UserProfileAccDto> {
+    const user = await this.repo.findUser({ id: id });
+    if (!user) throw new NotFoundException('User not found, or not exist');
+    const disabledUser = await this.repo.disableAccount(id);
+    return new UserProfileAccDto(disabledUser);
+  }
 }
