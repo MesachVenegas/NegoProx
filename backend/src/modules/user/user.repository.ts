@@ -123,4 +123,17 @@ export class UserRepository implements IUserRepository {
       },
     });
   }
+
+  async disableAccount(id: string): Promise<UserProfileAccDto> {
+    const result = await this.prisma.user.update({
+      where: { id },
+      data: { isDisabled: true },
+      include: {
+        userProfile: true,
+        accounts: true,
+      },
+    });
+
+    return new UserProfileAccDto(result);
+  }
 }
