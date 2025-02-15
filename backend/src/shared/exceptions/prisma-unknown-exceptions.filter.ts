@@ -21,6 +21,7 @@ export class PrismaUnknownExceptionFilter implements ExceptionFilter {
       statusCode,
       message,
       cause: exception.meta,
+      stack: exception.stack,
       error: 'Internal Server Error',
     });
   }
