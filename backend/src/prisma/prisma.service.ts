@@ -54,19 +54,13 @@ export class PrismaService
     });
 
     this.$on('error', (e) => {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        this.logger.error(
-          `Error: ${e.code} - ${e.name} - ${JSON.stringify(e.meta)}`,
+      if (e.message.includes('E57P01')) {
+        this.logger.warn(
+          `Warning: database server connection lost, database in on hibernation`,
         );
-      } else {
-        if (e.message.includes('E57P01')) {
-          this.logger.warn(
-            `Warning: database server connection lost, database in on hibernation`,
-          );
-          // void this.reconnect();
-        }
-        this.logger.error(`Error: ${JSON.stringify(e.message)}`);
+        // void this.reconnect();
       }
+      this.logger.error(`Error: ${JSON.stringify(e.message)}`);
     });
   }
 
