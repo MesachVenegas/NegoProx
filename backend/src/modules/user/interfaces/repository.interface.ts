@@ -1,8 +1,9 @@
+import { IPagination } from '@/shared/common/interfaces/pagination.interface';
+import { QuerySearchUserDto } from '../dto/user-query-search.dto';
 import { User } from '../user.entity';
-import { FindQuery } from './common.interface';
 
 export interface IUserRepository {
-  getAllUsers(): Promise<User[]>;
-  findUser(query: FindQuery): Promise<User | null>;
+  getAllUsers(data: IPagination): Promise<User[]>;
+  findUser(query: QuerySearchUserDto): Promise<User | null>;
   createLocalUser(data: User): Promise<User>;
 }
