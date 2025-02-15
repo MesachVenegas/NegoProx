@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Post,
@@ -12,9 +13,11 @@ import { UserService } from './user.service';
 import {
   ApiBadRequestResponse,
   ApiExtraModels,
+  ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiResponse,
+  ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
 import {
@@ -32,6 +35,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // --- GET ALL USERS ---
   @Get()
   @ApiExtraModels(PaginationResponseDto, ResponseUserDto)
   @ApiOkResponse({
@@ -59,6 +63,7 @@ export class UserController {
     return users;
   }
 
+  // --- FIND USER ---
   @Get('find')
   @ApiOkResponse({
     description: 'Data of user found',
@@ -71,20 +76,59 @@ export class UserController {
     return user;
   }
 
+  // --- CREATE LOCAL USER ---
   @Post('register')
   @ApiResponse({
     status: 201,
     description: 'Data of user created',
     type: ResponseUserDto,
   })
+  @ApiBadRequestResponse({
+    type: HttpErrorResponseDto,
+    description: 'Request to body invalid data',
+  })
   async registerLocalUser(@Body() data: RegisterLocalUserDto) {
     const user = await this.userService.createLocalUser(data);
     return user;
   }
 
+  // --- UPDATE USER ---
   @Put('update')
+  @ApiOkResponse({
+    type: UserProfileAccDto,
+    description: 'Data of user updated',
+  })
+  @ApiBadRequestResponse({
+    type: HttpErrorResponseDto,
+    description: 'Request to body invalid data',
+  })
+  @ApiForbiddenResponse({
+    type: HttpErrorResponseDto,
+    description: 'Security token invalid',
+  })
+  @ApiUnauthorizedResponse({
+    type: HttpErrorResponseDto,
+    description: 'User not authorized',
+  })
   async updateUser(@Body() dto: UpdateUserDto, @Query('id') id: string) {
-    const user = await this.userService.updateUser(dto, id);
-    return user;
+    return await this.userService.updateUser(dto, id);
   }
+
+  @Delete('delete')
+  @ApiOkResponse({
+    type: UserProfileAccDto,
+    description: 'Data of user deleted',
+  })
+  @ApiForbiddenResponse({
+    type: HttpErrorResponseDto,
+    description: 'Security token invalid',
+  })
+  @ApiUnauthorizedResponse({
+    type: HttpErrorResponseDto,
+    description: 'User not authorized',
+  })
+  async deleteUser(@Query('id') id: string): Promise<UserProfileAccDto> {
+    return await this.userService.disable(id);
+  }
+  // TODO: CHANGE PASSWORD
 }
