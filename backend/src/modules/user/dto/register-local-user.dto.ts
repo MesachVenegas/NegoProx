@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
@@ -7,15 +8,19 @@ import {
 } from 'class-validator';
 
 export class RegisterLocalUserDto {
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   name: string;
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   lastName: string;
+  @ApiProperty()
   @IsNotEmpty()
   @IsEmail()
   email: string;
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   @Matches(/^(?=.*[A-Z])(?=.*[\d\W]).{6,}$/, {
