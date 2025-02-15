@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common';
 
 import { User } from './user.entity';
 import { PrismaService } from '@/prisma/prisma.service';
+import { UserProfileAccDto } from './dto/user-profile-acc.dto';
 import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import { IUserRepository } from './interfaces/repository.interface';
 import { NotFoundException } from '@/shared/exceptions/not-found.exception';
 import { IPagination } from '@/shared/common/interfaces/pagination.interface';
-import { UserProfileAccDto } from './dto/user-profile-acc.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -78,5 +79,28 @@ export class UserRepository implements IUserRepository {
     });
 
     return new User(user);
+  }
+
+  async update(user: UpdateUserDto, id: string): Promise<UserProfileAccDto> {
+    return await this.prisma.user.update({
+      where: { id },
+      data: {
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        userProfile: {
+          update: {
+            bio: user.bio,
+            profilePicture: user.profilePicture,
+            address: user.address,
+          },
+        },
+      },
+      include: {
+        userProfile: true,
+        accounts: true,
+      },
+    });
   }
 }

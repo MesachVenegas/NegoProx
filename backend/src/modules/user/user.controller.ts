@@ -4,10 +4,11 @@ import {
   Get,
   NotFoundException,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
+
 import { UserService } from './user.service';
-import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 import {
   ApiBadRequestResponse,
   ApiExtraModels,
@@ -16,15 +17,16 @@ import {
   ApiResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { User } from './user.entity';
-import { ResponseUserDto } from './dto/user-response.dto';
-import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
-import { UserProfileAccDto } from './dto/user-profile-acc.dto';
-import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import {
   PaginationDto,
   PaginationResponseDto,
 } from '@/shared/dto/pagination.dto';
+import { ResponseUserDto } from './dto/user-response.dto';
+import { UserProfileAccDto } from './dto/user-profile-acc.dto';
+import { QuerySearchUserDto } from './dto/user-query-search.dto';
+import { RegisterLocalUserDto } from './dto/register-local-user.dto';
+import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -73,10 +75,16 @@ export class UserController {
   @ApiResponse({
     status: 201,
     description: 'Data of user created',
-    type: User,
+    type: ResponseUserDto,
   })
   async registerLocalUser(@Body() data: RegisterLocalUserDto) {
     const user = await this.userService.createLocalUser(data);
+    return user;
+  }
+
+  @Put('update')
+  async updateUser(@Body() dto: UpdateUserDto, @Query('id') id: string) {
+    const user = await this.userService.updateUser(dto, id);
     return user;
   }
 }

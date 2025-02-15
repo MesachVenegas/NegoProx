@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
 
-import { User } from './user.entity';
-import { UserRepository } from './user.repository';
-import { RegisterLocalUserDto } from './dto/register-local-user.dto';
-import { hashPassword } from '@/shared/common/utils/hash.util';
-import { ResponseUserDto } from './dto/user-response.dto';
-import { UserProfileAccDto } from './dto/user-profile-acc.dto';
-import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import {
   PaginationDto,
   PaginationResponseDto,
 } from '@/shared/dto/pagination.dto';
+import { User } from './user.entity';
+import { UserRepository } from './user.repository';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { ResponseUserDto } from './dto/user-response.dto';
+import { UserProfileAccDto } from './dto/user-profile-acc.dto';
+import { hashPassword } from '@/shared/common/utils/hash.util';
+import { QuerySearchUserDto } from './dto/user-query-search.dto';
+import { RegisterLocalUserDto } from './dto/register-local-user.dto';
+import { NotFoundException } from '@/shared/exceptions/not-found.exception';
 
 @Injectable()
 export class UserService {
@@ -47,5 +49,12 @@ export class UserService {
     data.password = hashPassword(data.password);
     const newUser = new User(data, data.password);
     return this.repo.createLocalUser(newUser);
+  }
+
+  async updateUser(dto: UpdateUserDto, id: string): Promise<UserProfileAccDto> {
+    const exist = await this.repo.findUser({ id: id });
+    if (!exist) throw new NotFoundException('User not found, or not exist');
+    const user = await this.repo.update(dto, id);
+    return new UserProfileAccDto(user);
   }
 }
