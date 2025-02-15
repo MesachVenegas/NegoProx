@@ -4,7 +4,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import compression from 'compression';
-import { doubleCsrf } from 'csrf-csrf';
+// import { doubleCsrf } from 'csrf-csrf';
 import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
 import { NestFactory, Reflector } from '@nestjs/core';
@@ -47,18 +47,18 @@ async function bootstrap() {
   );
 
   // CSRF Protection
-  const csrfOptions = {
-    getSecret: () => process.env.CSRF_SECRET || '',
-    cookieName: '__Host.X-XSRF-TOKEN',
-    cookieOptions: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-    },
-    size: 64,
-    ignoreMethods: ['GET', 'HEAD', 'OPTIONS'],
-  };
-  const { doubleCsrfProtection } = doubleCsrf(csrfOptions);
-  app.use(doubleCsrfProtection);
+  // const csrfOptions = {
+  //   getSecret: () => process.env.CSRF_SECRET || '',
+  //   cookieName: 'ngx.tk',
+  //   cookieOptions: {
+  //     httpOnly: true,
+  //     secure: process.env.NODE_ENV === 'production',
+  //   },
+  //   size: 64,
+  //   ignoreMethods: ['GET', 'HEAD', 'OPTIONS'],
+  // };
+  // const { doubleCsrfProtection } = doubleCsrf(csrfOptions);
+  // app.use(doubleCsrfProtection);
   app.use(cookieParser());
 
   // Global Pipes
