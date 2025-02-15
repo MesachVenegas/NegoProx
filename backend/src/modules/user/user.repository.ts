@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 
 import { User } from './user.entity';
 import { PrismaService } from '@/prisma/prisma.service';
-import { FindQuery } from './interfaces/common.interface';
+import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import { IUserRepository } from './interfaces/repository.interface';
 import { NotFoundException } from '@/shared/exceptions/not-found.exception';
+import { IPagination } from '@/shared/common/interfaces/pagination.interface';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -15,9 +16,22 @@ export class UserRepository implements IUserRepository {
    *
    * @returns A promise that resolves with an array of User objects.
    */
-  async getAllUsers(): Promise<User[]> {
-    const users = await this.prisma.user.findMany();
+  async getAllUsers({
+    skip,
+    limit,
+    sortBy,
+    order,
+  }: Partial<IPagination>): Promise<User[]> {
+    const users = await this.prisma.user.findMany({
+      skip,
+      take: limit,
+      orderBy: { [sortBy ?? 'registerAt']: order },
+    });
     return users.map((user) => new User(user));
+  }
+
+  async countUsers(): Promise<number> {
+    return this.prisma.user.count();
   }
 
   /**
@@ -28,7 +42,7 @@ export class UserRepository implements IUserRepository {
    * @param query - The FindQuery object to search with.
    * @returns A promise that resolves with a User object or null if no user was found.
    */
-  async findUser(query: FindQuery): Promise<User | null> {
+  async findUser(query: QuerySearchUserDto): Promise<User | null> {
     const user = await this.prisma.user.findFirst({
       where: {
         OR: [{ id: query.id }, { email: query.email }, { phone: query.phone }],
