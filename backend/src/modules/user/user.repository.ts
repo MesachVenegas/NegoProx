@@ -14,8 +14,12 @@ export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Retrieves all users from the database.
+   * Retrieves a list of users from the database with optional pagination and sorting.
    *
+   * @param skip - The number of users to skip, for pagination.
+   * @param limit - The maximum number of users to retrieve.
+   * @param sortBy - The field by which to sort the users.
+   * @param order - The order in which to sort the users, either 'asc' or 'desc'.
    * @returns A promise that resolves with an array of User objects.
    */
   async getAllUsers({
@@ -32,18 +36,25 @@ export class UserRepository implements IUserRepository {
     return users.map((user) => new User(user));
   }
 
+  /**
+   * Retrieves the total count of users in the database.
+   *
+   * @returns A promise that resolves with the total count of users.
+   */
   async countUsers(): Promise<number> {
     return this.prisma.user.count();
   }
 
   /**
-   * Retrieves a user from the database using the provided FindQuery object.
-   * The query can contain an id, email, or phone number to search for.
-   * If a user is found, it is returned as a User object, otherwise null is returned.
+   * Finds a user in the database based on the provided query.
+   * The search can be performed using the user's ID, email, or phone number.
+   * If a user is found, their profile and associated accounts are included in the result.
    *
-   * @param query - The FindQuery object to search with.
-   * @returns A promise that resolves with a User object or null if no user was found.
+   * @param query - An object containing optional search criteria: id, email, or phone.
+   * @returns A promise that resolves with the user's profile and accounts.
+   * @throws NotFoundException if no user is found.
    */
+
   async findUser(query: QuerySearchUserDto): Promise<UserProfileAccDto> {
     const user = await this.prisma.user.findFirst({
       where: {
@@ -59,12 +70,10 @@ export class UserRepository implements IUserRepository {
   }
 
   /**
-   * Creates a new user in the database using the provided User object.
-   * The password is retrieved from the User object using the getPasword method.
-   * The user is created with a local account and an associated user profile.
-   *
-   * @param data - The User object to create.
-   * @returns A promise that resolves with the created User object.
+   * Creates a new user with the provided data, and automatically associates it with a local account.
+   * The password is hashed and stored securely.
+   * @param data - The user data to create.
+   * @returns A promise that resolves with the new user.
    */
   async createLocalUser(data: User): Promise<User> {
     const user = await this.prisma.user.create({
@@ -81,6 +90,17 @@ export class UserRepository implements IUserRepository {
     return new User(user);
   }
 
+  /**
+   * Updates a user's details in the database based on the provided ID.
+   *
+   * This method updates the user's name, last name, email, and phone number.
+   * Additionally, it updates the user's profile with the provided bio, profile picture,
+   * and address. The updated user's profile and associated accounts are included in the result.
+   *
+   * @param user - An object containing the user's updated details.
+   * @param id - The unique identifier of the user to be updated.
+   * @returns A promise that resolves with the updated user's profile and accounts.
+   */
   async update(user: UpdateUserDto, id: string): Promise<UserProfileAccDto> {
     return await this.prisma.user.update({
       where: { id },
