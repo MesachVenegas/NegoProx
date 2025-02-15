@@ -4,9 +4,3 @@ export interface UpdateProfile {
   email?: string;
   phone?: string;
 }
-
-export interface FindQuery {
-  id?: string;
-  email?: string;
-  phone?: string;
-}
