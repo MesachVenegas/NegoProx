@@ -11,7 +11,7 @@ export class PrismaKnownExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
 
     let statusCode = 500;
-    let message = 'Something went wrong in the database';
+    let message = '';
 
     switch (exception.code) {
       case 'P2002':
@@ -28,14 +28,13 @@ export class PrismaKnownExceptionFilter implements ExceptionFilter {
         break;
       default:
         statusCode = 500;
-        message = 'Internal Server Error';
+        message = 'Internal Server Error, Something went wrong in the database';
     }
 
     response.status(statusCode).json({
       statusCode,
       message,
       cause: exception.meta,
-      error: 'Database Error',
     });
   }
 }
