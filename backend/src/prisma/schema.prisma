@@ -29,13 +29,14 @@ enum MessageStatus {
 }
 
 model User {
-  id                      String         @id @default(uuid())
+  id                      String         @id @default(cuid())
   name                    String
   lastName                String         @map("last_name")
   email                   String         @unique
   emailVerified           Boolean        @default(false) @map("email_verified")
   password                String?
   phone                   String?        @unique
+  isDisabled              Boolean        @default(false)
   userType                Role           @default(USER) @map("user_type")
   registerAt              DateTime       @default(now()) @map("register_at")
   userProfile             UserProfile?
@@ -59,7 +60,7 @@ model User {
 }
 
 model Account {
-  id         String   @id @default(uuid())
+  id         String   @id @default(cuid())
   provider   String
   providerId String?  @map("provider_id")
   createdAt  DateTime @default(now()) @map("created_at")
@@ -73,7 +74,7 @@ model Account {
 }
 
 model UserProfile {
-  id             String   @id @default(uuid())
+  id             String   @id @default(cuid())
   profilePicture String?  @map("profile_picture")
   bio            String?
   address        String?
@@ -87,7 +88,7 @@ model UserProfile {
 }
 
 model Business {
-  id              String             @id @default(uuid())
+  id              String             @id @default(cuid())
   name            String             @unique
   description     String?
   address         String?
@@ -95,6 +96,7 @@ model Business {
   longitude       Decimal?
   phone           String?
   imgProfile      String?            @map("img_profile")
+  isDeleted       Boolean            @default(false)
   createdAt       DateTime           @default(now()) @map("created_at")
   updatedAt       DateTime           @default(now()) @map("updated_at")
   user            User               @relation(fields: [userId], references: [id])
@@ -117,7 +119,7 @@ model Business {
 }
 
 model BusinessProfile {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
   bannerImage String?  @map("banner_image")
   website     String?
   socialMedia Json?    @map("social_media")
@@ -130,7 +132,7 @@ model BusinessProfile {
 }
 
 model Service {
-  id           String         @id @default(uuid())
+  id           String         @id @default(cuid())
   name         String
   price        Decimal        @db.Decimal(10, 2)
   description  String?
@@ -147,7 +149,7 @@ model Service {
 }
 
 model Appointment {
-  id         String    @id @default(uuid())
+  id         String    @id @default(cuid())
   datetime   DateTime
   state      Status    @default(Pending)
   client     User      @relation(fields: [clientId], references: [id])
@@ -165,7 +167,7 @@ model Appointment {
 }
 
 model Work {
-  id            String       @id @default(uuid())
+  id            String       @id @default(cuid())
   description   String?
   status        Status
   initDate      DateTime     @map("init_date")
@@ -189,7 +191,7 @@ model Work {
 }
 
 model Payment {
-  id            String   @id @default(uuid())
+  id            String   @id @default(cuid())
   amount        Decimal  @db.Decimal(10, 2)
   status        String
   paymentMethod String   @map("payment_method")
@@ -208,7 +210,7 @@ model Payment {
 }
 
 model Review {
-  id         String   @id @default(uuid())
+  id         String   @id @default(cuid())
   rate       Int
   comment    String?
   reviewedAt DateTime @default(now()) @map("reviewed_at")
@@ -226,7 +228,7 @@ model Review {
 }
 
 model Message {
-  id             String         @id @default(uuid())
+  id             String         @id @default(cuid())
   content        String
   timestamp      DateTime       @default(now())
   status         MessageStatus  @default(PENDING)
@@ -250,7 +252,7 @@ model Message {
 }
 
 model Conversation {
-  id             String    @id @default(uuid())
+  id             String    @id @default(cuid())
   client         User      @relation(fields: [clientId], references: [id], name: "ClientConversations")
   clientId       String
   businessUser   User      @relation(fields: [businessUserId], references: [id], name: "BusinessConversations")
@@ -266,7 +268,7 @@ model Conversation {
 }
 
 model TokenVersion {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   version   Int      @default(1)
   updatedAt DateTime @default(now()) @map("updated_at")
   user      User     @relation(fields: [userId], references: [id])
@@ -276,7 +278,7 @@ model TokenVersion {
 }
 
 model Category {
-  id                   String             @id @default(uuid())
+  id                   String             @id @default(cuid())
   name                 String             @unique
   businessesCategories BusinessCategory[]
 
@@ -295,7 +297,7 @@ model BusinessCategory {
 }
 
 model BusinessImage {
-  id         String   @id @default(uuid())
+  id         String   @id @default(cuid())
   imageUrl   String   @map("image_url")
   order      Int      @default(0)
   business   Business @relation(fields: [businessId], references: [id])
@@ -306,7 +308,7 @@ model BusinessImage {
 }
 
 model Availability {
-  id         String   @id @default(uuid())
+  id         String   @id @default(cuid())
   dayOfWeek  Int      @map("day_of_week")
   startTime  DateTime @map("start_time")
   endTime    DateTime @map("end_time")
@@ -322,7 +324,7 @@ model Availability {
 }
 
 model Verification {
-  id       String   @id @default(uuid())
+  id       String   @id @default(cuid())
   token    String
   tokenExp DateTime @map("token_exp")
   used     Boolean  @default(false)

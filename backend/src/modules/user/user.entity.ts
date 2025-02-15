@@ -11,6 +11,7 @@ export class User {
   public emailVerified: boolean;
   private password: string;
   public phone: string | null;
+  public isDisabled: boolean;
   public userType: TRole;
   public registeredAt: Date;
   public userProfile?: UserProfile | null;
@@ -22,6 +23,7 @@ export class User {
     this.email = partial.email ?? '';
     this.emailVerified = partial.emailVerified ?? false;
     this.phone = partial.phone ?? null;
+    this.isDisabled = partial.isDisabled ?? true;
     this.userType = partial.userType ?? Role.USER;
     this.registeredAt = partial.registeredAt ?? new Date();
     this.userProfile = partial.userProfile ?? null;

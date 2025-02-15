@@ -21,6 +21,9 @@ export class ResponseUserDto {
   @ApiProperty({ example: '1234567890' })
   @IsString()
   phone?: string | null;
+  @ApiProperty({ example: false })
+  @IsBoolean()
+  isDisabled: boolean;
   @ApiProperty({ example: Role.USER })
   @IsEnum(Role)
   userType: TRole;
@@ -35,6 +38,7 @@ export class ResponseUserDto {
     this.email = partial.email ?? '';
     this.emailVerified = partial.emailVerified ?? false;
     if (partial.phone) this.phone = partial.phone;
+    this.isDisabled = partial.isDisabled ?? false;
     this.userType = partial.userType || Role.USER;
     this.registerAt = partial.registerAt ?? new Date();
   }
