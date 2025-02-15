@@ -21,8 +21,8 @@ export class User {
     this.lastName = partial.lastName ?? 'No Last Name';
     this.email = partial.email ?? '';
     this.emailVerified = partial.emailVerified ?? false;
-    this.phone = partial.phone || null;
-    this.userType = partial.userType || Role.USER;
+    this.phone = partial.phone ?? null;
+    this.userType = partial.userType ?? Role.USER;
     this.registeredAt = partial.registeredAt ?? new Date();
     this.userProfile = partial.userProfile ?? null;
     this.accounts = partial.accounts ?? null;
