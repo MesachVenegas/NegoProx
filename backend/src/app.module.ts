@@ -7,6 +7,7 @@ import { envSchema } from './config/config.schema';
 import configuration from './config/configuration';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UserModule } from './modules/user/user.module';
       validationSchema: envSchema,
       load: [configuration],
     }),
+    AuthModule,
   ],
   controllers: [],
   providers: [
