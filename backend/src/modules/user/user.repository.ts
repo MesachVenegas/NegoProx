@@ -6,6 +6,7 @@ import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import { IUserRepository } from './interfaces/repository.interface';
 import { NotFoundException } from '@/shared/exceptions/not-found.exception';
 import { IPagination } from '@/shared/common/interfaces/pagination.interface';
+import { UserProfileAccDto } from './dto/user-profile-acc.dto';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -42,18 +43,18 @@ export class UserRepository implements IUserRepository {
    * @param query - The FindQuery object to search with.
    * @returns A promise that resolves with a User object or null if no user was found.
    */
-  async findUser(query: QuerySearchUserDto): Promise<User | null> {
+  async findUser(query: QuerySearchUserDto): Promise<UserProfileAccDto> {
     const user = await this.prisma.user.findFirst({
       where: {
         OR: [{ id: query.id }, { email: query.email }, { phone: query.phone }],
       },
       include: {
-        userProfile: { omit: { userId: true } },
-        accounts: { omit: { userId: true } },
+        userProfile: true,
+        accounts: true,
       },
     });
     if (!user) throw new NotFoundException('User not found');
-    return new User(user);
+    return new UserProfileAccDto(user);
   }
 
   /**

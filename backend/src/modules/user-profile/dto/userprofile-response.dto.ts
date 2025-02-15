@@ -4,11 +4,11 @@ export class UserProfileResponseDto {
   @ApiProperty({ example: '1' })
   id: string;
   @ApiProperty({ example: 'https://example.com/profile.jpg' })
-  profilePicture?: string;
+  profilePicture: string | null;
   @ApiProperty({ example: 'My bio' })
-  bio?: string;
+  bio: string | null;
   @ApiProperty({ example: '123 Main St, Anytown, USA' })
-  address?: string;
+  address: string | null;
   @ApiProperty({ example: '2023-01-01T00:00:00.000Z' })
   createdAt: Date;
   @ApiProperty({ example: '2023-01-01T00:00:00.000Z' })

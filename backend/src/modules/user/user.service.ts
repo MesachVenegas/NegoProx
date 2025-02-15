@@ -38,11 +38,9 @@ export class UserService {
     };
   }
 
-  async findUserByQuery(
-    data: QuerySearchUserDto,
-  ): Promise<UserProfileAccDto | null> {
+  async findUserByQuery(data: QuerySearchUserDto): Promise<UserProfileAccDto> {
     const result = await this.repo.findUser(data);
-    return result ? new UserProfileAccDto(result) : null;
+    return result;
   }
 
   async createLocalUser(data: RegisterLocalUserDto): Promise<User> {

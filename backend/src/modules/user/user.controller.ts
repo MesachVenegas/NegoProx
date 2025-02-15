@@ -66,7 +66,6 @@ export class UserController {
     @Query() query: QuerySearchUserDto,
   ): Promise<UserProfileAccDto> {
     const user = await this.userService.findUserByQuery(query);
-    if (!user) throw new NotFoundException('User not found');
     return user;
   }
 
