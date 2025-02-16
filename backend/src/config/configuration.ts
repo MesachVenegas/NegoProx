@@ -4,7 +4,6 @@ export default () => ({
     port: process.env.APP_PORT,
     description: process.env.APP_DESCRIPTION,
     version: process.env.APP_VERSION,
-    url: process.env.APP_URL,
     environment: process.env.NODE_ENV,
   },
   database: {
@@ -14,6 +13,7 @@ export default () => ({
     jwrSecret: process.env.JWT_SECRET,
     jwtExpiresIn: process.env.JWT_EXPIRES_IN,
     csrfSecret: process.env.CSRF_SECRET,
+    url: process.env.APP_URL,
   },
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID,
