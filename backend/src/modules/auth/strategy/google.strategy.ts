@@ -10,12 +10,12 @@ import { Profile } from '../interfaces/common.interfaces';
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(
     private readonly authService: AuthService,
-    private readonly config: ConfigService,
+    private readonly conf: ConfigService,
   ) {
     super({
-      clientID: config.get('google.GOOGLE_CLIENT_ID') || '',
-      clientSecret: config.get('google.GOOGLE_CLIENT_SECRET') || '',
-      callbackURL: config.get('google.GOOGLE_CALLBACK_URL') || '',
+      clientID: conf.get('google.GOOGLE_CLIENT_ID') || '',
+      clientSecret: conf.get('google.GOOGLE_CLIENT_SECRET') || '',
+      callbackURL: conf.get('google.GOOGLE_CALLBACK_URL') || '',
       scope: ['email', 'profile'],
     });
   }
