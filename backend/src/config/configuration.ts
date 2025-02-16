@@ -10,4 +10,14 @@ export default () => ({
   database: {
     url: process.env.DATABASE_URL,
   },
+  security: {
+    jwrSecret: process.env.JWT_SECRET,
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN,
+    csrfSecret: process.env.CSRF_SECRET,
+  },
+  google: {
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackUrl: process.env.GOOGLE_CALLBACK_URL,
+  },
 });
