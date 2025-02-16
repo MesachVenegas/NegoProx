@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@/prisma/prisma.service';
-import { Profile } from './interfaces/common.interfaces';
+import { Profile } from './interfaces/profile.interface';
 import { UserProfileAccDto } from '../user/dto/user-profile-acc.dto';
 
 @Injectable()

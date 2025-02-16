@@ -3,20 +3,23 @@ import { Injectable } from '@nestjs/common';
 
 import { AuthRepository } from './auth.repository';
 import { UserRepository } from '../user/user.repository';
-import { Profile } from './interfaces/common.interfaces';
 import { UserProfileAccDto } from '../user/dto/user-profile-acc.dto';
-import { TokenVersionService } from '../token-version/token-version.service';
-import { SecurityService } from '../security/security.service';
+import { Profile } from './interfaces/profile.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly security: SecurityService,
     private readonly userRepo: UserRepository,
     private readonly authRepo: AuthRepository,
     private readonly jwt: JwtService,
-    private readonly tokenVersionService: TokenVersionService,
   ) {}
+
+  // async validateUser(
+  //   email: string,
+  //   password: string,
+  // ): Promise<UserProfileAccDto> {
+  //   return;
+  // }
 
   async findOrCreateGoogleUser(profile: Profile): Promise<UserProfileAccDto> {
     const user = await this.authRepo.authenticateGoogleAccount(profile);
