@@ -1,5 +1,9 @@
 import { ConfigService } from '@nestjs/config';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
@@ -31,10 +35,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       where: { id: payload.sub },
       include: { tokenVersion: true, userProfile: true },
     });
-
+    if (!user) throw new NotFoundException('User not found');
     if (!user || user.tokenVersion?.version !== payload.tokenVersion) {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException('Invalid session');
     }
+    if (user.isDisabled)
+      throw new UnauthorizedException('User account disabled');
 
     return user;
   }
