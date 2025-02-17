@@ -16,9 +16,9 @@ export default () => ({
     url: process.env.APP_URL,
     originUrl: process.env.ORIGIN_URL,
   },
-  google: {
-    clientId: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackUrl: process.env.GOOGLE_CALLBACK_URL,
+  external: {
+    googleId: process.env.GOOGLE_ID,
+    googleSecret: process.env.GOOGLE_SECRET,
+    googlecallbackUrl: process.env.GOOGLE_CALLBACK_URL,
   },
 });

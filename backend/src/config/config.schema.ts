@@ -16,5 +16,8 @@ export const envSchema = joi
     JWT_SECRET: joi.string().required(),
     JWT_EXPIRES_IN: joi.string().required(),
     CSRF_SECRET: joi.string().required(),
+    GOOGLE_ID: joi.string().required(),
+    GOOGLE_SECRET: joi.string().required(),
+    GOOGLE_CALLBACK_URL: joi.string().required(),
   })
   .unknown(true);
