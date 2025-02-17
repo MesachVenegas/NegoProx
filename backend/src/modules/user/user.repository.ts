@@ -84,6 +84,7 @@ export class UserRepository implements IUserRepository {
         password: data.getPasword(),
         accounts: { create: { provider: 'local', providerId: data.email } },
         userProfile: { create: {} },
+        tokenVersion: { create: {} },
       },
     });
 

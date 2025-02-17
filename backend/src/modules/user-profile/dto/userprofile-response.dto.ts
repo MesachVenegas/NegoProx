@@ -16,7 +16,7 @@ export class UserProfileResponseDto {
 
   constructor(partial: Partial<UserProfileResponseDto>) {
     this.id = partial.id ?? '';
-    if (partial.profilePicture) this.profilePicture = partial.profilePicture;
+    this.profilePicture = partial.profilePicture ?? null;
     if (partial.bio) this.bio = partial.bio;
     if (partial.address) this.address = partial.address;
     this.createdAt = partial.createdAt ?? new Date();
