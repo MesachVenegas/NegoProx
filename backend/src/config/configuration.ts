@@ -14,6 +14,7 @@ export default () => ({
     jwtExpiresIn: process.env.JWT_EXPIRES_IN,
     csrfSecret: process.env.CSRF_SECRET,
     url: process.env.APP_URL,
+    originUrl: process.env.ORIGIN_URL,
   },
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID,
