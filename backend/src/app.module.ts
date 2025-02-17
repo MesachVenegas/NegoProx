@@ -8,7 +8,7 @@ import configuration from './config/configuration';
 import { PrismaModule } from '@prisma/prisma.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { SecurityModule } from './security/security.module';
+// import { SecurityModule } from './security/security.module';
 import { HttpLoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
 
 @Module({
@@ -28,7 +28,7 @@ import { HttpLoggerMiddleware } from '@shared/middlewares/http-logger.middleware
     AuthModule,
     PrismaModule,
     UserModule,
-    SecurityModule.forRoot(),
+    // SecurityModule.forRoot(),
   ],
   controllers: [],
   providers: [
