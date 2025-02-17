@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { TokenVersionController } from './token-version.controller';
+
 import { TokenVersionService } from './token-version.service';
+import { TokenVersionRepository } from './token-version.repository';
 
 @Module({
-  controllers: [TokenVersionController],
-  providers: [TokenVersionService]
+  controllers: [],
+  providers: [TokenVersionService, TokenVersionRepository],
+  exports: [TokenVersionService],
 })
 export class TokenVersionModule {}
