@@ -4,6 +4,7 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaClient, Prisma } from '@prisma/client';
 
 @Injectable()
@@ -14,7 +15,7 @@ export class PrismaService
   private readonly logger: Logger = new Logger(PrismaService.name);
   private isConnected = false;
 
-  constructor() {
+  constructor(private readonly config: ConfigService) {
     super({
       log: [
         { emit: 'event', level: 'query' },
@@ -48,9 +49,11 @@ export class PrismaService
         void this.reconnect();
       }
 
-      this.logger.debug(`Query: ${e.query}`);
-      this.logger.debug(`Params: ${e.params}`);
-      this.logger.debug(`Duration: ${e.duration}ms`);
+      if (this.config.get<string>('app.environment') !== 'production') {
+        this.logger.debug(`Query: ${e.query}`);
+        this.logger.debug(`Params: ${e.params}`);
+        this.logger.debug(`Duration: ${e.duration}ms`);
+      }
     });
 
     this.$on('error', (e) => {
