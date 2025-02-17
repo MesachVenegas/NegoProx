@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 
 import { User } from './user.entity';
 import { PrismaService } from '@/prisma/prisma.service';
@@ -76,6 +76,9 @@ export class UserRepository implements IUserRepository {
    * @returns A promise that resolves with the new user.
    */
   async createLocalUser(data: User): Promise<User> {
+    const existing = await this.findUser({ email: data.email });
+    if (existing)
+      throw new ConflictException(`User with "${data.email}" already exist`);
     const user = await this.prisma.user.create({
       data: {
         name: data.name,
