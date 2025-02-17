@@ -38,8 +38,9 @@ export class AuthRepository {
   async authenticateGoogleAccount(
     profile: Profile,
   ): Promise<UserProfileAccDto> {
-    const { id, emails, displayName } = profile;
+    const { id, emails, name, photos } = profile;
     const email: string = emails[0].value;
+    const verified = emails[0].verified;
     const existing = await this.prisma.account.findUnique({
       where: {
         provider_providerId: {
@@ -55,24 +56,25 @@ export class AuthRepository {
     });
 
     if (existing) return new UserProfileAccDto(existing.user);
-
-    const [name, ...lastNameParts] = displayName.split(' ');
-    const lastName = lastNameParts.join(' ') || '';
     const user = await this.prisma.user.upsert({
       where: { email },
       update: {},
       create: {
         email,
-        name,
-        lastName,
-        emailVerified: true,
+        name: name.givenName,
+        lastName: name.familyName,
+        emailVerified: verified,
         accounts: {
           create: {
             provider: 'google',
             providerId: id,
           },
         },
-        userProfile: { create: {} },
+        userProfile: {
+          create: {
+            profilePicture: photos[0].value,
+          },
+        },
         tokenVersion: { create: {} },
       },
       include: { tokenVersion: true, userProfile: true },
