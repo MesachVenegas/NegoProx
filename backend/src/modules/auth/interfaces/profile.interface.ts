@@ -1,5 +1,7 @@
 export interface Profile {
   id: string;
-  emails: string;
+  emails: {
+    value: string;
+  }[];
   displayName: string;
 }
