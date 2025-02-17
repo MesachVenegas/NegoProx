@@ -33,10 +33,17 @@ async function bootstrap() {
     new PrismaKnownExceptionFilter(),
     new PrismaUnknownExceptionFilter(),
   );
-  // Global Interceptors
+  // Global Interceptors amd Serializers
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector)),
     new ResponseInterceptor(),
+  );
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      validationError: { target: false, value: false },
+    }),
   );
   // Enable Compression Response
   app.use(
@@ -48,15 +55,6 @@ async function bootstrap() {
   );
 
   app.use(cookieParser());
-
-  // Global Pipes
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      validationError: { target: false, value: false },
-    }),
-  );
 
   // APi Prefix and Versioning
   app.setGlobalPrefix('api');
