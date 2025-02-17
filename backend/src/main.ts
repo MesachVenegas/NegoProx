@@ -21,12 +21,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const envs = app.get(ConfigService);
 
-  // CORS
+  // Security
   app.enableCors({
-    origin: envs.get<string>('security.url') ?? '*',
+    origin: envs.get<string>('security.originUrl') ?? '*',
     methods: 'GET,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+
   // Global Filters
   app.useGlobalFilters(
     new HttpExceptionFilter(),
@@ -73,9 +74,9 @@ async function bootstrap() {
 
   // Swagger Configuration
   const config = new DocumentBuilder()
-    .setTitle(process.env.APP_NAME ?? 'NegoProx API')
+    .setTitle(envs.get<string>('app.name') ?? 'NegoProx API')
     .setDescription(
-      process.env.APP_DESCRIPTION ?? 'The NegoProx API description',
+      envs.get<string>('app.description') ?? 'The NegoProx API description',
     )
     .setVersion(envs.get<string>('app.version') ?? '1')
     .addBearerAuth()
@@ -84,7 +85,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(`api/v${envs.get<string>('app.version')}`, app, document);
 
-  await app.listen(process.env.APP_PORT ?? 3000, () => {
+  await app.listen(envs.get<string>('app.port') || 3000, () => {
     Logger.log(
       `🚀 Application is running on: http://localhost:${envs.get<string>('app.port') ?? 3000}/api/v${envs.get<string>('app.version')}`,
     );
