@@ -13,7 +13,7 @@ export class TokenVersionRepository {
    */
   async getVersion(id: string) {
     const token = await this.prisma.tokenVersion.findUnique({
-      where: { id },
+      where: { userId: id },
     });
 
     if (!token) throw new NotFoundException('Token not found');
