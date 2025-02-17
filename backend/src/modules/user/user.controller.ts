@@ -7,31 +7,47 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 
 import { UserService } from './user.service';
 import {
+  ApiAcceptedResponse,
   ApiBadRequestResponse,
+  ApiCreatedResponse,
   ApiExtraModels,
-  ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
-  ApiResponse,
   ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
+
 import {
   PaginationDto,
   PaginationResponseDto,
 } from '@/shared/dto/pagination.dto';
+import { JwtGuard } from '../auth/guards/jwt.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { ResponseUserDto } from './dto/user-response.dto';
 import { UserProfileAccDto } from './dto/user-profile-acc.dto';
 import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
+@UseGuards(JwtGuard)
+@ApiBadRequestResponse({
+  type: HttpErrorResponseDto,
+  description: 'Bad request',
+})
+@ApiNotFoundResponse({
+  type: HttpErrorResponseDto,
+  description: 'User not found',
+})
+@ApiUnauthorizedResponse({
+  type: HttpErrorResponseDto,
+  description: 'User not authorized',
+})
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -47,14 +63,25 @@ export class UserController {
             data: {
               type: 'array',
               items: { $ref: getSchemaPath(ResponseUserDto) },
+              example: [
+                {
+                  id: 'cm78m8opx0008mvpkqqyqbtkv',
+                  name: 'Dueño de Negocio',
+                  lastName: 'Ejemplo',
+                  email: 'negocio@negoprox.com',
+                  emailVerified: true,
+                  phone: '+0987654321',
+                  isDisabled: false,
+                  userType: 'BUSINESS',
+                  registerAt: '2025-02-17T22:31:17.157Z',
+                },
+              ],
             },
           },
         },
       ],
     },
   })
-  @ApiBadRequestResponse({ type: HttpErrorResponseDto })
-  @ApiNotFoundResponse({ type: HttpErrorResponseDto })
   async getAllUsers(
     @Query() query: PaginationDto,
   ): Promise<PaginationResponseDto<ResponseUserDto[]>> {
@@ -78,14 +105,9 @@ export class UserController {
 
   // --- CREATE LOCAL USER ---
   @Post('register')
-  @ApiResponse({
-    status: 201,
-    description: 'Data of user created',
+  @ApiCreatedResponse({
     type: ResponseUserDto,
-  })
-  @ApiBadRequestResponse({
-    type: HttpErrorResponseDto,
-    description: 'Request to body invalid data',
+    description: 'Data of user created',
   })
   async registerLocalUser(@Body() data: RegisterLocalUserDto) {
     const user = await this.userService.createLocalUser(data);
@@ -94,38 +116,18 @@ export class UserController {
 
   // --- UPDATE USER ---
   @Put('update')
-  @ApiOkResponse({
+  @ApiAcceptedResponse({
     type: UserProfileAccDto,
     description: 'Data of user updated',
-  })
-  @ApiBadRequestResponse({
-    type: HttpErrorResponseDto,
-    description: 'Request to body invalid data',
-  })
-  @ApiForbiddenResponse({
-    type: HttpErrorResponseDto,
-    description: 'Security token invalid',
-  })
-  @ApiUnauthorizedResponse({
-    type: HttpErrorResponseDto,
-    description: 'User not authorized',
   })
   async updateUser(@Body() dto: UpdateUserDto, @Query('id') id: string) {
     return await this.userService.updateUser(dto, id);
   }
 
   @Delete('delete')
-  @ApiOkResponse({
+  @ApiAcceptedResponse({
     type: UserProfileAccDto,
     description: 'Data of user deleted',
-  })
-  @ApiForbiddenResponse({
-    type: HttpErrorResponseDto,
-    description: 'Security token invalid',
-  })
-  @ApiUnauthorizedResponse({
-    type: HttpErrorResponseDto,
-    description: 'User not authorized',
   })
   async deleteUser(@Query('id') id: string): Promise<UserProfileAccDto> {
     return await this.userService.disable(id);
