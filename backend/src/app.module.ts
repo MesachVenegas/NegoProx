@@ -1,18 +1,17 @@
-import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 import { envSchema } from './config/config.schema';
 import configuration from './config/configuration';
-import { PrismaModule } from './prisma/prisma.module';
+import { PrismaModule } from '@prisma/prisma.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { HttpLoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
 
 @Module({
   imports: [
-    PrismaModule,
-    UserModule,
     ThrottlerModule.forRoot([
       {
         ttl: 60,
@@ -21,11 +20,13 @@ import { AuthModule } from './modules/auth/auth.module';
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.env.development.local', '.env.test.local'],
+      envFilePath: `.env.${process.env.NODE_ENV}.local`,
       validationSchema: envSchema,
       load: [configuration],
     }),
     AuthModule,
+    PrismaModule,
+    UserModule,
   ],
   controllers: [],
   providers: [
@@ -35,4 +36,8 @@ import { AuthModule } from './modules/auth/auth.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(HttpLoggerMiddleware).forRoutes('/*path');
+  }
+}
