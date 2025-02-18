@@ -90,4 +90,8 @@ export class AuthController {
       message: 'Logout successful',
     };
   }
+
+  // TODO: Implement email validation by token
+  // TODO: Implement forgot password
+  // TODO: Implement reset password
 }

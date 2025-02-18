@@ -27,7 +27,7 @@ export class AuthService {
   ) {}
 
   async registerLocalUser(dto: RegisterLocalUserDto) {
-    dto.password = hashPassword(dto.password);
+    dto.password = await hashPassword(dto.password);
     const user = new User(dto, dto.password);
     const userCreated = await this.userRepo.createLocalUser(user);
     return new UserProfileAccDto(userCreated);
@@ -41,7 +41,7 @@ export class AuthService {
     if (user && user.accounts[0].provider !== 'local')
       throw new ConflictException('User signed with external provider');
     if (!user || !user.password) throw new NotFoundException('user not found');
-    const valid = comparePassword(password, user.password);
+    const valid = await comparePassword(password, user.password);
     if (!valid) throw new UnauthorizedException('invalid credentials');
     if (user.isDisabled) throw new UnauthorizedException('user disabled');
     const authUser = new UserProfileAccDto(user);

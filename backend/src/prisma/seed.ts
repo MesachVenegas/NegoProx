@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  const hashedPassword = hashPassword('Password123!');
+  const hashedPassword = await hashPassword('Password123!');
   // Crear categorías primero
   await prisma.category.upsert({
     where: { name: 'Peluquería' },

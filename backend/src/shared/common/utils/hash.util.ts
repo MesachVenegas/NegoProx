@@ -7,8 +7,8 @@ const saltRounds = 10;
  * @param plainPassword The plain password to hash
  * @returns The hashed password
  */
-export const hashPassword = (plainPassword: string) => {
-  return bcrypt.hashSync(plainPassword, saltRounds);
+export const hashPassword = async (plainPassword: string) => {
+  return bcrypt.hash(plainPassword, saltRounds);
 };
 
 /**
@@ -17,6 +17,6 @@ export const hashPassword = (plainPassword: string) => {
  * @param hash The hashed password to compare against
  * @returns true if the plain password matches the hashed password, false otherwise
  */
-export const comparePassword = (plainPassword: string, hash: string) => {
-  return bcrypt.compareSync(plainPassword, hash);
+export const comparePassword = async (plainPassword: string, hash: string) => {
+  return bcrypt.compare(plainPassword, hash);
 };
