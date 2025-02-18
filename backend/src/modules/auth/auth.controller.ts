@@ -11,21 +11,21 @@ import {
   Body,
 } from '@nestjs/common';
 
-import { AuthService } from './auth.service';
-import { Public } from '@/shared/common/decorators/public.decorator';
-import { UserProfileAccDto } from '../user/dto/user-profile-acc.dto';
-import { AuthResponseDto } from './dto/auth-response.dto';
 import {
   ApiConflictResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
 import { LoginDto } from './dto/login.dto';
-import { RegisterLocalUserDto } from '../user/dto/register-local-user.dto';
-import { CurrentUser } from '@/shared/common/decorators/current-user.decorator';
 import { JwtGuard } from './guards/jwt.guard';
+import { AuthService } from './auth.service';
+import { AuthResponseDto } from './dto/auth-response.dto';
+import { Public } from '@/shared/core/decorators/public.decorator';
+import { UserProfileAccDto } from '../user/dto/user-profile-acc.dto';
+import { RegisterLocalUserDto } from '../user/dto/register-local-user.dto';
+import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
+import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
 // import { CsrfGuard } from '@/security/guards/csrf.guard';
 
 @Controller('auth')

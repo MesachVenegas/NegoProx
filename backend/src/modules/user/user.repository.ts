@@ -1,14 +1,14 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 
 import { User } from './user.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '@/prisma/prisma.service';
 import { UserProfileAccDto } from './dto/user-profile-acc.dto';
 import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import { IUserRepository } from './interfaces/repository.interface';
+import { IPagination } from '@/shared/interfaces/pagination.interface';
+import { comparePassword, hashPassword } from '@/shared/utils/hash.util';
 import { NotFoundException } from '@/shared/exceptions/not-found.exception';
-import { IPagination } from '@/shared/common/interfaces/pagination.interface';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { comparePassword, hashPassword } from '@/shared/common/utils/hash.util';
 
 @Injectable()
 export class UserRepository implements IUserRepository {

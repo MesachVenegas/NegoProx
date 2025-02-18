@@ -5,13 +5,13 @@ import {
   ForbiddenException,
   Logger,
 } from '@nestjs/common';
+import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
+import { Request, Response } from 'express';
+import { ConfigService } from '@nestjs/config';
 
 import { SecurityService } from '../security.service';
-import { Observable } from 'rxjs';
-import { Request, Response } from 'express';
-import { IS_PUBLIC_KEY } from '@/shared/common/decorators/public.decorator';
-import { ConfigService } from '@nestjs/config';
+import { IS_PUBLIC_KEY } from '@/shared/core/decorators/public.decorator';
 
 @Injectable()
 export class CsrfGuard implements CanActivate {

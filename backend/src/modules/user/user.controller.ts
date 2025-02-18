@@ -27,13 +27,13 @@ import {
   PaginationResponseDto,
 } from '@/shared/dto/pagination.dto';
 import { JwtGuard } from '../auth/guards/jwt.guard';
-import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { ResponseUserDto } from './dto/user-response.dto';
 import { UserProfileAccDto } from './dto/user-profile-acc.dto';
 import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
-import { CurrentUser } from '@/shared/common/decorators/current-user.decorator';
+import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
+import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
 
 @Controller('user')
 @UseGuards(JwtGuard)

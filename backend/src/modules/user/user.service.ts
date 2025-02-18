@@ -9,7 +9,7 @@ import { UserRepository } from './user.repository';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ResponseUserDto } from './dto/user-response.dto';
 import { UserProfileAccDto } from './dto/user-profile-acc.dto';
-import { hashPassword } from '@/shared/common/utils/hash.util';
+import { hashPassword } from '@/shared/utils/hash.util';
 import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 import { NotFoundException } from '@/shared/exceptions/not-found.exception';

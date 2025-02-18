@@ -7,10 +7,10 @@ import {
 } from '@nestjs/common';
 
 import { AuthRepository } from './auth.repository';
-import { Profile } from './interfaces/profile.interface';
+import { Profile } from '../../shared/interfaces/profile.interface';
 import { UserRepository } from '../user/user.repository';
 // import { SecurityService } from '@/security/security.service';
-import { comparePassword, hashPassword } from '@/shared/common/utils/hash.util';
+import { comparePassword, hashPassword } from '@/shared/utils/hash.util';
 import { TokenVersionService } from '../token-version/token-version.service';
 import { UserProfileAccDto } from '../user/dto/user-profile-acc.dto';
 import { RegisterLocalUserDto } from '../user/dto/register-local-user.dto';
