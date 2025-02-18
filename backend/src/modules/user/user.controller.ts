@@ -140,7 +140,7 @@ export class UserController {
     @CurrentUser() user: UserProfileAccDto,
     @Body() newPass: UpdateUserPasswordDto,
   ) {
-    if (!user) throw new NotFoundException('Session not found');
-    return await this.userService.updatePassword(user.id, newPass.password);
+    await this.userService.updatePassword(user.id, newPass.password);
+    return { message: 'Password changed successfully' };
   }
 }
