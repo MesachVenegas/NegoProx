@@ -77,6 +77,12 @@ export class AuthService {
     };
   }
 
+  async logout(user: UserProfileAccDto) {
+    const result = await this.tokenVersion.invalidateTokenVersion(user.id);
+    if (!result) throw new NotFoundException('User not found');
+    return result;
+  }
+
   private async generatePayload(user: UserProfileAccDto) {
     const tokenVersion = await this.tokenVersion.getTokenVersion(user.id);
     return {
