@@ -9,7 +9,7 @@ import { UserRepository } from './user.repository';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ResponseUserDto } from './dto/user-response.dto';
 import { UserProfileAccDto } from './dto/user-profile-acc.dto';
-import { hashPassword } from '@/shared/common/utils/hash.util';
+import { hashPassword } from '@/shared/utils/hash.util';
 import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 import { NotFoundException } from '@/shared/exceptions/not-found.exception';
@@ -46,7 +46,7 @@ export class UserService {
   }
 
   async createLocalUser(data: RegisterLocalUserDto): Promise<User> {
-    data.password = hashPassword(data.password);
+    data.password = await hashPassword(data.password);
     const newUser = new User(data, data.password);
     return this.repo.createLocalUser(newUser);
   }
@@ -63,5 +63,9 @@ export class UserService {
     if (!user) throw new NotFoundException('User not found, or not exist');
     const disabledUser = await this.repo.disableAccount(id);
     return new UserProfileAccDto(disabledUser);
+  }
+
+  async updatePassword(id: string, password: string) {
+    return await this.repo.updatePassword(id, password);
   }
 }

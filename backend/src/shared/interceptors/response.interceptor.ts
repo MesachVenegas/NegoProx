@@ -12,6 +12,7 @@ export class ResponseInterceptor<T> implements NestInterceptor {
     return next.handle().pipe(
       map((data) => ({
         status: 'success',
+        timestamp: new Date().toISOString(),
         data,
       })),
     );

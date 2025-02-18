@@ -2,7 +2,7 @@ import { User } from '../user.entity';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserProfileAccDto } from '../dto/user-profile-acc.dto';
 import { QuerySearchUserDto } from '../dto/user-query-search.dto';
-import { IPagination } from '@/shared/common/interfaces/pagination.interface';
+import { IPagination } from '@/shared/interfaces/pagination.interface';
 
 export interface IUserRepository {
   getAllUsers(data: IPagination): Promise<User[]>;
