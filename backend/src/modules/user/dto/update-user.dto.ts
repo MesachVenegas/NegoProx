@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  Matches,
   MinLength,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -42,4 +43,14 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   address?: string;
+}
+
+export class UpdateUserPasswordDto {
+  @ApiProperty({ example: 'mySecurePass123' })
+  @IsString()
+  @Matches(/^(?=.*[A-Z])(?=.*[\d\W]).{6,}$/, {
+    message:
+      'password must be at least 6 characters and contain at least one letter and one number or special character',
+  })
+  password: string;
 }

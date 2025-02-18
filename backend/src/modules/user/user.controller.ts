@@ -27,12 +27,13 @@ import {
   PaginationResponseDto,
 } from '@/shared/dto/pagination.dto';
 import { JwtGuard } from '../auth/guards/jwt.guard';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { ResponseUserDto } from './dto/user-response.dto';
 import { UserProfileAccDto } from './dto/user-profile-acc.dto';
 import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
+import { CurrentUser } from '@/shared/common/decorators/current-user.decorator';
 
 @Controller('user')
 @UseGuards(JwtGuard)
@@ -124,6 +125,7 @@ export class UserController {
     return await this.userService.updateUser(dto, id);
   }
 
+  // --- DELETE USER ---
   @Delete('delete')
   @ApiAcceptedResponse({
     type: UserProfileAccDto,
@@ -132,5 +134,13 @@ export class UserController {
   async deleteUser(@Query('id') id: string): Promise<UserProfileAccDto> {
     return await this.userService.disable(id);
   }
-  // TODO: CHANGE PASSWORD
+
+  @Put('change-password')
+  async changePass(
+    @CurrentUser() user: UserProfileAccDto,
+    @Body() newPass: UpdateUserPasswordDto,
+  ) {
+    if (!user) throw new NotFoundException('Session not found');
+    return await this.userService.updatePassword(user.id, newPass.password);
+  }
 }

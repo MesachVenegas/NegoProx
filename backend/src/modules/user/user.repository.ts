@@ -8,6 +8,7 @@ import { IUserRepository } from './interfaces/repository.interface';
 import { NotFoundException } from '@/shared/exceptions/not-found.exception';
 import { IPagination } from '@/shared/common/interfaces/pagination.interface';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { comparePassword, hashPassword } from '@/shared/common/utils/hash.util';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -128,6 +129,15 @@ export class UserRepository implements IUserRepository {
     });
   }
 
+  /**
+   * Disables a user account.
+   *
+   * This method sets the user's 'isDisabled' flag to true, effectively disabling their account.
+   * The updated user's profile and associated accounts are included in the result.
+   *
+   * @param id - The unique identifier of the user to be disabled.
+   * @returns A promise that resolves with the disabled user's profile and accounts.
+   */
   async disableAccount(id: string): Promise<UserProfileAccDto> {
     const result = await this.prisma.user.update({
       where: { id },
@@ -139,5 +149,39 @@ export class UserRepository implements IUserRepository {
     });
 
     return new UserProfileAccDto(result);
+  }
+
+  /**
+   * Updates a user's password.
+   *
+   * This method first checks if the user exists in the database. If not, it throws a NotFoundException.
+   * It then hashes the provided password and checks if the user already has a password in the database.
+   * If the user has no password, it sets the user's password to the newly hashed password.
+   * If the user has a password, it checks if the newly hashed password is the same as the existing password.
+   * If the passwords are the same, it throws a ConflictException. Otherwise, it updates the user's password to the newly hashed password.
+   *
+   * @param id - The unique identifier of the user to be updated.
+   * @param password - The new password to be set for the user.
+   */
+  async updatePassword(id: string, password: string) {
+    console.log(id);
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('User not found');
+    const hashed = await hashPassword(password);
+    if (!user.password) {
+      await this.changePass(id, hashed);
+      return true;
+    }
+    const match = await comparePassword(password, user.password);
+    if (match) throw new ConflictException('Password cannot be the same.');
+    await this.changePass(id, hashed);
+    return true;
+  }
+
+  private async changePass(id: string, password: string) {
+    await this.prisma.user.update({
+      where: { id },
+      data: { password },
+    });
   }
 }
