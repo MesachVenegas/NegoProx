@@ -33,7 +33,7 @@ export class TokenVersionRepository {
    */
   async invalidateVersion(id: string) {
     const token = await this.prisma.tokenVersion.update({
-      where: { id },
+      where: { userId: id },
       data: { version: { increment: 1 } },
     });
 
