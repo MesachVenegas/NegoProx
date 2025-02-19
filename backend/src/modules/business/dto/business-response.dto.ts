@@ -1,6 +1,5 @@
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { Decimal } from '@prisma/client/runtime/library';
-import { Transform, Type } from 'class-transformer';
 import { IsDate, IsString, IsUrl } from 'class-validator';
 
 export class BusinessResponseDto {
@@ -22,16 +21,10 @@ export class BusinessResponseDto {
 
   @ApiProperty({ example: '112.232132' })
   @Type(() => Number)
-  @Transform(({ value }: { value: unknown }) =>
-    value instanceof Decimal ? value.toNumber() : value,
-  )
   latitude?: number;
 
   @ApiProperty({ example: '-77.232132' })
   @Type(() => Number)
-  @Transform(({ value }: { value: unknown }) =>
-    value instanceof Decimal ? value.toNumber() : value,
-  )
   longitude?: number;
 
   @ApiProperty({ example: '+551234567890' })
