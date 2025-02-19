@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 
 import {
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -83,6 +84,7 @@ export class AuthController {
   }
 
   @Get('logout')
+  @ApiBearerAuth()
   @UseGuards(JwtGuard)
   async logout(@CurrentUser() user: UserProfileAccDto) {
     await this.authService.logout(user);

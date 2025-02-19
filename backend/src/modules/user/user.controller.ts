@@ -14,6 +14,7 @@ import { UserService } from './user.service';
 import {
   ApiAcceptedResponse,
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiExtraModels,
   ApiNotFoundResponse,
@@ -55,6 +56,7 @@ export class UserController {
   // --- GET ALL USERS ---
   @Get()
   @ApiExtraModels(PaginationResponseDto, ResponseUserDto)
+  @ApiBearerAuth()
   @ApiOkResponse({
     schema: {
       allOf: [
@@ -93,6 +95,7 @@ export class UserController {
 
   // --- FIND USER ---
   @Get('find')
+  @ApiBearerAuth()
   @ApiOkResponse({
     description: 'Data of user found',
     type: UserProfileAccDto,
@@ -106,6 +109,7 @@ export class UserController {
 
   // --- CREATE LOCAL USER ---
   @Post('register')
+  @ApiBearerAuth()
   @ApiCreatedResponse({
     type: ResponseUserDto,
     description: 'Data of user created',
@@ -117,6 +121,7 @@ export class UserController {
 
   // --- UPDATE USER ---
   @Put('update')
+  @ApiBearerAuth()
   @ApiAcceptedResponse({
     type: UserProfileAccDto,
     description: 'Data of user updated',
@@ -127,6 +132,7 @@ export class UserController {
 
   // --- DELETE USER ---
   @Delete('delete')
+  @ApiBearerAuth()
   @ApiAcceptedResponse({
     type: UserProfileAccDto,
     description: 'Data of user deleted',
@@ -136,6 +142,7 @@ export class UserController {
   }
 
   @Put('change-password')
+  @ApiBearerAuth()
   async changePass(
     @CurrentUser() user: UserProfileAccDto,
     @Body() newPass: UpdateUserPasswordDto,
