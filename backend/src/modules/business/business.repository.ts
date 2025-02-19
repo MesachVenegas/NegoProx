@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { PrismaService } from '@/prisma/prisma.service';
 import { IPagination } from '@/shared/interfaces/pagination.interface';
+import { Business } from './business.entity';
 // import { BusinessProfileDto } from './dto/business-profile.dto';
 
 @Injectable()
@@ -17,6 +18,13 @@ export class BusinessRepository {
     return this.prisma.business.count();
   }
 
+  /**
+   * Finds a business by its ID and retrieves its details along with its average rating.
+   *
+   * @param id - The unique identifier of the business to find.
+   * @returns The business details including images, services, profile, categories, and its average rating.
+   * @throws NotFoundException if the business with the given ID is not found.
+   */
   async findBusinessById(id: string) {
     const [business, review] = await Promise.all([
       this.prisma.business.findUnique({
@@ -67,7 +75,37 @@ export class BusinessRepository {
       },
     });
   }
-  // TODO: implemente create a new business.
+
+  /**
+   * Registers a new business with a local user.
+   *
+   * @param entity - The business entity to register.
+   * @returns The created business entity.
+   */
+  async registerBusinessLocal(entity: Business) {
+    return this.prisma.business.create({
+      data: {
+        name: entity.name,
+        description: entity.description,
+        address: entity.address,
+        phone: entity.phone,
+        user: {
+          create: {
+            name: entity.user?.name ?? '',
+            lastName: entity.user?.lastName ?? '',
+            email: entity.user?.email ?? '',
+            password: entity.user?.password ?? '',
+            accounts: {
+              create: { provider: 'local', providerId: entity.user?.email },
+            },
+            userProfile: { create: {} },
+            tokenVersion: { create: {} },
+          },
+        },
+      },
+    });
+  }
+
   // TODO: implement promote user a business owner.
   // TODO: implement update a business.
   // TODO: implement delete a business.
