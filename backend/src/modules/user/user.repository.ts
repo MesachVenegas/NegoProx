@@ -60,7 +60,6 @@ export class UserRepository implements IUserRepository {
 
   async findUser(dto: QuerySearchUserDto) {
     const { id, email, phone } = dto;
-    console.log(dto);
     const user = await this.prisma.user.findFirst({
       where: {
         OR: [{ id }, { email }, { phone }],
