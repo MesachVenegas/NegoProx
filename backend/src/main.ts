@@ -83,7 +83,11 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup(`api/v${envs.get<string>('app.version')}`, app, document);
+  SwaggerModule.setup(
+    `api/v${envs.get<string>('app.version')}/docs`,
+    app,
+    document,
+  );
 
   await app.listen(envs.get<string>('app.port') || 3000, () => {
     Logger.log(
