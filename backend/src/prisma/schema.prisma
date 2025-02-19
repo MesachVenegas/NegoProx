@@ -111,6 +111,7 @@ model Business {
   payments        Payment[]
   reviews         Review[]
 
+  @@unique([name, userId]) // only a user can have a business with the same name
   @@index([latitude, longitude]) // search by latitude and longitude
   @@index([createdAt]) // search by createdAt
   @@index([address]) // search by address
