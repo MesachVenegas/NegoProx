@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { BusinessService } from './business.service';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { Public } from '@/shared/core/decorators/public.decorator';
@@ -9,6 +17,7 @@ import {
 import { BusinessResponseDto } from './dto/business-response.dto';
 import {
   ApiBadRequestResponse,
+  ApiCreatedResponse,
   ApiExtraModels,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -16,7 +25,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
-// import { BusinessProfileDto } from './dto/business-profile.dto';
+import { RegisterLocalBusinessDto } from './dto/register-local-business.dto';
 
 @Controller('business')
 @UseGuards(JwtGuard)
@@ -69,6 +78,19 @@ export class BusinessController {
   async findBusiness(@Param('id') id: string) {
     return await this.businessService.findBusinessById(id);
   }
+
+  @Post('register')
+  @Public()
+  @ApiCreatedResponse({
+    description: 'Business created',
+    type: BusinessResponseDto,
+  })
+  async createBusiness(
+    @Body() dto: RegisterLocalBusinessDto,
+  ): Promise<BusinessResponseDto> {
+    return await this.businessService.createLocalBusiness(dto);
+  }
+
   // TODO: implemente create a new business.
   // TODO: implement promote user a business owner.
   // TODO: implement update a business.

@@ -82,7 +82,7 @@ export class BusinessRepository {
    * @param entity - The business entity to register.
    * @returns The created business entity.
    */
-  async registerBusinessLocal(entity: Business) {
+  async saveLocalBusiness(entity: Business) {
     return this.prisma.business.create({
       data: {
         name: entity.name,
@@ -95,6 +95,7 @@ export class BusinessRepository {
             lastName: entity.user?.lastName ?? '',
             email: entity.user?.email ?? '',
             password: entity.user?.password ?? '',
+            userType: 'BUSINESS',
             accounts: {
               create: { provider: 'local', providerId: entity.user?.email },
             },

@@ -7,6 +7,9 @@ import {
 import { plainToInstance } from 'class-transformer';
 import { BusinessResponseDto } from './dto/business-response.dto';
 import { BusinessProfileServiceDto } from './dto/business-profile.dto';
+import { RegisterLocalBusinessDto } from './dto/register-local-business.dto';
+import { hashPassword } from '@/shared/utils/hash.util';
+import { Business } from './business.entity';
 
 @Injectable()
 export class BusinessService {
@@ -55,8 +58,21 @@ export class BusinessService {
     const business = await this.repo.findBusinessById(id);
     return plainToInstance(BusinessProfileServiceDto, business);
   }
+
+  /**
+   * Creates a new business and associates it with a local user.
+   *
+   * @param dto - The RegisterLocalBusinessDto object containing the business data and user data.
+   * @returns A promise that resolves with a BusinessResponseDto object.
+   */
+  async createLocalBusiness(dto: RegisterLocalBusinessDto) {
+    dto.user.password = await hashPassword(dto.user.password);
+    const business = plainToInstance(Business, dto);
+    const result = await this.repo.saveLocalBusiness(business);
+    return plainToInstance(BusinessResponseDto, result);
+  }
+
   // TODO: implement find business by query(address, name, latitude, longitude).
-  // TODO: implemente create a new business.
   // TODO: implement promote user a business owner.
   // TODO: implement update a business.
   // TODO: implement delete a business.
