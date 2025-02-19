@@ -1,13 +1,13 @@
 import { Type } from 'class-transformer';
 import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
 import {
-  IsArray,
   IsIn,
   IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
   Min,
+  ValidateNested,
 } from 'class-validator';
 
 @ApiExtraModels()
@@ -24,12 +24,9 @@ export class PaginationResponseDto<T> {
   @ApiProperty({ example: 10 })
   @IsInt()
   limit: number;
-  @ApiProperty({
-    type: 'array',
-    example: [],
-  })
+  @ApiProperty({ isArray: true })
   @IsNotEmpty()
-  @IsArray({ each: true })
+  @ValidateNested({ each: true })
   data: T;
 }
 

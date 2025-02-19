@@ -66,19 +66,6 @@ export class UserController {
             data: {
               type: 'array',
               items: { $ref: getSchemaPath(ResponseUserDto) },
-              example: [
-                {
-                  id: 'cm78m8opx0008mvpkqqyqbtkv',
-                  name: 'Dueño de Negocio',
-                  lastName: 'Ejemplo',
-                  email: 'negocio@negoprox.com',
-                  emailVerified: true,
-                  phone: '+0987654321',
-                  isDisabled: false,
-                  userType: 'BUSINESS',
-                  registerAt: '2025-02-17T22:31:17.157Z',
-                },
-              ],
             },
           },
         },
