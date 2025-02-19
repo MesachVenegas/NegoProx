@@ -30,16 +30,4 @@ export class ResponseUserDto {
   @ApiProperty({ example: '2023-01-01T00:00:00.000Z' })
   @IsDate()
   registerAt: Date;
-
-  constructor(partial: Partial<ResponseUserDto>) {
-    this.id = partial.id ?? '';
-    this.name = partial.name ?? 'No Name';
-    this.lastName = partial.lastName ?? 'No Last Name';
-    this.email = partial.email ?? '';
-    this.emailVerified = partial.emailVerified ?? false;
-    if (partial.phone) this.phone = partial.phone;
-    this.isDisabled = partial.isDisabled ?? false;
-    this.userType = partial.userType || Role.USER;
-    this.registerAt = partial.registerAt ?? new Date();
-  }
 }

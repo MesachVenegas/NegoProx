@@ -15,6 +15,7 @@ import { TokenVersionService } from '../token-version/token-version.service';
 import { UserProfileAccDto } from '../user/dto/user-profile-acc.dto';
 import { RegisterLocalUserDto } from '../user/dto/register-local-user.dto';
 import { User } from '../user/user.entity';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -28,9 +29,9 @@ export class AuthService {
 
   async registerLocalUser(dto: RegisterLocalUserDto) {
     dto.password = await hashPassword(dto.password);
-    const user = new User(dto, dto.password);
+    const user = plainToInstance(User, dto);
     const userCreated = await this.userRepo.createLocalUser(user);
-    return new UserProfileAccDto(userCreated);
+    return plainToInstance(UserProfileAccDto, userCreated);
   }
 
   async validateLocalUser(
@@ -44,8 +45,7 @@ export class AuthService {
     const valid = await comparePassword(password, user.password);
     if (!valid) throw new UnauthorizedException('invalid credentials');
     if (user.isDisabled) throw new UnauthorizedException('user disabled');
-    const authUser = new UserProfileAccDto(user);
-    return authUser;
+    return plainToInstance(UserProfileAccDto, user);
   }
 
   async findOrCreateGoogleUser(profile: Profile): Promise<UserProfileAccDto> {

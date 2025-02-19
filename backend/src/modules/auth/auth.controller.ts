@@ -27,6 +27,7 @@ import { UserProfileAccDto } from '../user/dto/user-profile-acc.dto';
 import { RegisterLocalUserDto } from '../user/dto/register-local-user.dto';
 import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
 import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
+import { plainToInstance } from 'class-transformer';
 // import { CsrfGuard } from '@/security/guards/csrf.guard';
 
 @Controller('auth')
@@ -56,7 +57,7 @@ export class AuthController {
     @Res() res: Response,
   ): Promise<AuthResponseDto | undefined> {
     if (!req.user) return;
-    const user = new UserProfileAccDto(req.user);
+    const user = plainToInstance(UserProfileAccDto, req.user);
     const result = await this.authService.authResponse(user);
     res.json(result);
   }
@@ -73,7 +74,7 @@ export class AuthController {
       throw new UnauthorizedException(
         'Something went wrong, the user cannot be authenticated',
       );
-    const user = new UserProfileAccDto(req.user);
+    const user = plainToInstance(UserProfileAccDto, req.user);
     const response = await this.authService.authResponse(user);
     res.json(response);
   }

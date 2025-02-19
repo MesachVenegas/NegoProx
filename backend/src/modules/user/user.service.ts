@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 
 import {
   PaginationDto,
@@ -7,9 +8,9 @@ import {
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { hashPassword } from '@/shared/utils/hash.util';
 import { ResponseUserDto } from './dto/user-response.dto';
 import { UserProfileAccDto } from './dto/user-profile-acc.dto';
-import { hashPassword } from '@/shared/utils/hash.util';
 import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 import { NotFoundException } from '@/shared/exceptions/not-found.exception';
@@ -21,7 +22,7 @@ export class UserService {
   async loadAllUsers({
     page = 1,
     limit = 10,
-    sortBy = 'createdAt',
+    sortBy = 'registerAt',
     order = 'desc',
   }: PaginationDto): Promise<PaginationResponseDto<ResponseUserDto[]>> {
     const skip = (page - 1) * limit;
@@ -36,33 +37,32 @@ export class UserService {
       prev: page > 1 ? page - 1 : null,
       next: page * limit < totalUsers ? page + 1 : null,
       limit,
-      data: users.map((user) => new ResponseUserDto(user)),
+      data: plainToInstance(ResponseUserDto, users),
     };
   }
 
   async findUserByQuery(data: QuerySearchUserDto): Promise<UserProfileAccDto> {
     const result = await this.repo.findUser(data);
-    return result;
+    return plainToInstance(UserProfileAccDto, result);
   }
 
   async createLocalUser(data: RegisterLocalUserDto): Promise<User> {
     data.password = await hashPassword(data.password);
-    const newUser = new User(data, data.password);
-    return this.repo.createLocalUser(newUser);
+    return this.repo.createLocalUser(data);
   }
 
   async updateUser(dto: UpdateUserDto, id: string): Promise<UserProfileAccDto> {
     const exist = await this.repo.findUser({ id: id });
     if (!exist) throw new NotFoundException('User not found, or not exist');
     const user = await this.repo.update(dto, id);
-    return new UserProfileAccDto(user);
+    return plainToInstance(UserProfileAccDto, user);
   }
 
   async disable(id: string): Promise<UserProfileAccDto> {
     const user = await this.repo.findUser({ id: id });
     if (!user) throw new NotFoundException('User not found, or not exist');
     const disabledUser = await this.repo.disableAccount(id);
-    return new UserProfileAccDto(disabledUser);
+    return plainToInstance(UserProfileAccDto, disabledUser);
   }
 
   async updatePassword(id: string, password: string) {
