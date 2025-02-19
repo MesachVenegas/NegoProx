@@ -39,23 +39,23 @@ export class PaginationDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  public page?: number = 1;
+  public page?: number;
 
   @ApiProperty({ example: 10, required: false })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  public limit?: number = 10;
+  public limit?: number;
 
   @ApiProperty({ example: 'registerAt', required: false })
   @IsOptional()
   @IsString()
-  public sortBy?: string = 'registerAt';
+  public sortBy?: string;
 
   @ApiProperty({ example: 'desc', required: false })
   @IsOptional()
   @IsString()
   @IsIn(['asc', 'desc'])
-  public order?: 'asc' | 'desc' = 'desc';
+  public order?: 'asc' | 'desc';
 }
