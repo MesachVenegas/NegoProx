@@ -92,8 +92,8 @@ model Business {
   name            String             @unique
   description     String?
   address         String?
-  latitude        Decimal?
-  longitude       Decimal?
+  latitude        Decimal?           @db.Decimal(10, 6)
+  longitude       Decimal?           @db.Decimal(10, 6)
   phone           String?
   imgProfile      String?            @map("img_profile")
   isDeleted       Boolean            @default(false)
