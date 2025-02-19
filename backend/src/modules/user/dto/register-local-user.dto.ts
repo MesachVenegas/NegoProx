@@ -5,16 +5,19 @@ import {
   IsOptional,
   IsString,
   Matches,
+  MinLength,
 } from 'class-validator';
 
 export class RegisterLocalUserDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
+  @MinLength(3)
   name: string;
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
+  @MinLength(3)
   lastName: string;
   @ApiProperty()
   @IsNotEmpty()
