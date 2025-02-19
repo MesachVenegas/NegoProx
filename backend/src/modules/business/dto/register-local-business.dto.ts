@@ -1,10 +1,13 @@
+import { RegisterLocalUserDto } from '@/modules/user/dto/register-local-user.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
-  IsEmail,
+  IsNotEmpty,
   IsOptional,
   IsString,
   Matches,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
 
 export class RegisterLocalBusinessDto {
@@ -32,26 +35,9 @@ export class RegisterLocalBusinessDto {
   })
   phone: string;
 
-  @ApiProperty({ example: 'Johnson' })
-  @IsString()
-  @MinLength(3)
-  ownerName: string;
-
-  @ApiProperty({ example: 'Smith' })
-  @IsString()
-  @MinLength(3)
-  ownerLastName: string;
-
-  @ApiProperty({ example: 'johnsmith@example.com' })
-  @IsString()
-  @IsEmail()
-  ownerEmail: string;
-
-  @ApiProperty({ example: 'SecurePass!' })
-  @IsString()
-  @Matches(/^(?=.*[A-Z])(?=.*[\d\W]).{6,}$/, {
-    message:
-      'password must be at least 6 characters and contain at least one letter and one number or special character',
-  })
-  ownerPassword: string;
+  @ApiProperty({ type: RegisterLocalUserDto })
+  @IsNotEmpty()
+  @Type(() => RegisterLocalUserDto)
+  @ValidateNested({ each: true })
+  user: RegisterLocalUserDto;
 }
