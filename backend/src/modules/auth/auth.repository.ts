@@ -18,7 +18,7 @@ export class AuthRepository {
   async findLocalUser(email: string) {
     const user = await this.prisma.user.findUnique({
       where: { email },
-      include: { userProfile: true, accounts: true },
+      include: { userProfile: true, accounts: true, tokenVersion: true },
     });
     return user;
   }
