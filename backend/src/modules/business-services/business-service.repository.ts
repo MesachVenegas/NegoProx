@@ -118,4 +118,21 @@ export class BusinessServicesRepository {
 
     return plainToInstance(Service, result);
   }
+
+  /**
+   * Filters a service by its name and business ID.
+   *
+   * @param name - The name of the service to filter.
+   * @param businessId - The unique identifier of the business whose services are to be filtered.
+   * @returns A promise that resolves with the filtered Service object, or null if no service is found.
+   */
+  async filterServiceByNameAndBusiness(name: string, businessId: string) {
+    const result = await this.prisma.service.findUnique({
+      where: {
+        name_businessId: { name, businessId },
+      },
+    });
+
+    return plainToInstance(Service, result);
+  }
 }
