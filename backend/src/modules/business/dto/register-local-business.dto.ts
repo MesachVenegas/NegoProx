@@ -10,7 +10,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class RegisterLocalBusinessDto {
+export class RegisterBusinessDto {
   @ApiProperty({ example: 'Pizza Hut' })
   @IsString()
   @MinLength(3)
@@ -34,7 +34,9 @@ export class RegisterLocalBusinessDto {
     message: 'Invalid phone number',
   })
   phone: string;
+}
 
+export class RegisterLocalBusinessDto extends RegisterBusinessDto {
   @ApiProperty({ type: RegisterLocalUserDto })
   @IsNotEmpty()
   @Type(() => RegisterLocalUserDto)
