@@ -8,6 +8,6 @@ import { UserRepository } from '../user/user.repository';
 @Module({
   providers: [BusinessService, BusinessRepository, UserService, UserRepository],
   controllers: [BusinessController],
-  exports: [BusinessService],
+  exports: [BusinessService, BusinessRepository],
 })
 export class BusinessModule {}
