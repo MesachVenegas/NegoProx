@@ -91,7 +91,10 @@ async function bootstrap() {
 
   await app.listen(envs.get<string>('app.port') || 3000, () => {
     Logger.log(
-      `🚀 Application is running on: http://localhost:${envs.get<string>('app.port') ?? 3000}/api/v${envs.get<string>('app.version')}`,
+      `🚀 Application is running on: http://localhost:${envs.get<string>('app.port') ?? 3000}`,
+    );
+    Logger.log(
+      `Read Documentation📄: http://localhost:${envs.get<string>('app.port') ?? 3000}/api/v${envs.get<string>('app.version')}/docs`,
     );
   });
 }
