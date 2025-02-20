@@ -80,7 +80,6 @@ export class UserRepository implements IUserRepository {
    * @returns A promise that resolves with the new user.
    */
   async createLocalUser(data: RegisterLocalUserDto): Promise<User> {
-    console.log(data);
     const existing = await this.prisma.user.findUnique({
       where: { email: data.email },
     });
