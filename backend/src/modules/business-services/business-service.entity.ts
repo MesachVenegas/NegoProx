@@ -8,7 +8,12 @@ export class Service {
   price: number;
   description: string;
   time: number;
+  isDisabled: boolean;
   businessId: string;
   @Type(() => Business)
   business?: Business;
+
+  update(partial: Partial<Service>) {
+    Object.assign(this, partial);
+  }
 }
