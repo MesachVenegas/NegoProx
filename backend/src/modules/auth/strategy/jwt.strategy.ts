@@ -9,6 +9,8 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 
 import { PrismaService } from '@/prisma/prisma.service';
+import { plainToInstance } from 'class-transformer';
+import { UserTokenVersionDto } from '@/modules/user/dto/user-token.dto';
 
 interface Payload {
   sub: string;
@@ -42,6 +44,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (user.isDisabled)
       throw new UnauthorizedException('User account disabled');
 
-    return user;
+    return plainToInstance(UserTokenVersionDto, user);
   }
 }
