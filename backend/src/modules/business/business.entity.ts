@@ -15,6 +15,7 @@ export class Business {
   public imgProfile?: string;
   public createdAt: Date;
   public updatedAt: Date;
+  @Type(() => User)
   public user?: User | undefined;
   public userId?: string | undefined;
 }
