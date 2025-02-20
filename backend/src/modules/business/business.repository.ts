@@ -10,6 +10,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { UpdateBusinessDto } from './dto/update-business.dto';
 import { ResponseUserDto } from '../user/dto/user-response.dto';
 import { IPagination } from '@/shared/interfaces/pagination.interface';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class BusinessRepository {
@@ -57,6 +58,20 @@ export class BusinessRepository {
       rate: review._avg.rate ?? 0,
     };
     return businessRated;
+  }
+
+  /**
+   * Finds a business by the owner's ID and retrieves its details.
+   *
+   * @param id - The unique identifier of the business owner to find.
+   * @returns The business details associated with the owner, or null if not found.
+   */
+  async findBusinessByOwnerId(id: string) {
+    const business = await this.prisma.business.findFirst({
+      where: { userId: id },
+    });
+
+    return plainToInstance(Business, business);
   }
 
   /**
