@@ -7,8 +7,9 @@ import {
 import { Business } from './business.entity';
 import { Role } from '@/shared/constants/role.enum';
 import { PrismaService } from '@/prisma/prisma.service';
-import { IPagination } from '@/shared/interfaces/pagination.interface';
+import { UpdateBusinessDto } from './dto/update-business.dto';
 import { ResponseUserDto } from '../user/dto/user-response.dto';
+import { IPagination } from '@/shared/interfaces/pagination.interface';
 
 @Injectable()
 export class BusinessRepository {
@@ -156,8 +157,25 @@ export class BusinessRepository {
     });
   }
 
-  // TODO: implement update a business.
-  // TODO: implement delete a business.
+  /**
+   * Updates a business entity with the provided data.
+   *
+   * @param business - The updated business data.
+   * @returns The updated business entity.
+   */
+  async updateBusiness(business: UpdateBusinessDto, businessId: string) {
+    return this.prisma.business.update({
+      where: { id: businessId },
+      data: {
+        name: business.name,
+        description: business.description,
+        address: business.address,
+        phone: business.phone,
+        latitude: business.latitude,
+        longitude: business.longitude,
+      },
+    });
+  }
 
   /**
    * Deletes a business by its ID.

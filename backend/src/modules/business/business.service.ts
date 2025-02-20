@@ -19,6 +19,7 @@ import { hashPassword } from '@/shared/utils/hash.util';
 import { Business } from './business.entity';
 import { ResponseUserDto } from '../user/dto/user-response.dto';
 import { UserService } from '../user/user.service';
+import { UpdateBusinessDto } from './dto/update-business.dto';
 
 @Injectable()
 export class BusinessService {
@@ -108,7 +109,37 @@ export class BusinessService {
   }
 
   // TODO: implement find business by query(address, name, latitude, longitude).
-  // TODO: implement update a business.
+
+  /**
+   * Updates an existing business entity with new data, verifying ownership.
+   *
+   * This method performs the following operations:
+   * - Checks if the business exists and is not marked as deleted.
+   * - Verifies that the user requesting the update is the owner of the business.
+   * - Updates the business with the provided data.
+   *
+   * @param userId - The ID of the user attempting to update the business.
+   * @param businessId - The ID of the business to be updated.
+   * @param dto - A partial DTO containing the updated business data.
+   * @returns A promise that resolves with the updated business entity.
+   * @throws NotFoundException if the business is not found or is deleted.
+   * @throws ForbiddenException if the user is not the owner of the business.
+   */
+  async updateBusiness(
+    userId: string,
+    businessId: string,
+    dto: Partial<UpdateBusinessDto>,
+  ) {
+    const exist = await this.repo.findBusinessById(businessId);
+    if (!exist || exist.isDeleted)
+      throw new NotFoundException('Business not found or deleted');
+    if (exist.userId !== userId)
+      throw new ForbiddenException('User is not owner');
+
+    const businessData = plainToInstance(UpdateBusinessDto, dto);
+
+    return this.repo.updateBusiness(businessData, businessId);
+  }
 
   /**
    * Deletes a business by its ID and verifies the ownership.

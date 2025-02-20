@@ -3,19 +3,11 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { BusinessService } from './business.service';
-import { JwtGuard } from '../auth/guards/jwt.guard';
-import { Public } from '@/shared/core/decorators/public.decorator';
-import {
-  PaginationDto,
-  PaginationResponseDto,
-} from '@/shared/dto/pagination.dto';
-import { BusinessResponseDto } from './dto/business-response.dto';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -26,13 +18,23 @@ import {
   ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
+
+import {
+  PaginationDto,
+  PaginationResponseDto,
+} from '@/shared/dto/pagination.dto';
 import {
   RegisterBusinessDto,
   RegisterLocalBusinessDto,
 } from './dto/register-local-business.dto';
-import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
+import { JwtGuard } from '../auth/guards/jwt.guard';
+import { BusinessService } from './business.service';
 import { UserTokenVersionDto } from '../user/dto/user-token.dto';
+import { BusinessResponseDto } from './dto/business-response.dto';
+import { Public } from '@/shared/core/decorators/public.decorator';
+import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
+import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
+import { UpdateBusinessDto } from './dto/update-business.dto';
 
 @Controller('business')
 @UseGuards(JwtGuard)
@@ -52,6 +54,7 @@ import { UserTokenVersionDto } from '../user/dto/user-token.dto';
 export class BusinessController {
   constructor(private readonly businessService: BusinessService) {}
 
+  // -- Get all business available
   @Get()
   @Public()
   @ApiOkResponse({
@@ -76,16 +79,18 @@ export class BusinessController {
     return await this.businessService.getAllBusiness(query);
   }
 
-  @Get(':id')
+  // -- Get business by id
+  @Get('find')
   @Public()
   @ApiOkResponse({
     description: 'Business found',
     type: BusinessResponseDto,
   })
-  async findBusiness(@Param('id') id: string) {
+  async findBusiness(@Query('id') id: string) {
     return await this.businessService.findBusinessById(id);
   }
 
+  // -- Create a new business
   @Post('register')
   @Public()
   @ApiCreatedResponse({
@@ -98,6 +103,7 @@ export class BusinessController {
     return await this.businessService.createLocalBusiness(dto);
   }
 
+  // -- Promote a existing user as business owner
   // Review: review whit test
   @Post('promote')
   @ApiBearerAuth()
@@ -108,11 +114,20 @@ export class BusinessController {
     return this.businessService.promoteBusinessOwner(dto, user);
   }
 
-  // TODO: implement update a business.
+  @Put('update')
+  updateBusiness(
+    @Query('id') id: string,
+    @Body() dto: UpdateBusinessDto,
+    @CurrentUser() user: UserTokenVersionDto,
+  ) {
+    return this.businessService.updateBusiness(user.id, id, dto);
+  }
 
-  @Delete(':id')
+  // -- Delete a business by id
+  @Delete('delete')
+  @ApiBearerAuth()
   async deleteBusiness(
-    @Param('id') id: string,
+    @Query('id') id: string,
     @CurrentUser() user: UserTokenVersionDto,
   ) {
     return await this.businessService.deleteBusiness(id, user.id);
