@@ -138,6 +138,7 @@ model Service {
   price        Decimal        @db.Decimal(10, 2)
   description  String?
   time         Int
+  isDisabled   Boolean        @default(false)
   business     Business       @relation(fields: [businessId], references: [id])
   businessId   String
   appointments Appointment[]
