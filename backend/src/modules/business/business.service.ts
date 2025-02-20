@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { BusinessRepository } from './business.repository';
 import {
   PaginationDto,
@@ -7,13 +11,21 @@ import {
 import { plainToInstance } from 'class-transformer';
 import { BusinessResponseDto } from './dto/business-response.dto';
 import { BusinessProfileServiceDto } from './dto/business-profile.dto';
-import { RegisterLocalBusinessDto } from './dto/register-local-business.dto';
+import {
+  RegisterBusinessDto,
+  RegisterLocalBusinessDto,
+} from './dto/register-local-business.dto';
 import { hashPassword } from '@/shared/utils/hash.util';
 import { Business } from './business.entity';
+import { ResponseUserDto } from '../user/dto/user-response.dto';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class BusinessService {
-  constructor(private readonly repo: BusinessRepository) {}
+  constructor(
+    private readonly repo: BusinessRepository,
+    private readonly userService: UserService,
+  ) {}
 
   /**
    * Retrieves a paginated list of businesses with optional sorting.
@@ -72,8 +84,52 @@ export class BusinessService {
     return plainToInstance(BusinessResponseDto, result);
   }
 
+  /**
+   * Promotes a user to a business owner by creating a new business entity and associating it with the user.
+   *
+   * This function performs the following steps:
+   * - Checks if the user exists and is not disabled.
+   * - Converts the provided DTO into a Business entity.
+   * - Promotes the user to a business owner by creating the business and linking it to the user in the repository.
+   *
+   * @param dto - The data transfer object containing the business registration details.
+   * @param user - The user to be promoted to a business owner.
+   * @returns A promise that resolves with the newly created BusinessResponseDto object.
+   * @throws NotFoundException if the user is not found or is disabled.
+   */
+  async promoteBusinessOwner(dto: RegisterBusinessDto, user: ResponseUserDto) {
+    if (!user || user.isDisabled) {
+      throw new NotFoundException('User not found or disabled');
+    }
+
+    const business = plainToInstance(Business, dto);
+    const result = await this.repo.promoteBusinessOwner(business, user);
+    return plainToInstance(BusinessResponseDto, result);
+  }
+
   // TODO: implement find business by query(address, name, latitude, longitude).
-  // TODO: implement promote user a business owner.
   // TODO: implement update a business.
-  // TODO: implement delete a business.
+
+  /**
+   * Deletes a business by its ID and verifies the ownership.
+   *
+   * This method performs a series of checks before marking the business as deleted:
+   * - It ensures the business exists and is not already marked as deleted.
+   * - It verifies that the user requesting the deletion is the owner of the business.
+   *
+   * @param id - The unique identifier of the business to delete.
+   * @param userId - The unique identifier of the user attempting to delete the business.
+   * @returns A promise that resolves with the deleted business entity.
+   * @throws NotFoundException if the business is not found or is already deleted.
+   * @throws ForbiddenException if the user is not the owner of the business.
+   */
+  async deleteBusiness(id: string, userId: string) {
+    const business = await this.repo.findBusinessById(id);
+    if (!business) throw new NotFoundException('Business not found');
+    if (business.isDeleted)
+      throw new NotFoundException('Business already deleted');
+    if (business.userId !== userId)
+      throw new ForbiddenException('User is not owner');
+    return this.repo.deleteBusiness(id);
+  }
 }

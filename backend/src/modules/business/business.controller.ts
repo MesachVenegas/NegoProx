@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -17,6 +18,7 @@ import {
 import { BusinessResponseDto } from './dto/business-response.dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiExtraModels,
   ApiNotFoundResponse,
@@ -25,7 +27,12 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
-import { RegisterLocalBusinessDto } from './dto/register-local-business.dto';
+import {
+  RegisterBusinessDto,
+  RegisterLocalBusinessDto,
+} from './dto/register-local-business.dto';
+import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
+import { UserTokenVersionDto } from '../user/dto/user-token.dto';
 
 @Controller('business')
 @UseGuards(JwtGuard)
@@ -91,8 +98,23 @@ export class BusinessController {
     return await this.businessService.createLocalBusiness(dto);
   }
 
-  // TODO: implemente create a new business.
-  // TODO: implement promote user a business owner.
+  // Review: review whit test
+  @Post('promote')
+  @ApiBearerAuth()
+  promoteBusinessOwner(
+    @CurrentUser() user: UserTokenVersionDto,
+    @Body() dto: RegisterBusinessDto,
+  ) {
+    return this.businessService.promoteBusinessOwner(dto, user);
+  }
+
   // TODO: implement update a business.
-  // TODO: implement delete a business.
+
+  @Delete(':id')
+  async deleteBusiness(
+    @Param('id') id: string,
+    @CurrentUser() user: UserTokenVersionDto,
+  ) {
+    return await this.businessService.deleteBusiness(id, user.id);
+  }
 }

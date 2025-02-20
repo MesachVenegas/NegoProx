@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
+import { Business } from './business.entity';
+import { Role } from '@/shared/constants/role.enum';
 import { PrismaService } from '@/prisma/prisma.service';
 import { IPagination } from '@/shared/interfaces/pagination.interface';
-import { Business } from './business.entity';
-// import { BusinessProfileDto } from './dto/business-profile.dto';
+import { ResponseUserDto } from '../user/dto/user-response.dto';
 
 @Injectable()
 export class BusinessRepository {
@@ -64,6 +69,7 @@ export class BusinessRepository {
    */
   async getAllBusiness({ skip, limit, sortBy, order }: Partial<IPagination>) {
     return await this.prisma.business.findMany({
+      where: { isDeleted: false },
       skip,
       take: limit,
       orderBy: { [sortBy ?? 'createdAt']: order },
@@ -83,21 +89,22 @@ export class BusinessRepository {
    * @returns The created business entity.
    */
   async saveLocalBusiness(entity: Business) {
+    const { name, description, address, phone, user } = entity;
     return this.prisma.business.create({
       data: {
-        name: entity.name,
-        description: entity.description,
-        address: entity.address,
-        phone: entity.phone,
+        name,
+        description,
+        address,
+        phone,
         user: {
           create: {
-            name: entity.user?.name ?? '',
-            lastName: entity.user?.lastName ?? '',
-            email: entity.user?.email ?? '',
-            password: entity.user?.password ?? '',
+            name: user?.name ?? '',
+            lastName: user?.lastName ?? '',
+            email: user?.email ?? '',
+            password: user?.password ?? '',
             userType: 'BUSINESS',
             accounts: {
-              create: { provider: 'local', providerId: entity.user?.email },
+              create: { provider: 'local', providerId: user?.email },
             },
             userProfile: { create: {} },
             tokenVersion: { create: {} },
@@ -107,8 +114,64 @@ export class BusinessRepository {
     });
   }
 
-  // TODO: implement promote user a business owner.
+  /**
+   * Promotes a user to a business owner by creating a new business and connecting it to the user.
+   * The user is also updated to have the BUSINESS role, if not already.
+   *
+   * @param entity - The business entity to create.
+   * @param user - The user to promote to a business owner.
+   * @returns The created business entity with the connected user.
+   * @throws ConflictException if a business with the same name and user already exists.
+   */
+  async promoteBusinessOwner(entity: Business, user: ResponseUserDto) {
+    const { name, description, address, phone } = entity;
+
+    const exist = await this.prisma.business.findUnique({
+      where: { name_userId: { name, userId: user.id } },
+    });
+    if (exist) throw new ConflictException('Business already exist');
+
+    return this.prisma.$transaction(async (tx) => {
+      const business = await tx.business.create({
+        data: {
+          name,
+          description,
+          address,
+          phone,
+          user: {
+            connect: { id: user.id },
+          },
+        },
+        include: { user: true },
+      });
+
+      if (user.userType !== Role.BUSINESS) {
+        await tx.user.update({
+          where: { id: user.id },
+          data: { userType: Role.BUSINESS },
+        });
+      }
+
+      return business;
+    });
+  }
+
   // TODO: implement update a business.
   // TODO: implement delete a business.
-  // TODO: implement add service to a business.
+
+  /**
+   * Deletes a business by its ID.
+   *
+   * This method sets the `isDeleted` field of the business to true, effectively
+   * soft-deleting it. This allows the business to be recovered if needed.
+   * @param id - The unique identifier of the business to delete.
+   * @returns A promise that resolves with the deleted business entity.
+   * @throws NotFoundException if the business with the given ID is not found.
+   */
+  async deleteBusiness(id: string) {
+    return this.prisma.business.update({
+      where: { id },
+      data: { isDeleted: true },
+    });
+  }
 }
