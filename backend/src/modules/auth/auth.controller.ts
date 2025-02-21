@@ -16,6 +16,8 @@ import {
   ApiConflictResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
+  ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
@@ -30,6 +32,7 @@ import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
 import { plainToInstance } from 'class-transformer';
 // import { CsrfGuard } from '@/security/guards/csrf.guard';
 
+@ApiTags('Authentication')
 @Controller('auth')
 // @UseGuards(CsrfGuard)
 export class AuthController {
@@ -38,6 +41,7 @@ export class AuthController {
   @Public()
   @UseGuards(AuthGuard('local'))
   @Post('login')
+  @ApiOperation({ description: 'Login with email and password' })
   @ApiOkResponse({ type: AuthResponseDto })
   @ApiUnauthorizedResponse({
     description: 'Credentials are not valid, user disabled',
@@ -64,10 +68,14 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
+  @ApiOperation({ description: 'Login with google account' })
   googleAuth() {}
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
+  @ApiOperation({
+    description: 'Callback for google login, and return session token',
+  })
   @ApiOkResponse({ type: AuthResponseDto })
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
     if (!req.user)
@@ -80,6 +88,8 @@ export class AuthController {
   }
 
   @Post('register')
+  @ApiOkResponse({ type: UserProfileAccDto })
+  @ApiOperation({ description: 'Register a new user with email and password' })
   async registerLocalUser(@Body() dto: RegisterLocalUserDto) {
     return await this.authService.registerLocalUser(dto);
   }
@@ -87,6 +97,16 @@ export class AuthController {
   @Get('logout')
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
+  @ApiOperation({ description: 'Close session and invalidate JWT token' })
+  @ApiOkResponse({
+    example: {
+      status: 'success',
+      timestamp: '2025-02-18T00:17:10.840Z',
+      data: {
+        message: 'Logout successful',
+      },
+    },
+  })
   async logout(@CurrentUser() user: UserProfileAccDto) {
     await this.authService.logout(user);
     return {
