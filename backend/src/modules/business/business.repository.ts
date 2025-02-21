@@ -11,6 +11,7 @@ import { UpdateBusinessDto } from './dto/update-business.dto';
 import { ResponseUserDto } from '../user/dto/user-response.dto';
 import { IPagination } from '@/shared/interfaces/pagination.interface';
 import { plainToInstance } from 'class-transformer';
+import { BusinessProfileDto } from '../business-profile/dto/profile-response.dto';
 
 @Injectable()
 export class BusinessRepository {
@@ -23,6 +24,48 @@ export class BusinessRepository {
    */
   async countBusiness(): Promise<number> {
     return this.prisma.business.count();
+  }
+
+  /**
+   * Searches for businesses with optional filters for name and category, and retrieves a paginated list of results.
+   *
+   * @param skip - The number of businesses to skip, for pagination.
+   * @param limit - The maximum number of businesses to retrieve.
+   * @param order - The order in which to sort the businesses, either 'asc' or 'desc'.
+   * @param name - (Optional) A name filter to search businesses by name.
+   * @param category - (Optional) A category filter to search businesses by category.
+   * @returns A promise that resolves with an array of Business entities that match the search criteria.
+   */
+  async searchBusiness(
+    skip: number,
+    limit: number,
+    order: 'asc' | 'desc',
+    name?: string,
+    category?: string,
+  ) {
+    const filters: any[] = [];
+
+    if (name) filters.push({ name: { contains: name, mode: 'insensitive' } });
+    if (category)
+      filters.push({
+        categories: {
+          some: {
+            category: { name: { contains: category, mode: 'insensitive' } },
+          },
+        },
+      });
+
+    const results = await this.prisma.business.findMany({
+      where: {
+        isDeleted: false,
+        ...(filters.length > 0 ? { OR: filters } : {}),
+      },
+      skip,
+      take: limit,
+      orderBy: { name: order },
+    });
+
+    return plainToInstance(Business, results);
   }
 
   /**
@@ -69,9 +112,17 @@ export class BusinessRepository {
   async findBusinessByOwnerId(id: string) {
     const business = await this.prisma.business.findFirst({
       where: { userId: id },
+      include: {
+        businessProfile: { omit: { businessId: true } },
+        services: { omit: { businessId: true } },
+        categories: {
+          include: { category: true },
+          omit: { businessId: true, categoryId: true },
+        },
+      },
     });
 
-    return plainToInstance(Business, business);
+    return plainToInstance(BusinessProfileDto, business);
   }
 
   /**
@@ -83,12 +134,12 @@ export class BusinessRepository {
    * @param order - The order in which to sort the businesses, either 'asc' or 'desc'.
    * @returns A promise that resolves with an array of BusinessResponseDto objects.
    */
-  async getAllBusiness({ skip, limit, sortBy, order }: Partial<IPagination>) {
+  async getAllBusiness({ skip, limit, order }: Partial<IPagination>) {
     return await this.prisma.business.findMany({
       where: { isDeleted: false },
       skip,
       take: limit,
-      orderBy: { [sortBy ?? 'createdAt']: order },
+      orderBy: { createdAt: order },
       include: {
         categories: {
           include: { category: true },
