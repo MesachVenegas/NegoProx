@@ -1,40 +1,32 @@
 import {
   CanActivate,
   ExecutionContext,
-  Injectable,
   ForbiddenException,
+  Inject,
+  Injectable,
   Logger,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 
-import { SecurityService } from '../security.service';
 import { IS_PUBLIC_KEY } from '@/shared/core/decorators/public.decorator';
+import { DoubleCsrfUtilities } from 'csrf-csrf';
 
 @Injectable()
 export class CsrfGuard implements CanActivate {
   private readonly logger = new Logger(CsrfGuard.name);
   constructor(
-    private readonly reflector: Reflector,
-    private readonly security: SecurityService,
+    @Inject('CSRF_UTILITIES') private readonly csrfUtils: DoubleCsrfUtilities,
     private readonly config: ConfigService,
+    private readonly reflector: Reflector,
   ) {}
 
-  canActivate(
-    ctx: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(ctx: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       ctx.getHandler(),
       ctx.getClass(),
     ]);
-    // Development debug
-    if (this.config.get<string>('app.environment') === 'development') {
-      this.logger.debug(
-        `CsrfGuard: ${isPublic} - handler: ${ctx.getHandler().name}`,
-      );
-    }
 
     // if route is public resolve as true
     if (isPublic) return Promise.resolve(true);
@@ -43,9 +35,12 @@ export class CsrfGuard implements CanActivate {
     const res = ctx.switchToHttp().getResponse<Response>();
 
     return new Promise((resolve, reject) => {
-      this.security.middleware(req, res, (err: any) => {
-        if (err) return reject(new ForbiddenException(err));
-        return resolve(true);
+      this.csrfUtils.doubleCsrfProtection(req, res, (err) => {
+        if (err) {
+          reject(new ForbiddenException(`CSRF: ${err}`));
+        } else {
+          resolve(true);
+        }
       });
     });
   }
