@@ -33,7 +33,7 @@ export class CsrfGuard implements CanActivate {
     const res = ctx.switchToHttp().getResponse<Response>();
 
     return new Promise((resolve, reject) => {
-      this.csrfUtils.doubleCsrfProtection(req, res, (err) => {
+      this.csrfUtils.doubleCsrfProtection(req, res, (err: any) => {
         if (err) {
           reject(new ForbiddenException(`CSRF: ${err}`));
         } else {
