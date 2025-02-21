@@ -3,6 +3,7 @@ import {
   Logger,
   ValidationPipe,
 } from '@nestjs/common';
+import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
@@ -20,13 +21,46 @@ import { PrismaUnknownExceptionFilter } from './shared/exceptions/prisma-unknown
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const envs = app.get(ConfigService);
+  const isProduction = envs.get<string>('app.environment') === 'production';
 
   // Security
+  app.use(cookieParser());
   app.enableCors({
     origin: envs.get<string>('security.originUrl') ?? '*',
     methods: 'GET,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'"],
+          connectSrc: [
+            "'self'",
+            'https://accounts.google.com',
+            'https://*.googleapis.com',
+            // frontend url
+            // payment provider url
+          ],
+          objectSrc: ["'none'"],
+          baseUri: ["'none'"],
+          formAction: ["'self'"],
+          upgradeInsecureRequests: isProduction ? [] : null,
+        },
+      },
+      xContentTypeOptions: true,
+      xFrameOptions: { action: 'deny' },
+      strictTransportSecurity: isProduction
+        ? {
+            maxAge: 31536000,
+            includeSubDomains: true,
+            preload: true,
+          }
+        : false,
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    }),
+  );
 
   // Global Filters
   app.useGlobalFilters(
@@ -54,8 +88,6 @@ async function bootstrap() {
       filter: shouldCompress,
     }),
   );
-
-  app.use(cookieParser());
 
   // APi Prefix and Versioning
   app.setGlobalPrefix('api');
