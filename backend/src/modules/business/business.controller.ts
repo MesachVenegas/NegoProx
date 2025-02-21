@@ -15,29 +15,34 @@ import {
   ApiExtraModels,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
+  ApiTags,
   ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
 
-import {
-  PaginationDto,
-  PaginationResponseDto,
-} from '@/shared/dto/pagination.dto';
 import {
   RegisterBusinessDto,
   RegisterLocalBusinessDto,
 } from './dto/register-local-business.dto';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { BusinessService } from './business.service';
+import { UpdateBusinessDto } from './dto/update-business.dto';
+import { SearchBusinessDto } from './dto/search-business.dto';
 import { UserTokenVersionDto } from '../user/dto/user-token.dto';
 import { BusinessResponseDto } from './dto/business-response.dto';
+
+import { RoleGuard } from '@/shared/core/guards/role.guard';
 import { Public } from '@/shared/core/decorators/public.decorator';
+import { PaginationResponseDto } from '@/shared/dto/pagination.dto';
 import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
 import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
-import { UpdateBusinessDto } from './dto/update-business.dto';
+import { Roles } from '@/shared/core/decorators/role.decorator';
+import { Role } from '@/shared/constants/role.enum';
 
+@ApiTags('Business')
 @Controller('business')
-@UseGuards(JwtGuard)
+@UseGuards(JwtGuard, RoleGuard)
 @ApiNotFoundResponse({
   description: 'Business not found',
   type: HttpErrorResponseDto,
@@ -54,9 +59,13 @@ import { UpdateBusinessDto } from './dto/update-business.dto';
 export class BusinessController {
   constructor(private readonly businessService: BusinessService) {}
 
-  // -- Get all business available
+  // -- Search business by name or category, if params are empty returns all
   @Get()
   @Public()
+  @ApiOperation({
+    description:
+      'Search business by name or category if params are empty returns all',
+  })
   @ApiOkResponse({
     description: 'List of businesses available',
     schema: {
@@ -73,15 +82,14 @@ export class BusinessController {
       ],
     },
   })
-  async loadBusiness(
-    @Query() query: PaginationDto,
-  ): Promise<PaginationResponseDto<BusinessResponseDto[]>> {
-    return await this.businessService.getAllBusiness(query);
+  async searchBusiness(@Query() query: SearchBusinessDto) {
+    return await this.businessService.searchBusiness(query);
   }
 
   // -- Get business by id
   @Get('find')
   @Public()
+  @ApiOperation({ description: 'Retrieve business by id' })
   @ApiOkResponse({
     description: 'Business found',
     type: BusinessResponseDto,
@@ -93,6 +101,7 @@ export class BusinessController {
   // -- Create a new business
   @Post('register')
   @Public()
+  @ApiOperation({ description: 'Create a new business' })
   @ApiCreatedResponse({
     description: 'Business created',
     type: BusinessResponseDto,
@@ -107,6 +116,11 @@ export class BusinessController {
   // Review: review whit test
   @Post('promote')
   @ApiBearerAuth()
+  @Roles(Role.USER)
+  @ApiOperation({ description: 'Promote a existing user as business owner' })
+  @ApiOkResponse({
+    type: BusinessResponseDto,
+  })
   promoteBusinessOwner(
     @CurrentUser() user: UserTokenVersionDto,
     @Body() dto: RegisterBusinessDto,
@@ -115,6 +129,12 @@ export class BusinessController {
   }
 
   @Put('update')
+  @ApiBearerAuth()
+  @Roles(Role.BUSINESS)
+  @ApiOperation({ description: 'Update a business by id, if is the owner' })
+  @ApiOkResponse({
+    type: BusinessResponseDto,
+  })
   updateBusiness(
     @Query('id') id: string,
     @Body() dto: UpdateBusinessDto,
@@ -126,6 +146,11 @@ export class BusinessController {
   // -- Delete a business by id
   @Delete('delete')
   @ApiBearerAuth()
+  @Roles(Role.BUSINESS)
+  @ApiOperation({ description: 'Disable a business account' })
+  @ApiOkResponse({
+    type: BusinessResponseDto,
+  })
   async deleteBusiness(
     @Query('id') id: string,
     @CurrentUser() user: UserTokenVersionDto,
