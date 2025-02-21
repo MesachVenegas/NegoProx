@@ -16,6 +16,7 @@ export class BusinessServicesRepository {
   async getAllService() {
     const result = await this.prisma.service.findMany({
       where: { isDisabled: false },
+      orderBy: { name: 'asc' },
     });
 
     return plainToInstance(Service, result);
@@ -30,6 +31,7 @@ export class BusinessServicesRepository {
   async getServicesByBusinessId(id: string) {
     const result = await this.prisma.service.findMany({
       where: { businessId: id },
+      include: { business: true },
     });
 
     return plainToInstance(Service, result);
@@ -44,6 +46,7 @@ export class BusinessServicesRepository {
   async getServiceById(id: string) {
     const result = await this.prisma.service.findUnique({
       where: { id },
+      include: { business: true },
     });
 
     return plainToInstance(Service, result);
@@ -64,6 +67,7 @@ export class BusinessServicesRepository {
         time: service.time,
         business: { connect: { id: service.businessId } },
       },
+      include: { business: true },
     });
 
     return plainToInstance(Service, result);
