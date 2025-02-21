@@ -1,5 +1,9 @@
 import { Type } from 'class-transformer';
-import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
+import {
+  ApiExtraModels,
+  ApiProperty,
+  ApiPropertyOptional,
+} from '@nestjs/swagger';
 import {
   IsIn,
   IsInt,
@@ -31,26 +35,21 @@ export class PaginationResponseDto<T> {
 }
 
 export class PaginationDto {
-  @ApiProperty({ example: 1, required: false })
+  @ApiPropertyOptional({ example: 1 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
   public page?: number;
 
-  @ApiProperty({ example: 10, required: false })
+  @ApiPropertyOptional({ example: 10 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
   public limit?: number;
 
-  @ApiProperty({ example: 'registerAt', required: false })
-  @IsOptional()
-  @IsString()
-  public sortBy?: string;
-
-  @ApiProperty({ example: 'desc', required: false })
+  @ApiPropertyOptional({ example: 'desc' })
   @IsOptional()
   @IsString()
   @IsIn(['asc', 'desc'])
