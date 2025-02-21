@@ -30,11 +30,9 @@ import { RegisterLocalUserDto } from '../user/dto/register-local-user.dto';
 import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
 import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
 import { plainToInstance } from 'class-transformer';
-// import { CsrfGuard } from '@/security/guards/csrf.guard';
 
 @ApiTags('Authentication')
 @Controller('auth')
-// @UseGuards(CsrfGuard)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -62,7 +60,7 @@ export class AuthController {
   ): Promise<AuthResponseDto | undefined> {
     if (!req.user) return;
     const user = plainToInstance(UserProfileAccDto, req.user);
-    const result = await this.authService.authResponse(user);
+    const result = await this.authService.authResponse(user, req, res);
     res.json(result);
   }
 
@@ -83,7 +81,7 @@ export class AuthController {
         'Something went wrong, the user cannot be authenticated',
       );
     const user = plainToInstance(UserProfileAccDto, req.user);
-    const response = await this.authService.authResponse(user);
+    const response = await this.authService.authResponse(user, req, res);
     res.json(response);
   }
 

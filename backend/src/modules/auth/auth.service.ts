@@ -5,16 +5,17 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Request, Response } from 'express';
+import { plainToInstance } from 'class-transformer';
 
 import { AuthRepository } from './auth.repository';
-import { Profile } from '../../shared/interfaces/profile.interface';
 import { UserRepository } from '../user/user.repository';
-// import { SecurityService } from '@/security/security.service';
-import { comparePassword, hashPassword } from '@/shared/utils/hash.util';
-import { TokenVersionService } from '../token-version/token-version.service';
+import { SecurityService } from '@/security/security.service';
+import { Profile } from '../../shared/interfaces/profile.interface';
 import { UserProfileAccDto } from '../user/dto/user-profile-acc.dto';
+import { comparePassword, hashPassword } from '@/shared/utils/hash.util';
 import { RegisterLocalUserDto } from '../user/dto/register-local-user.dto';
-import { plainToInstance } from 'class-transformer';
+import { TokenVersionService } from '../token-version/token-version.service';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
     private readonly jwt: JwtService,
     private readonly userRepo: UserRepository,
     private readonly authRepo: AuthRepository,
-    // private readonly security: SecurityService,
+    private readonly security: SecurityService,
     private readonly tokenVersion: TokenVersionService,
   ) {}
 
@@ -50,18 +51,11 @@ export class AuthService {
     return this.authRepo.authenticateGoogleAccount(profile);
   }
 
-  async authResponse(user: UserProfileAccDto) {
-    // const csrfToken = this.security.generateToken(req, res);
+  async authResponse(user: UserProfileAccDto, req: Request, res: Response) {
     const payload = await this.generatePayload(user);
     const jwToken = this.jwt.sign(payload);
 
-    // cookie setter
-    // res.cookie('__auth', jwToken, {
-    //   httpOnly: true,
-    //   secure: this.config.get<string>('app.environment') === 'production',
-    //   sameSite: 'strict',
-    //   maxAge: 3600000,
-    // });
+    this.security.generateCsrfToken(req, res);
 
     return {
       user: {
