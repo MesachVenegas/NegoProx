@@ -1,6 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsNumber, IsString } from 'class-validator';
+import { BusinessProfileDto } from '@/modules/business-profile/dto/profile-response.dto';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Exclude, Type } from 'class-transformer';
+import { IsNumber, IsString, ValidateNested } from 'class-validator';
 
 export class BusinessServicesResponseDto {
   @ApiProperty({ example: '1' })
@@ -22,4 +23,14 @@ export class BusinessServicesResponseDto {
   @ApiProperty({ example: 30 })
   @IsNumber()
   time: number;
+
+  @ApiPropertyOptional({ example: 1 })
+  @IsString()
+  @Exclude()
+  businessId?: string;
+
+  @ApiPropertyOptional({ type: BusinessProfileDto })
+  @Type(() => BusinessProfileDto)
+  @ValidateNested({ each: true })
+  business?: BusinessProfileDto;
 }
