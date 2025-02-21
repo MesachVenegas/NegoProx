@@ -64,11 +64,13 @@ export class AuthController {
     res.json(result);
   }
 
+  @Public()
   @Get('google')
   @UseGuards(AuthGuard('google'))
   @ApiOperation({ description: 'Login with google account' })
   googleAuth() {}
 
+  @Public()
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   @ApiOperation({
@@ -85,6 +87,7 @@ export class AuthController {
     res.json(response);
   }
 
+  @Public()
   @Post('register')
   @ApiOkResponse({ type: UserProfileAccDto })
   @ApiOperation({ description: 'Register a new user with email and password' })
