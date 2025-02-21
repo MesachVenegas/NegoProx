@@ -1,3 +1,4 @@
+import { plainToInstance } from 'class-transformer';
 import { ConflictException, Injectable } from '@nestjs/common';
 
 import { User } from './user.entity';
@@ -6,6 +7,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { UserProfileAccDto } from './dto/user-profile-acc.dto';
 import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import { IUserRepository } from './interfaces/repository.interface';
+import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 import { IPagination } from '@/shared/interfaces/pagination.interface';
 import { comparePassword, hashPassword } from '@/shared/utils/hash.util';
 import { NotFoundException } from '@/shared/exceptions/not-found.exception';
@@ -26,15 +28,14 @@ export class UserRepository implements IUserRepository {
   async getAllUsers({
     skip,
     limit,
-    sortBy,
     order,
   }: Partial<IPagination>): Promise<User[]> {
     const users = await this.prisma.user.findMany({
       skip,
       take: limit,
-      orderBy: { [sortBy ?? 'registerAt']: order },
+      orderBy: { registerAt: order },
     });
-    return users.map((user) => new User(user));
+    return plainToInstance(User, users);
   }
 
   /**
@@ -56,10 +57,11 @@ export class UserRepository implements IUserRepository {
    * @throws NotFoundException if no user is found.
    */
 
-  async findUser(query: QuerySearchUserDto): Promise<UserProfileAccDto> {
+  async findUser(dto: QuerySearchUserDto) {
+    const { id, email, phone } = dto;
     const user = await this.prisma.user.findFirst({
       where: {
-        OR: [{ id: query.id }, { email: query.email }, { phone: query.phone }],
+        OR: [{ id }, { email }, { phone }],
       },
       include: {
         userProfile: true,
@@ -67,7 +69,7 @@ export class UserRepository implements IUserRepository {
       },
     });
     if (!user) throw new NotFoundException('User not found');
-    return new UserProfileAccDto(user);
+    return plainToInstance(UserProfileAccDto, user);
   }
 
   /**
@@ -76,8 +78,10 @@ export class UserRepository implements IUserRepository {
    * @param data - The user data to create.
    * @returns A promise that resolves with the new user.
    */
-  async createLocalUser(data: User): Promise<User> {
-    const existing = await this.findUser({ email: data.email });
+  async createLocalUser(data: RegisterLocalUserDto): Promise<User> {
+    const existing = await this.prisma.user.findUnique({
+      where: { email: data.email },
+    });
     if (existing)
       throw new ConflictException(`User with "${data.email}" already exist`);
     const user = await this.prisma.user.create({
@@ -85,14 +89,14 @@ export class UserRepository implements IUserRepository {
         name: data.name,
         lastName: data.lastName,
         email: data.email,
-        password: data.getPasword(),
+        password: data.password,
         accounts: { create: { provider: 'local', providerId: data.email } },
         userProfile: { create: {} },
         tokenVersion: { create: {} },
       },
     });
 
-    return new User(user);
+    return plainToInstance(User, user);
   }
 
   /**
@@ -148,7 +152,7 @@ export class UserRepository implements IUserRepository {
       },
     });
 
-    return new UserProfileAccDto(result);
+    return plainToInstance(UserProfileAccDto, result);
   }
 
   /**

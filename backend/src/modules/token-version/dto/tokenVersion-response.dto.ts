@@ -20,10 +20,4 @@ export class TokenVersionDto {
   @Exclude()
   @Type(() => ResponseUserDto)
   user: ResponseUserDto;
-
-  constructor(partial: Partial<TokenVersionDto>) {
-    this.id = partial.id ?? '';
-    this.version = partial.version ?? 0;
-    this.updatedAt = partial.updatedAt ?? new Date();
-  }
 }

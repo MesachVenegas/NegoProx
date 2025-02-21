@@ -20,13 +20,4 @@ export class UserProfileResponseDto {
   @ApiProperty({ example: '2023-01-01T00:00:00.000Z' })
   @IsDate()
   updatedAt: Date;
-
-  constructor(partial: Partial<UserProfileResponseDto>) {
-    this.id = partial.id ?? '';
-    this.profilePicture = partial.profilePicture ?? null;
-    if (partial.bio) this.bio = partial.bio;
-    if (partial.address) this.address = partial.address;
-    this.createdAt = partial.createdAt ?? new Date();
-    this.updatedAt = partial.updatedAt ?? new Date();
-  }
 }

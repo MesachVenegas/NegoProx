@@ -12,9 +12,12 @@ import {
 } from '@nestjs/common';
 
 import {
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
+  ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
@@ -26,8 +29,10 @@ import { UserProfileAccDto } from '../user/dto/user-profile-acc.dto';
 import { RegisterLocalUserDto } from '../user/dto/register-local-user.dto';
 import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
 import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
+import { plainToInstance } from 'class-transformer';
 // import { CsrfGuard } from '@/security/guards/csrf.guard';
 
+@ApiTags('Authentication')
 @Controller('auth')
 // @UseGuards(CsrfGuard)
 export class AuthController {
@@ -36,6 +41,7 @@ export class AuthController {
   @Public()
   @UseGuards(AuthGuard('local'))
   @Post('login')
+  @ApiOperation({ description: 'Login with email and password' })
   @ApiOkResponse({ type: AuthResponseDto })
   @ApiUnauthorizedResponse({
     description: 'Credentials are not valid, user disabled',
@@ -55,35 +61,52 @@ export class AuthController {
     @Res() res: Response,
   ): Promise<AuthResponseDto | undefined> {
     if (!req.user) return;
-    const user = new UserProfileAccDto(req.user);
+    const user = plainToInstance(UserProfileAccDto, req.user);
     const result = await this.authService.authResponse(user);
     res.json(result);
   }
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
+  @ApiOperation({ description: 'Login with google account' })
   googleAuth() {}
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
+  @ApiOperation({
+    description: 'Callback for google login, and return session token',
+  })
   @ApiOkResponse({ type: AuthResponseDto })
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
     if (!req.user)
       throw new UnauthorizedException(
         'Something went wrong, the user cannot be authenticated',
       );
-    const user = new UserProfileAccDto(req.user);
+    const user = plainToInstance(UserProfileAccDto, req.user);
     const response = await this.authService.authResponse(user);
     res.json(response);
   }
 
   @Post('register')
+  @ApiOkResponse({ type: UserProfileAccDto })
+  @ApiOperation({ description: 'Register a new user with email and password' })
   async registerLocalUser(@Body() dto: RegisterLocalUserDto) {
     return await this.authService.registerLocalUser(dto);
   }
 
   @Get('logout')
+  @ApiBearerAuth()
   @UseGuards(JwtGuard)
+  @ApiOperation({ description: 'Close session and invalidate JWT token' })
+  @ApiOkResponse({
+    example: {
+      status: 'success',
+      timestamp: '2025-02-18T00:17:10.840Z',
+      data: {
+        message: 'Logout successful',
+      },
+    },
+  })
   async logout(@CurrentUser() user: UserProfileAccDto) {
     await this.authService.logout(user);
     return {

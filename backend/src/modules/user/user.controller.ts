@@ -10,33 +10,43 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { UserService } from './user.service';
 import {
   ApiAcceptedResponse,
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiExtraModels,
+  ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
+  ApiTags,
   ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
 
-import {
-  PaginationDto,
-  PaginationResponseDto,
-} from '@/shared/dto/pagination.dto';
+import { UserService } from './user.service';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { ResponseUserDto } from './dto/user-response.dto';
 import { UserProfileAccDto } from './dto/user-profile-acc.dto';
 import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import { RegisterLocalUserDto } from './dto/register-local-user.dto';
-import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
 import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
+
+import {
+  PaginationDto,
+  PaginationResponseDto,
+} from '@/shared/dto/pagination.dto';
+import { Role } from '@/shared/constants/role.enum';
+import { RoleGuard } from '@/shared/core/guards/role.guard';
+import { Roles } from '@/shared/core/decorators/role.decorator';
+import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
 import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
 
+@ApiTags('User')
 @Controller('user')
-@UseGuards(JwtGuard)
+@UseGuards(JwtGuard, RoleGuard)
+@ApiBearerAuth()
 @ApiBadRequestResponse({
   type: HttpErrorResponseDto,
   description: 'Bad request',
@@ -54,6 +64,9 @@ export class UserController {
 
   // --- GET ALL USERS ---
   @Get()
+  @ApiOperation({
+    description: 'Get a list of users',
+  })
   @ApiExtraModels(PaginationResponseDto, ResponseUserDto)
   @ApiOkResponse({
     schema: {
@@ -64,25 +77,17 @@ export class UserController {
             data: {
               type: 'array',
               items: { $ref: getSchemaPath(ResponseUserDto) },
-              example: [
-                {
-                  id: 'cm78m8opx0008mvpkqqyqbtkv',
-                  name: 'Dueño de Negocio',
-                  lastName: 'Ejemplo',
-                  email: 'negocio@negoprox.com',
-                  emailVerified: true,
-                  phone: '+0987654321',
-                  isDisabled: false,
-                  userType: 'BUSINESS',
-                  registerAt: '2025-02-17T22:31:17.157Z',
-                },
-              ],
             },
           },
         },
       ],
     },
   })
+  @ApiForbiddenResponse({
+    type: HttpErrorResponseDto,
+    description: 'User level no have necessary permissions',
+  })
+  @Roles(Role.ADMIN)
   async getAllUsers(
     @Query() query: PaginationDto,
   ): Promise<PaginationResponseDto<ResponseUserDto[]>> {
@@ -93,6 +98,9 @@ export class UserController {
 
   // --- FIND USER ---
   @Get('find')
+  @ApiOperation({
+    description: 'Retrieve user by email or name or ID, with account data',
+  })
   @ApiOkResponse({
     description: 'Data of user found',
     type: UserProfileAccDto,
@@ -110,6 +118,14 @@ export class UserController {
     type: ResponseUserDto,
     description: 'Data of user created',
   })
+  @ApiForbiddenResponse({
+    type: HttpErrorResponseDto,
+    description: 'User level no have necessary permissions',
+  })
+  @ApiOperation({
+    description: 'Crete a new local user',
+  })
+  @Roles(Role.ADMIN)
   async registerLocalUser(@Body() data: RegisterLocalUserDto) {
     const user = await this.userService.createLocalUser(data);
     return user;
@@ -117,6 +133,10 @@ export class UserController {
 
   // --- UPDATE USER ---
   @Put('update')
+  @ApiOperation({
+    description:
+      'Update user data example, name, lastName, profilePic, except password',
+  })
   @ApiAcceptedResponse({
     type: UserProfileAccDto,
     description: 'Data of user updated',
@@ -127,7 +147,8 @@ export class UserController {
 
   // --- DELETE USER ---
   @Delete('delete')
-  @ApiAcceptedResponse({
+  @ApiOperation({ description: 'Disable a user account' })
+  @ApiOkResponse({
     type: UserProfileAccDto,
     description: 'Data of user deleted',
   })
@@ -136,6 +157,18 @@ export class UserController {
   }
 
   @Put('change-password')
+  @ApiOperation({ description: 'Allow user authenticated to change password' })
+  @ApiOkResponse({
+    example: {
+      message: {
+        status: 'success',
+        timestamp: '2025-02-18T00:17:10.840Z',
+        data: {
+          message: 'Password changed successfully',
+        },
+      },
+    },
+  })
   async changePass(
     @CurrentUser() user: UserProfileAccDto,
     @Body() newPass: UpdateUserPasswordDto,

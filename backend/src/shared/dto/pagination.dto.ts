@@ -1,13 +1,17 @@
 import { Type } from 'class-transformer';
-import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
 import {
-  IsArray,
+  ApiExtraModels,
+  ApiProperty,
+  ApiPropertyOptional,
+} from '@nestjs/swagger';
+import {
   IsIn,
   IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
   Min,
+  ValidateNested,
 } from 'class-validator';
 
 @ApiExtraModels()
@@ -24,38 +28,30 @@ export class PaginationResponseDto<T> {
   @ApiProperty({ example: 10 })
   @IsInt()
   limit: number;
-  @ApiProperty({
-    type: 'array',
-    example: [],
-  })
+  @ApiProperty({ isArray: true })
   @IsNotEmpty()
-  @IsArray({ each: true })
+  @ValidateNested({ each: true })
   data: T;
 }
 
 export class PaginationDto {
-  @ApiProperty({ example: 1, required: false })
+  @ApiPropertyOptional({ example: 1 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  public page?: number = 1;
+  public page?: number;
 
-  @ApiProperty({ example: 10, required: false })
+  @ApiPropertyOptional({ example: 10 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  public limit?: number = 10;
+  public limit?: number;
 
-  @ApiProperty({ example: 'registerAt', required: false })
-  @IsOptional()
-  @IsString()
-  public sortBy?: string = 'registerAt';
-
-  @ApiProperty({ example: 'desc', required: false })
+  @ApiPropertyOptional({ example: 'desc' })
   @IsOptional()
   @IsString()
   @IsIn(['asc', 'desc'])
-  public order?: 'asc' | 'desc' = 'desc';
+  public order?: 'asc' | 'desc';
 }

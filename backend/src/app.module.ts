@@ -10,6 +10,8 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 // import { SecurityModule } from './security/security.module';
 import { HttpLoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
+import { BusinessModule } from './modules/business/business.module';
+import { BusinessServicesModule } from './modules/business-services/business-services.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { HttpLoggerMiddleware } from '@shared/middlewares/http-logger.middleware
     AuthModule,
     PrismaModule,
     UserModule,
+    BusinessModule,
+    BusinessServicesModule,
     // SecurityModule.forRoot(),
   ],
   controllers: [],

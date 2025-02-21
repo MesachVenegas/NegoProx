@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { Profile } from '../../shared/interfaces/profile.interface';
 import { UserProfileAccDto } from '../user/dto/user-profile-acc.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AuthRepository {
@@ -17,7 +18,7 @@ export class AuthRepository {
   async findLocalUser(email: string) {
     const user = await this.prisma.user.findUnique({
       where: { email },
-      include: { userProfile: true, accounts: true },
+      include: { userProfile: true, accounts: true, tokenVersion: true },
     });
     return user;
   }
@@ -35,9 +36,7 @@ export class AuthRepository {
    * @returns The authenticated user object, either existing or newly created.
    */
 
-  async authenticateGoogleAccount(
-    profile: Profile,
-  ): Promise<UserProfileAccDto> {
+  async authenticateGoogleAccount(profile: Profile) {
     const { id, emails, name, photos } = profile;
     const email: string = emails[0].value;
     const verified = emails[0].verified;
@@ -55,7 +54,7 @@ export class AuthRepository {
       },
     });
 
-    if (existing) return new UserProfileAccDto(existing.user);
+    if (existing) return plainToInstance(UserProfileAccDto, existing.user);
     const user = await this.prisma.user.upsert({
       where: { email },
       update: {},
@@ -80,6 +79,6 @@ export class AuthRepository {
       include: { tokenVersion: true, userProfile: true },
     });
 
-    return new UserProfileAccDto(user);
+    return plainToInstance(UserProfileAccDto, user);
   }
 }

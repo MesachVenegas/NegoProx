@@ -17,12 +17,4 @@ export class AccountResponseDto {
   @ApiProperty({ example: '2023-01-01T00:00:00.000Z' })
   @IsDate()
   updatedAt: Date;
-
-  constructor(partial: Partial<AccountResponseDto>) {
-    this.id = partial.id ?? '';
-    this.provider = partial.provider ?? '';
-    this.providerId = partial.providerId ?? '';
-    this.createdAt = partial.createdAt ?? new Date();
-    this.updatedAt = partial.updatedAt ?? new Date();
-  }
 }
