@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request, Response } from 'express';
-import { ConfigService } from '@nestjs/config';
 
 import { IS_PUBLIC_KEY } from '@/shared/core/decorators/public.decorator';
 import { DoubleCsrfUtilities } from 'csrf-csrf';
@@ -18,7 +17,6 @@ export class CsrfGuard implements CanActivate {
   private readonly logger = new Logger(CsrfGuard.name);
   constructor(
     @Inject('CSRF_UTILITIES') private readonly csrfUtils: DoubleCsrfUtilities,
-    private readonly config: ConfigService,
     private readonly reflector: Reflector,
   ) {}
 
