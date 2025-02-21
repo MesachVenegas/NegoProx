@@ -34,10 +34,10 @@ export class JwtGuard extends AuthGuard('jwt') {
     ctx: ExecutionContext,
   ) {
     if (info instanceof TokenExpiredError)
-      throw new UnauthorizedException('token expired, please login again');
+      throw new UnauthorizedException('Session expired, please login again');
 
     if (info?.message === 'No auth token')
-      throw new UnauthorizedException('token was not provided');
+      throw new UnauthorizedException('Token was not provided');
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return super.handleRequest(err, user, info, ctx);
