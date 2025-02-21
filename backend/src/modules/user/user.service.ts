@@ -22,14 +22,13 @@ export class UserService {
   async loadAllUsers({
     page = 1,
     limit = 10,
-    sortBy = 'registerAt',
     order = 'desc',
   }: PaginationDto): Promise<PaginationResponseDto<ResponseUserDto[]>> {
     const skip = (page - 1) * limit;
 
     const [totalUsers, users] = await Promise.all([
       await this.repo.countUsers(),
-      await this.repo.getAllUsers({ skip, limit, sortBy, order }),
+      await this.repo.getAllUsers({ skip, limit, order }),
     ]);
 
     return {

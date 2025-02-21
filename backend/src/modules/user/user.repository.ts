@@ -1,3 +1,4 @@
+import { plainToInstance } from 'class-transformer';
 import { ConflictException, Injectable } from '@nestjs/common';
 
 import { User } from './user.entity';
@@ -6,11 +7,10 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { UserProfileAccDto } from './dto/user-profile-acc.dto';
 import { QuerySearchUserDto } from './dto/user-query-search.dto';
 import { IUserRepository } from './interfaces/repository.interface';
+import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 import { IPagination } from '@/shared/interfaces/pagination.interface';
 import { comparePassword, hashPassword } from '@/shared/utils/hash.util';
 import { NotFoundException } from '@/shared/exceptions/not-found.exception';
-import { plainToInstance } from 'class-transformer';
-import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -28,13 +28,12 @@ export class UserRepository implements IUserRepository {
   async getAllUsers({
     skip,
     limit,
-    sortBy,
     order,
   }: Partial<IPagination>): Promise<User[]> {
     const users = await this.prisma.user.findMany({
       skip,
       take: limit,
-      orderBy: { [sortBy ?? 'registerAt']: order },
+      orderBy: { registerAt: order },
     });
     return plainToInstance(User, users);
   }
