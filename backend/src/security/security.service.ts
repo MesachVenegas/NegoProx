@@ -8,11 +8,8 @@ export class SecurityService {
     @Inject('CSRF_UTILITIES') private readonly csrfUtils: DoubleCsrfUtilities,
   ) {}
 
-  generateToken(req: Request, res: Response) {
-    return this.csrfUtils.generateToken(req, res);
-  }
-
-  get middleware() {
-    return this.csrfUtils.doubleCsrfProtection;
+  generateCsrfToken(req: Request, res: Response) {
+    const token = this.csrfUtils.generateToken(req, res);
+    return token;
   }
 }
