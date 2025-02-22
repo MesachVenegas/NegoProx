@@ -13,7 +13,18 @@ export class Service {
   @Type(() => Business)
   business?: Business;
 
+  /**
+   * Updates the service with the provided data.
+   *
+   * @param partial - A partial object containing the updated data. The following
+   *                  properties are not allowed and will be deleted if present:
+   *                    - id
+   *                    - businessId
+   */
   update(partial: Partial<Service>) {
+    delete partial.id;
+    delete partial.businessId;
+
     Object.assign(this, partial);
   }
 }
