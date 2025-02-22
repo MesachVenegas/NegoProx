@@ -1,5 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsObject, IsString, IsUrl } from 'class-validator';
+import {
+  IsDate,
+  IsObject,
+  IsString,
+  IsUrl,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+import { BusinessResponseDto } from '@/modules/business/dto/business-response.dto';
 
 export class BusinessProfileDto {
   @ApiProperty({ example: '1' })
@@ -30,4 +39,13 @@ export class BusinessProfileDto {
   @ApiProperty({ example: '2023-01-01T00:00:00.000Z' })
   @IsDate()
   updatedAt: Date;
+
+  @ApiProperty({ example: '1' })
+  @IsString()
+  businessId: string;
+
+  @ApiPropertyOptional({ type: BusinessResponseDto })
+  @ValidateNested({ each: true })
+  @Type(() => BusinessResponseDto)
+  business?: BusinessResponseDto;
 }
