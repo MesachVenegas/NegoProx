@@ -7,17 +7,20 @@ export class TokenVersionDto {
   @ApiProperty({ example: '1' })
   @IsString()
   id: string;
+
   @ApiProperty({ example: 1 })
   @IsNumber()
   version: number;
+
   @ApiProperty({ example: '2023-01-01T00:00:00.000Z' })
   @IsDate()
   updatedAt: Date;
+
   @Exclude()
   @IsString()
   userId: string;
 
   @Exclude()
   @Type(() => ResponseUserDto)
-  user: ResponseUserDto;
+  user?: ResponseUserDto;
 }
