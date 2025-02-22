@@ -53,9 +53,6 @@ export class User {
   @Type(() => Verification)
   verification?: Verification[];
 
-  conversationAsClient?: any[];
-  conversationAsBusiness?: any[];
-
   update(partial: Partial<User>) {
     delete partial.id;
     delete partial.registeredAt;
