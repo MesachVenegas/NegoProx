@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   NotFoundException,
+  Patch,
   Post,
   Put,
   Query,
@@ -156,7 +157,7 @@ export class UserController {
     return await this.userService.disable(id);
   }
 
-  @Put('change-password')
+  @Patch('change-password')
   @ApiOperation({ description: 'Allow user authenticated to change password' })
   @ApiOkResponse({
     example: {
