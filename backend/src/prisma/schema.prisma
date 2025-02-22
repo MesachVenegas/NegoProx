@@ -333,5 +333,6 @@ model Verification {
   user     User     @relation(fields: [userId], references: [id])
   userId   String
 
+  @@index([token, used])
   @@map("verifications")
 }
