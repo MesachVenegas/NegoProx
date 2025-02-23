@@ -1,5 +1,3 @@
-import { Type } from 'class-transformer';
-
 import { User } from '../user/user.entity';
 import { Review } from '../review/review.entity';
 import { Payment } from '../payment/payment.entity';
@@ -8,25 +6,21 @@ import { Status } from '@/shared/constants/status.enum';
 import { Appointment } from '../appointment/appointment.entity';
 
 export class Work {
-  id: string;
-  description: string;
-  status: Status;
-  initDate: Date;
-  endDate: Date;
-  clientId: string;
-  @Type(() => User)
-  client: User;
-  businessId: string;
-  @Type(() => Business)
-  business: Business;
-  appointmentId?: string;
-  @Type(() => Appointment)
-  appointment?: Appointment;
-  @Type(() => Payment)
-  payment?: Payment;
-  @Type(() => Review)
-  review?: Review;
-  message?: any[];
+  public id: string;
+  public description: string;
+  public status: Status;
+  public initDate: Date;
+  public endDate: Date;
+
+  public clientId: string;
+  public client: User;
+  public businessId: string;
+  public business: Business;
+  public appointmentId?: string;
+  public appointment?: Appointment;
+  public payment?: Payment;
+  public review?: Review;
+  public message?: any[];
 
   /**
    * Updates the work with the provided data.

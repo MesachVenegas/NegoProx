@@ -1,16 +1,14 @@
-import { Type } from 'class-transformer';
 import { Business } from '../business/business.entity';
 
 export class BusinessProfile {
-  id: string;
-  bannerImage?: string;
-  website?: string;
-  socialMedia?: object;
-  createdAt: Date;
-  updatedAt: Date;
-  businessId: string;
-  @Type(() => Business)
-  business?: Business;
+  public id: string;
+  public bannerImage?: string;
+  public website?: string;
+  public socialMedia?: object;
+  public createdAt: Date;
+  public updatedAt: Date;
+  public businessId: string;
+  public business?: Business;
 
   /**
    * Updates the business profile with the provided data.

@@ -1,18 +1,15 @@
-import { Type } from 'class-transformer';
-import { Service } from '../business-services/business-service.entity';
 import { Business } from '../business/business.entity';
+import { Service } from '../business-services/business-service.entity';
 
 export class Availability {
-  id: string;
-  dayOfWeek: number;
-  startTime: string;
-  endTime: Date;
-  businessId: Date;
-  @Type(() => Business)
-  business?: Business;
-  serviceId: string;
-  @Type(() => Service)
-  service?: Service;
+  public id: string;
+  public dayOfWeek: string[];
+  public startTime: string;
+  public endTime: Date;
+  public businessId: Date;
+  public business?: Business;
+  public serviceId: string;
+  public service?: Service;
 
   /**
    * Updates the availability with the provided data.

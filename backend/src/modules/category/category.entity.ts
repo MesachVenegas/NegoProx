@@ -1,12 +1,9 @@
-import { Type } from 'class-transformer';
 import { BusinessCategory } from '../business-category/business-category.entity';
 
 export class Category {
-  id: string;
-  name: string;
-
-  @Type(() => BusinessCategory)
-  businessCategories?: BusinessCategory[];
+  public id: string;
+  public name: string;
+  public businessCategories?: BusinessCategory[];
 
   /**
    * Updates the category with the provided data.

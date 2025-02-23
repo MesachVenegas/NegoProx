@@ -1,22 +1,18 @@
-import { Type } from 'class-transformer';
-import { Business } from '../business/business.entity';
 import { User } from '../user/user.entity';
 import { Work } from '../work/work.entity';
+import { Business } from '../business/business.entity';
 
 export class Review {
-  id: string;
-  rate: number;
-  comment?: string;
-  reviewedAt: Date;
-  workId: string;
-  @Type(() => Work)
-  work?: Work;
-  clientId: string;
-  @Type(() => User)
-  client?: User;
-  businessId: string;
-  @Type(() => Business)
-  business?: Business;
+  public id: string;
+  public rate: number;
+  public comment?: string;
+  public reviewedAt: Date;
+  public workId: string;
+  public work?: Work;
+  public clientId: string;
+  public client?: User;
+  public businessId: string;
+  public business?: Business;
 
   /**
    * Updates the review with the provided data.

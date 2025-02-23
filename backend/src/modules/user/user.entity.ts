@@ -1,57 +1,36 @@
-import { Exclude, Type } from 'class-transformer';
+import { Work } from '../work/work.entity';
+import { Review } from '../review/review.entity';
 import { Account } from '../account/account.entity';
 import { Role } from '@/shared/constants/role.enum';
-import { UserProfile } from '../user-profile/user-profile.entity';
+import { Payment } from '../payment/payment.entity';
 import { Business } from '../business/business.entity';
 import { Appointment } from '../appointment/appointment.entity';
-import { Work } from '../work/work.entity';
-import { Payment } from '../payment/payment.entity';
-import { Review } from '../review/review.entity';
+import { UserProfile } from '../user-profile/user-profile.entity';
 import { TokenVersion } from '../token-version/token-version.entity';
 import { Verification } from '../verification/verification.entity';
 
 export class User {
-  id: string;
-  name: string;
-  lastName: string;
-  email: string;
-  emailVerified: boolean;
-  @Exclude()
-  password: string;
-  phone: string | null;
-  isDisabled: boolean;
-  userType: Role;
-  registeredAt: Date;
+  public id: string;
+  public name: string;
+  public lastName: string;
+  public email: string;
+  public emailVerified: boolean;
+  public password: string;
+  public phone: string | null;
+  public isDisabled: boolean;
+  public isDeleted: boolean;
+  public userType: Role;
+  public registeredAt: Date;
 
-  @Type(() => UserProfile)
-  userProfile?: UserProfile;
-
-  @Type(() => Account)
-  accounts?: Account[];
-
-  @Type(() => Business)
-  businesses?: Business[];
-
-  sentMessages?: any[];
-  receivedMessages?: any[];
-
-  @Type(() => Appointment)
-  clientAppointments?: Appointment[];
-
-  @Type(() => Work)
-  clientWorks?: Work[];
-
-  @Type(() => Payment)
-  payments?: Payment[];
-
-  @Type(() => Review)
-  reviews?: Review[];
-
-  @Type(() => TokenVersion)
-  tokenVersion?: TokenVersion;
-
-  @Type(() => Verification)
-  verification?: Verification[];
+  public userProfile?: UserProfile;
+  public accounts?: Account[];
+  public businesses?: Business[];
+  public clientAppointments?: Appointment[];
+  public clientWorks?: Work[];
+  public payments?: Payment[];
+  public reviews?: Review[];
+  public tokenVersion?: TokenVersion;
+  public verification?: Verification[];
 
   update(partial: Partial<User>) {
     delete partial.id;

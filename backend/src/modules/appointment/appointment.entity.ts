@@ -1,6 +1,3 @@
-import { Type } from 'class-transformer';
-import { IsEnum } from 'class-validator';
-
 import { User } from '../user/user.entity';
 import { Work } from '../work/work.entity';
 import { Business } from '../business/business.entity';
@@ -8,32 +5,17 @@ import { Status } from '@/shared/constants/status.enum';
 import { Service } from '../business-services/business-service.entity';
 
 export class Appointment {
-  id: string;
-
-  datetime: Date;
-
-  @IsEnum(Status)
-  state: Status;
-
-  clientId: string;
-
-  @Type(() => User)
-  client?: User;
-
-  serviceId: string;
-
-  @Type(() => Service)
-  service?: Service;
-
-  businessId: string;
-
-  @Type(() => Business)
-  business?: Business;
-
-  @Type(() => Work)
-  work?: Work;
-
-  messages?: any[];
+  public id: string;
+  public datetime: Date;
+  public state: Status;
+  public clientId: string;
+  public client?: User;
+  public serviceId: string;
+  public service?: Service;
+  public businessId: string;
+  public business?: Business;
+  public work?: Work;
+  public messages?: any[];
 
   /**
    * Updates the appointment with the provided data.

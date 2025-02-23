@@ -1,5 +1,3 @@
-import { Type } from 'class-transformer';
-
 import { User } from '../user/user.entity';
 import { Service } from '../business-services/business-service.entity';
 import { Appointment } from '../appointment/appointment.entity';
@@ -16,48 +14,26 @@ export class Business {
   public name: string;
   public description?: string;
   public address?: string;
-
-  @Type(() => Number)
   public latitude?: number;
-
-  @Type(() => Number)
   public longitude?: number;
-
   public phone?: string;
   public imgProfile?: string;
+  public isDisabled?: boolean;
+  public isDeleted?: boolean;
   public createdAt: Date;
   public updatedAt: Date;
 
-  @Type(() => User)
   public user?: User;
   public userId?: string;
-
-  @Type(() => Service)
-  services?: Service[];
-
-  @Type(() => Appointment)
-  appointments?: Appointment[];
-
-  @Type(() => Work)
-  works?: Work[];
-
-  @Type(() => BusinessProfile)
-  businessProfile?: BusinessProfile;
-
-  @Type(() => BusinessCategory)
-  categories?: BusinessCategory[];
-
-  @Type(() => Availability)
-  availability?: Availability[];
-
-  @Type(() => BusinessImage)
-  images?: BusinessImage[];
-
-  @Type(() => Payment)
-  payments: Payment[];
-
-  @Type(() => Review)
-  reviews?: Review[];
+  public services?: Service[];
+  public appointments?: Appointment[];
+  public works?: Work[];
+  public businessProfile?: BusinessProfile;
+  public categories?: BusinessCategory[];
+  public availability?: Availability[];
+  public images?: BusinessImage[];
+  public payments: Payment[];
+  public reviews?: Review[];
 
   update(partial: Partial<Business>) {
     delete partial.id;

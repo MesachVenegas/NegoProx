@@ -1,13 +1,11 @@
-import { Type } from 'class-transformer';
 import { User } from '../user/user.entity';
 
 export class TokenVersion {
-  id: string;
-  version: number;
-  updatedAt: Date;
-  userId: string;
-  @Type(() => User)
-  user: User;
+  public id: string;
+  public version: number;
+  public updatedAt: Date;
+  public userId: string;
+  public user: User;
 
   /**
    * Updates the token version with the provided data.

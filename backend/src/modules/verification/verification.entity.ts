@@ -1,15 +1,13 @@
-import { Type } from 'class-transformer';
 import { User } from '../user/user.entity';
 
 export class Verification {
-  id: string;
-  token: string;
-  tokenExp: Date;
-  used: boolean;
-  userId: string;
+  public id: string;
+  public token: string;
+  public tokenExp: Date;
+  public used: boolean;
 
-  @Type(() => User)
-  user?: User;
+  public userId: string;
+  public user?: User;
 
   update(partial: Partial<Verification>) {
     delete partial.id;

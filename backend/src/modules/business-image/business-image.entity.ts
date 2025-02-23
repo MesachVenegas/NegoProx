@@ -1,13 +1,11 @@
-import { Type } from 'class-transformer';
 import { Business } from '../business/business.entity';
 
 export class BusinessImage {
-  id: string;
-  imageUrl: string;
-  order: number;
-  businessId: string;
-  @Type(() => Business)
-  business?: Business;
+  public id: string;
+  public imageUrl: string;
+  public order: number;
+  public businessId: string;
+  public business?: Business;
 
   /**
    * Updates the business image with the provided data.

@@ -1,4 +1,3 @@
-import { Type } from 'class-transformer';
 import { User } from '../user/user.entity';
 
 export class UserProfile {
@@ -8,7 +7,7 @@ export class UserProfile {
   public address: string;
   public createdAt: Date;
   public updatedAt: Date;
-  @Type(() => User)
+
   public user?: User;
   public userId?: string;
 

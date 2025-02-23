@@ -1,24 +1,20 @@
-import { Type } from 'class-transformer';
 import { Business } from '../business/business.entity';
 import { User } from '../user/user.entity';
 import { Work } from '../work/work.entity';
 
 export class Payment {
-  id: string;
-  amount: number;
-  status: string;
-  paymentMethod: string;
-  transactionId?: string;
-  timestamp: Date;
-  workId: string;
-  @Type(() => Work)
-  work?: Work;
-  clientId: string;
-  @Type(() => User)
-  client?: User;
-  businessId: string;
-  @Type(() => Business)
-  business?: Business;
+  public id: string;
+  public amount: number;
+  public status: string;
+  public paymentMethod: string;
+  public transactionId?: string;
+  public timestamp: Date;
+  public workId: string;
+  public work?: Work;
+  public clientId: string;
+  public client?: User;
+  public businessId: string;
+  public business?: Business;
 
   /**
    * Updates the payment with the provided data.
