@@ -1,23 +1,23 @@
-import { APP_GUARD } from '@nestjs/core';
-import { ConfigModule } from '@nestjs/config';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import {
   MiddlewareConsumer,
   Module,
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { ConfigModule } from '@nestjs/config';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
-import { envSchema } from './config/config.schema';
-import configuration from './config/configuration';
-import { PrismaModule } from '@prisma/prisma.module';
-import { UserModule } from './modules/user/user.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { CsrfGuard } from './security/guards/csrf.guard';
-import { SecurityModule } from './security/security.module';
-import { BusinessModule } from './modules/business/business.module';
-import { HttpLoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
-import { BusinessServicesModule } from './modules/business-services/business-services.module';
+import { UserModule } from '@modules/user.module';
+import { AuthModule } from '@modules/auth.module';
+import { CsrfGuard } from '@/shared/guards/csrf.guard';
+import { BusinessModule } from '@modules/business.module';
+import { envSchema } from '@/infrastructure/config/config.schema';
+import configuration from '@/infrastructure/config/configuration';
+import { PrismaModule } from '@/infrastructure/orm/prisma.module';
+import { SecurityModule } from '@/infrastructure/modules/security.module';
+import { BusinessServicesModule } from '@modules/business-services.module';
+import { HttpLoggerMiddleware } from '@/shared/middlewares/http-logger.middleware';
 
 @Module({
   imports: [
