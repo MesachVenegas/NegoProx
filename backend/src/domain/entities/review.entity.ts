@@ -1,6 +1,6 @@
-import { User } from '../user/user.entity';
-import { Work } from '../work/work.entity';
-import { Business } from '../business/business.entity';
+import { User } from './user.entity';
+import { Work } from './work.entity';
+import { Business } from './business.entity';
 
 export class Review {
   public id: string;

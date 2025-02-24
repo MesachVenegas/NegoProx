@@ -1,9 +1,9 @@
-import { User } from '../user/user.entity';
-import { Review } from '../review/review.entity';
-import { Payment } from '../payment/payment.entity';
-import { Business } from '../business/business.entity';
-import { Status } from '@/shared/constants/status.enum';
-import { Appointment } from '../appointment/appointment.entity';
+import { User } from './user.entity';
+import { Review } from './review.entity';
+import { Payment } from './payment.entity';
+import { Business } from './business.entity';
+import { Appointment } from './appointment.entity';
+import { Status } from '@/domain/constants/status.enum';
 
 export class Work {
   public id: string;

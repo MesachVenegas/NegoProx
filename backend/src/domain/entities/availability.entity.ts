@@ -1,5 +1,5 @@
-import { Business } from '../business/business.entity';
-import { Service } from '../business-services/business-service.entity';
+import { Business } from './business.entity';
+import { Service } from './business-service.entity';
 
 export class Availability {
   public id: string;
