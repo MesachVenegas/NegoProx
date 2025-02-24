@@ -1,7 +1,7 @@
 import {
   Body,
+  ConflictException,
   Controller,
-  Delete,
   Get,
   NotFoundException,
   Patch,
@@ -24,11 +24,20 @@ import {
   ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
+import { plainToInstance } from 'class-transformer';
 
 import {
   UpdateUserDto,
   UpdateUserPasswordDto,
 } from '../dto/user/update-user.dto';
+import {
+  ChangePasswordUseCase,
+  CreateLocalUserUseCase,
+  DisableUserUseCase,
+  GetAllUsersUseCase,
+  SearchUserUseCase,
+  UpdateUserUseCase,
+} from '@/application/user/use-cases';
 import {
   PaginationDto,
   PaginationResponseDto,
@@ -40,13 +49,10 @@ import { Roles } from '@/shared/decorators/role.decorator';
 import { ResponseUserDto } from '../dto/user/user-response.dto';
 import { UserProfileAccDto } from '../dto/user/user-profile-acc.dto';
 import { QuerySearchUserDto } from '../dto/user/user-query-search.dto';
-import { UserService } from '@/application/user/use-cases/user.service';
+import { UserPrismaRepository } from '../repositories/user.repository';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { RegisterLocalUserDto } from '../dto/user/register-local-user.dto';
 import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
-import { UserRepository } from '../repositories/user.repository';
-import { CreateLocalUserUseCase } from '@/application/user/use-cases/register-user';
-import { plainToInstance } from 'class-transformer';
 
 @ApiTags('User')
 @Controller('user')
@@ -65,10 +71,7 @@ import { plainToInstance } from 'class-transformer';
   description: 'User not authorized',
 })
 export class UserController {
-  constructor(
-    private readonly userRepository: UserRepository,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly userPrismaRepository: UserPrismaRepository) {}
 
   // --- GET ALL USERS ---
   @Get()
@@ -97,11 +100,21 @@ export class UserController {
   })
   @Roles(Role.ADMIN)
   async getAllUsers(
-    @Query() query: PaginationDto,
+    @Query() { page = 1, limit = 10, order = 'asc' }: PaginationDto,
   ): Promise<PaginationResponseDto<ResponseUserDto[]>> {
-    const users = await this.userService.loadAllUsers(query);
-    if (!users) throw new NotFoundException('No users found');
-    return users;
+    const useCase = new GetAllUsersUseCase(this.userPrismaRepository);
+
+    const { totalUsers, users } = await useCase.execute(page, limit, order);
+
+    if (!users) throw new NotFoundException('Users not found');
+
+    return {
+      pages: totalUsers ? Math.ceil(totalUsers / limit) : 1,
+      prev: page > 1 ? page - 1 : null,
+      next: page * limit < totalUsers ? page + 1 : null,
+      limit,
+      data: plainToInstance(ResponseUserDto, users),
+    };
   }
 
   // --- FIND USER ---
@@ -114,8 +127,10 @@ export class UserController {
     type: UserProfileAccDto,
   })
   async getUser(@Query() query: QuerySearchUserDto) {
-    const user = await this.userService.findUserByQuery(query);
-    return user;
+    const useCase = new SearchUserUseCase(this.userPrismaRepository);
+    const result = await useCase.execute(query.id, query.email, query.phone);
+
+    return plainToInstance(UserProfileAccDto, result);
   }
 
   // --- CREATE LOCAL USER ---
@@ -135,7 +150,7 @@ export class UserController {
   async registerLocalUser(
     @Body() data: RegisterLocalUserDto,
   ): Promise<ResponseUserDto> {
-    const useCase = new CreateLocalUserUseCase(this.userRepository);
+    const useCase = new CreateLocalUserUseCase(this.userPrismaRepository);
     const user = await useCase.execute(data);
 
     return plainToInstance(ResponseUserDto, user);
@@ -152,18 +167,24 @@ export class UserController {
     description: 'Data of user updated',
   })
   async updateUser(@Body() dto: UpdateUserDto, @Query('id') id: string) {
-    return await this.userService.updateUser(dto, id);
+    const useCase = new UpdateUserUseCase(this.userPrismaRepository);
+    const user = await useCase.execute(dto, id);
+
+    return plainToInstance(UserProfileAccDto, user);
   }
 
   // --- DELETE USER ---
-  @Delete('delete')
+  @Patch('disable')
   @ApiOperation({ description: 'Disable a user account' })
   @ApiOkResponse({
     type: UserProfileAccDto,
     description: 'Data of user deleted',
   })
-  async deleteUser(@Query('id') id: string): Promise<UserProfileAccDto> {
-    return await this.userService.disable(id);
+  async disableUser(@Query('id') id: string): Promise<UserProfileAccDto> {
+    const useCase = new DisableUserUseCase(this.userPrismaRepository);
+    const user = await useCase.execute(id);
+
+    return plainToInstance(UserProfileAccDto, user);
   }
 
   @Patch('change-password')
@@ -183,7 +204,12 @@ export class UserController {
     @CurrentUser() user: UserProfileAccDto,
     @Body() newPass: UpdateUserPasswordDto,
   ) {
-    await this.userService.updatePassword(user.id, newPass.password);
-    return { message: 'Password changed successfully' };
+    const useCase = new ChangePasswordUseCase(this.userPrismaRepository);
+    const result = await useCase.execute(user.id, newPass.password);
+    if (!result) throw new ConflictException('Password cannot be changed');
+
+    return {
+      message: { status: 'success', data: { message: 'Password changed' } },
+    };
   }
 }
