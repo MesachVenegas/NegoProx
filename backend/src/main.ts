@@ -13,10 +13,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { VersioningType } from '@nestjs/common';
-import { HttpExceptionFilter } from '@shared/exceptions/http-exceptions.filter';
+import { HttpExceptionFilter } from '@/shared/filters/http-exceptions.filter';
 import { ResponseInterceptor } from '@shared/interceptors/response.interceptor';
-import { PrismaKnownExceptionFilter } from '@/shared/exceptions/prisma-know-exceptions.filter';
-import { PrismaUnknownExceptionFilter } from './shared/exceptions/prisma-unknown-exceptions.filter';
+import { PrismaKnownExceptionFilter } from '@/shared/filters/prisma-know-exceptions.filter';
+import { PrismaUnknownExceptionFilter } from './shared/filters/prisma-unknown-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
