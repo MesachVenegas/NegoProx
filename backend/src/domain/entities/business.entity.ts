@@ -1,13 +1,13 @@
-import { User } from '../user/user.entity';
-import { Service } from '../business-services/business-service.entity';
-import { Appointment } from '../appointment/appointment.entity';
-import { Work } from '../work/work.entity';
-import { BusinessProfile } from '../business-profile/business-profile.entity';
-import { BusinessCategory } from '../business-category/business-category.entity';
-import { Availability } from '../availability/availability.entity';
-import { BusinessImage } from '../business-image/business-image.entity';
-import { Payment } from '../payment/payment.entity';
-import { Review } from '../review/review.entity';
+import { Work } from './work.entity';
+import { User } from './user.entity';
+import { Review } from './review.entity';
+import { Payment } from './payment.entity';
+import { Appointment } from './appointment.entity';
+import { Service } from './business-service.entity';
+import { Availability } from './availability.entity';
+import { BusinessImage } from './business-image.entity';
+import { BusinessProfile } from './business-profile.entity';
+import { BusinessCategory } from './business-category.entity';
 
 export class Business {
   public id: string;

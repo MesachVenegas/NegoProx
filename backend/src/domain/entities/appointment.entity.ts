@@ -1,8 +1,8 @@
-import { User } from '../user/user.entity';
-import { Work } from '../work/work.entity';
-import { Business } from '../business/business.entity';
-import { Status } from '@/shared/constants/status.enum';
-import { Service } from '../business-services/business-service.entity';
+import { Work } from './work.entity';
+import { User } from './user.entity';
+import { Business } from './business.entity';
+import { Service } from './business-service.entity';
+import { Status } from '@/domain/constants/status.enum';
 
 export class Appointment {
   public id: string;
