@@ -24,21 +24,20 @@ import {
 import {
   RegisterBusinessDto,
   RegisterLocalBusinessDto,
-} from './dto/register-local-business.dto';
-import { JwtGuard } from '../auth/guards/jwt.guard';
-import { BusinessService } from './business.service';
-import { UpdateBusinessDto } from './dto/update-business.dto';
-import { SearchBusinessDto } from './dto/search-business.dto';
-import { UserTokenVersionDto } from '../user/dto/user-token.dto';
-import { BusinessResponseDto } from './dto/business-response.dto';
-
-import { RoleGuard } from '@/shared/core/guards/role.guard';
-import { Public } from '@/shared/core/decorators/public.decorator';
-import { PaginationResponseDto } from '@/shared/dto/pagination.dto';
-import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
-import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
-import { Roles } from '@/shared/core/decorators/role.decorator';
-import { Role } from '@/shared/constants/role.enum';
+} from '../dto/business/register-local-business.dto';
+import { Role } from '@/domain/constants/role.enum';
+import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { RoleGuard } from '@/shared/guards/role.guard';
+import { Roles } from '@/shared/decorators/role.decorator';
+import { Public } from '@/shared/decorators/public.decorator';
+import { UserTokenVersionDto } from '../dto/user/user-token.dto';
+import { UpdateBusinessDto } from '../dto/business/update-business.dto';
+import { SearchBusinessDto } from '../dto/business/search-business.dto';
+import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { BusinessService } from '@/application/business/business.service';
+import { PaginationResponseDto } from '@/infrastructure/dto/pagination.dto';
+import { BusinessResponseDto } from '../dto/business/business-response.dto';
+import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
 
 @ApiTags('Business')
 @Controller('business')
