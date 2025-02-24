@@ -8,9 +8,9 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request, Response } from 'express';
-
-import { IS_PUBLIC_KEY } from '@/shared/core/decorators/public.decorator';
 import { DoubleCsrfUtilities } from 'csrf-csrf';
+
+import { IS_PUBLIC_KEY } from '@/shared/decorators/public.decorator';
 
 @Injectable()
 export class CsrfGuard implements CanActivate {

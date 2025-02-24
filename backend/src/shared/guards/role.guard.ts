@@ -1,16 +1,16 @@
-import { Request } from 'express';
-import { Reflector } from '@nestjs/core';
 import {
   Injectable,
   CanActivate,
   ExecutionContext,
   ForbiddenException,
 } from '@nestjs/common';
+import { Request } from 'express';
+import { Reflector } from '@nestjs/core';
 
-import { Role } from '@/shared/constants/role.enum';
-import { ROLES_KEY } from '../decorators/role.decorator';
+import { Role } from '@/domain/constants/role.enum';
 import { plainToInstance } from 'class-transformer';
-import { ResponseUserDto } from '@/modules/user/dto/user-response.dto';
+import { ROLES_KEY } from '../decorators/role.decorator';
+import { ResponseUserDto } from '@/infrastructure/dto/user/user-response.dto';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
