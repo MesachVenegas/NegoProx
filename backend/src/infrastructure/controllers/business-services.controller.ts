@@ -18,18 +18,17 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from '../auth/guards/jwt.guard';
-import { CreateServiceDto } from './dto/create-service.dto';
-import { UserTokenVersionDto } from '../user/dto/user-token.dto';
-import { BusinessServicesService } from './business-services.service';
-import { BusinessServicesResponseDto } from './dto/services-response.dto';
-
-import { Role } from '@/shared/constants/role.enum';
-import { RoleGuard } from '@/shared/core/guards/role.guard';
-import { Roles } from '@/shared/core/decorators/role.decorator';
-import { Public } from '@/shared/core/decorators/public.decorator';
-import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
-import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
+import { Role } from '@/domain/constants/role.enum';
+import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { RoleGuard } from '@/shared/guards/role.guard';
+import { Roles } from '@/shared/decorators/role.decorator';
+import { Public } from '@/shared/decorators/public.decorator';
+import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
+import { BusinessServicesResponseDto } from '../dto/business-service/services-response.dto';
+import { BusinessServicesService } from '@/application/business-services/business-services.service';
+import { CreateServiceDto } from '../dto/business-service/create-service.dto';
+import { UserTokenVersionDto } from '../dto/user/user-token.dto';
 
 @Controller('services')
 @ApiTags('Business Services')

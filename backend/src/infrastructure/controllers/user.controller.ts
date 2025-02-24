@@ -10,7 +10,6 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-
 import {
   ApiAcceptedResponse,
   ApiBadRequestResponse,
@@ -26,23 +25,28 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 
-import { UserService } from './user.service';
-import { JwtGuard } from '../auth/guards/jwt.guard';
-import { ResponseUserDto } from './dto/user-response.dto';
-import { UserProfileAccDto } from './dto/user-profile-acc.dto';
-import { QuerySearchUserDto } from './dto/user-query-search.dto';
-import { RegisterLocalUserDto } from './dto/register-local-user.dto';
-import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
-
+import {
+  UpdateUserDto,
+  UpdateUserPasswordDto,
+} from '../dto/user/update-user.dto';
 import {
   PaginationDto,
   PaginationResponseDto,
-} from '@/shared/dto/pagination.dto';
-import { Role } from '@/shared/constants/role.enum';
-import { RoleGuard } from '@/shared/core/guards/role.guard';
-import { Roles } from '@/shared/core/decorators/role.decorator';
-import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
-import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
+} from '@/infrastructure/dto/pagination.dto';
+import { Role } from '@/domain/constants/role.enum';
+import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { RoleGuard } from '@/shared/guards/role.guard';
+import { Roles } from '@/shared/decorators/role.decorator';
+import { ResponseUserDto } from '../dto/user/user-response.dto';
+import { UserProfileAccDto } from '../dto/user/user-profile-acc.dto';
+import { QuerySearchUserDto } from '../dto/user/user-query-search.dto';
+import { UserService } from '@/application/user/use-cases/user.service';
+import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { RegisterLocalUserDto } from '../dto/user/register-local-user.dto';
+import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
+import { UserRepository } from '../repositories/user.repository';
+import { CreateLocalUserUseCase } from '@/application/user/use-cases/register-user';
+import { plainToInstance } from 'class-transformer';
 
 @ApiTags('User')
 @Controller('user')
@@ -61,7 +65,10 @@ import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
   description: 'User not authorized',
 })
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly userService: UserService,
+  ) {}
 
   // --- GET ALL USERS ---
   @Get()
@@ -106,9 +113,7 @@ export class UserController {
     description: 'Data of user found',
     type: UserProfileAccDto,
   })
-  async getUser(
-    @Query() query: QuerySearchUserDto,
-  ): Promise<UserProfileAccDto> {
+  async getUser(@Query() query: QuerySearchUserDto) {
     const user = await this.userService.findUserByQuery(query);
     return user;
   }
@@ -127,9 +132,13 @@ export class UserController {
     description: 'Crete a new local user',
   })
   @Roles(Role.ADMIN)
-  async registerLocalUser(@Body() data: RegisterLocalUserDto) {
-    const user = await this.userService.createLocalUser(data);
-    return user;
+  async registerLocalUser(
+    @Body() data: RegisterLocalUserDto,
+  ): Promise<ResponseUserDto> {
+    const useCase = new CreateLocalUserUseCase(this.userRepository);
+    const user = await useCase.execute(data);
+
+    return plainToInstance(ResponseUserDto, user);
   }
 
   // --- UPDATE USER ---

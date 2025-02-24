@@ -10,7 +10,6 @@ import {
   UnauthorizedException,
   Body,
 } from '@nestjs/common';
-
 import {
   ApiBearerAuth,
   ApiConflictResponse,
@@ -20,16 +19,17 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { LoginDto } from './dto/login.dto';
-import { JwtGuard } from './guards/jwt.guard';
-import { AuthService } from './auth.service';
-import { AuthResponseDto } from './dto/auth-response.dto';
-import { Public } from '@/shared/core/decorators/public.decorator';
-import { UserProfileAccDto } from '../user/dto/user-profile-acc.dto';
-import { RegisterLocalUserDto } from '../user/dto/register-local-user.dto';
-import { HttpErrorResponseDto } from '@/shared/dto/http-error-response.dto';
-import { CurrentUser } from '@/shared/core/decorators/current-user.decorator';
 import { plainToInstance } from 'class-transformer';
+
+import { LoginDto } from '../dto/auth/login.dto';
+import { JwtGuard } from '../../shared/guards/jwt.guard';
+import { AuthService } from '../../application/auth/use-case/auth.service';
+import { AuthResponseDto } from '../dto/auth/auth-response.dto';
+import { Public } from '@/shared/decorators/public.decorator';
+import { RegisterLocalUserDto } from '../dto/user/register-local-user.dto';
+import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { UserProfileAccDto } from '../dto/user/user-profile-acc.dto';
+import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
