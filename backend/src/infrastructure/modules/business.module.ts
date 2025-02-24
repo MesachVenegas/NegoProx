@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 
-import { UserService } from '@application/user/use-cases/user.service';
 import { BusinessService } from '@application/business/business.service';
-import { UserRepository } from '@infrastructure/repositories/user.repository';
+import { UserPrismaRepository } from '@infrastructure/repositories/user.repository';
 import { BusinessController } from '@infrastructure/controllers/business.controller';
 import { BusinessRepository } from '@infrastructure/repositories/business.repository';
 
 @Module({
-  providers: [BusinessService, BusinessRepository, UserService, UserRepository],
+  providers: [BusinessService, BusinessRepository, UserPrismaRepository],
   controllers: [BusinessController],
   exports: [BusinessService, BusinessRepository],
 })
