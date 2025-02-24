@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-
-import { PrismaService } from '@/prisma/prisma.service';
-import { Profile } from '../../shared/interfaces/profile.interface';
-import { UserProfileAccDto } from '../user/dto/user-profile-acc.dto';
+import { Profile } from 'passport-google-oauth20';
 import { plainToInstance } from 'class-transformer';
+
+import { User } from '@/domain/entities';
+import { PrismaService } from '@/infrastructure/orm/prisma.service';
 
 @Injectable()
 export class AuthRepository {
@@ -38,8 +38,8 @@ export class AuthRepository {
 
   async authenticateGoogleAccount(profile: Profile) {
     const { id, emails, name, photos } = profile;
-    const email: string = emails[0].value;
-    const verified = emails[0].verified;
+    const email = emails?.[0].value;
+    const verified = emails?.[0].verified;
     const existing = await this.prisma.account.findUnique({
       where: {
         provider_providerId: {
@@ -54,14 +54,14 @@ export class AuthRepository {
       },
     });
 
-    if (existing) return plainToInstance(UserProfileAccDto, existing.user);
+    if (existing) return plainToInstance(User, existing.user);
     const user = await this.prisma.user.upsert({
       where: { email },
       update: {},
       create: {
-        email,
-        name: name.givenName,
-        lastName: name.familyName,
+        email: email as string,
+        name: name?.givenName,
+        lastName: name?.familyName,
         emailVerified: verified,
         accounts: {
           create: {
@@ -71,7 +71,7 @@ export class AuthRepository {
         },
         userProfile: {
           create: {
-            profilePicture: photos[0].value,
+            profilePicture: photos?.[0].value,
           },
         },
         tokenVersion: { create: {} },
@@ -79,6 +79,6 @@ export class AuthRepository {
       include: { tokenVersion: true, userProfile: true },
     });
 
-    return plainToInstance(UserProfileAccDto, user);
+    return plainToInstance(User, user);
   }
 }
