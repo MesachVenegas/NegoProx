@@ -3,15 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-
-import { Business } from './business.entity';
-import { Role } from '@/shared/constants/role.enum';
-import { PrismaService } from '@/prisma/prisma.service';
-import { UpdateBusinessDto } from './dto/update-business.dto';
-import { ResponseUserDto } from '../user/dto/user-response.dto';
-import { IPagination } from '@/shared/interfaces/pagination.interface';
 import { plainToInstance } from 'class-transformer';
-import { BusinessProfileDto } from '../business-profile/dto/profile-response.dto';
+
+import { Role } from '@/domain/constants/role.enum';
+import { ResponseUserDto } from '../dto/user/user-response.dto';
+import { PrismaService } from '@/infrastructure/orm/prisma.service';
+import { IPagination } from '@/shared/interfaces/pagination.interface';
+import { BusinessProfileDto } from '../dto/business-profile/profile-response.dto';
+import { Business } from '@/domain/entities';
 
 @Injectable()
 export class BusinessRepository {
@@ -229,7 +228,7 @@ export class BusinessRepository {
    * @param business - The updated business data.
    * @returns The updated business entity.
    */
-  async updateBusiness(business: UpdateBusinessDto, businessId: string) {
+  async updateBusiness(business: Business, businessId: string) {
     return this.prisma.business.update({
       where: { id: businessId },
       data: {

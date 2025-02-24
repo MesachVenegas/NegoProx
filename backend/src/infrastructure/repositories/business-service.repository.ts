@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-
-import { PrismaService } from '@/prisma/prisma.service';
-import { Service } from './business-service.entity';
 import { plainToInstance } from 'class-transformer';
+
+import { Service } from '@/domain/entities';
+import { PrismaService } from '@/infrastructure/orm/prisma.service';
 
 @Injectable()
 export class BusinessServicesRepository {

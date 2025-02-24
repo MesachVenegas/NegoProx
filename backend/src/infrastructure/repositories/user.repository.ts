@@ -1,16 +1,18 @@
 import { plainToInstance } from 'class-transformer';
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
-import { User } from './user.entity';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from '@/prisma/prisma.service';
-import { UserProfileAccDto } from './dto/user-profile-acc.dto';
-import { QuerySearchUserDto } from './dto/user-query-search.dto';
-import { IUserRepository } from './interfaces/repository.interface';
-import { RegisterLocalUserDto } from './dto/register-local-user.dto';
+import { User } from '@/domain/entities';
+import { UpdateUserDto } from '../dto/user/update-user.dto';
+import { PrismaService } from '@/infrastructure/orm/prisma.service';
+import { QuerySearchUserDto } from '../dto/user/user-query-search.dto';
 import { IPagination } from '@/shared/interfaces/pagination.interface';
 import { comparePassword, hashPassword } from '@/shared/utils/hash.util';
-import { NotFoundException } from '@/shared/exceptions/not-found.exception';
+import { IUserRepository } from '@/domain/interfaces/user-repository.interface';
+import { Role } from '@/domain/constants/role.enum';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -25,11 +27,7 @@ export class UserRepository implements IUserRepository {
    * @param order - The order in which to sort the users, either 'asc' or 'desc'.
    * @returns A promise that resolves with an array of User objects.
    */
-  async getAllUsers({
-    skip,
-    limit,
-    order,
-  }: Partial<IPagination>): Promise<User[]> {
+  async getAllUsers({ skip, limit, order }: Partial<IPagination>) {
     const users = await this.prisma.user.findMany({
       skip,
       take: limit,
@@ -43,7 +41,7 @@ export class UserRepository implements IUserRepository {
    *
    * @returns A promise that resolves with the total count of users.
    */
-  async countUsers(): Promise<number> {
+  async countUsers() {
     return this.prisma.user.count();
   }
 
@@ -69,34 +67,23 @@ export class UserRepository implements IUserRepository {
       },
     });
     if (!user) throw new NotFoundException('User not found');
-    return plainToInstance(UserProfileAccDto, user);
+    return plainToInstance(User, user);
   }
 
-  /**
-   * Creates a new user with the provided data, and automatically associates it with a local account.
-   * The password is hashed and stored securely.
-   * @param data - The user data to create.
-   * @returns A promise that resolves with the new user.
-   */
-  async createLocalUser(data: RegisterLocalUserDto): Promise<User> {
-    const existing = await this.prisma.user.findUnique({
-      where: { email: data.email },
-    });
-    if (existing)
-      throw new ConflictException(`User with "${data.email}" already exist`);
+  async saveLocalUser(data: User) {
     const user = await this.prisma.user.create({
       data: {
         name: data.name,
         lastName: data.lastName,
         email: data.email,
-        password: data.password,
+        password: data.getPassword(),
         accounts: { create: { provider: 'local', providerId: data.email } },
         userProfile: { create: {} },
         tokenVersion: { create: {} },
       },
     });
 
-    return plainToInstance(User, user);
+    return new User({ ...user, userType: user.userType as Role });
   }
 
   /**
@@ -110,8 +97,8 @@ export class UserRepository implements IUserRepository {
    * @param id - The unique identifier of the user to be updated.
    * @returns A promise that resolves with the updated user's profile and accounts.
    */
-  async update(user: UpdateUserDto, id: string): Promise<UserProfileAccDto> {
-    return await this.prisma.user.update({
+  async updateUser(user: UpdateUserDto, id: string) {
+    const userUpdated = await this.prisma.user.update({
       where: { id },
       data: {
         name: user.name,
@@ -131,6 +118,8 @@ export class UserRepository implements IUserRepository {
         accounts: true,
       },
     });
+
+    return plainToInstance(User, userUpdated);
   }
 
   /**
@@ -142,7 +131,7 @@ export class UserRepository implements IUserRepository {
    * @param id - The unique identifier of the user to be disabled.
    * @returns A promise that resolves with the disabled user's profile and accounts.
    */
-  async disableAccount(id: string): Promise<UserProfileAccDto> {
+  async disableAccount(id: string) {
     const result = await this.prisma.user.update({
       where: { id },
       data: { isDisabled: true },
@@ -152,7 +141,7 @@ export class UserRepository implements IUserRepository {
       },
     });
 
-    return plainToInstance(UserProfileAccDto, result);
+    return plainToInstance(User, result);
   }
 
   /**
