@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 
-import { TokenVersionService } from './token-version.service';
-import { TokenVersionRepository } from './token-version.repository';
+import { TokenVersionService } from '@application/token-version/token-version.service';
+import { TokenVersionRepository } from '@infrastructure/repositories/token-version.repository';
 
 @Module({
   controllers: [],
