@@ -1,21 +1,21 @@
-import { JwtService } from '@nestjs/jwt';
 import {
   ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
+import { Profile } from 'passport-google-oauth20';
 import { plainToInstance } from 'class-transformer';
 
-import { AuthRepository } from './auth.repository';
-import { UserRepository } from '../user/user.repository';
-import { SecurityService } from '@/security/security.service';
-import { Profile } from '../../shared/interfaces/profile.interface';
-import { UserProfileAccDto } from '../user/dto/user-profile-acc.dto';
+import { SecurityService } from '@/application/security/security.service';
 import { comparePassword, hashPassword } from '@/shared/utils/hash.util';
-import { RegisterLocalUserDto } from '../user/dto/register-local-user.dto';
-import { TokenVersionService } from '../token-version/token-version.service';
+import { UserRepository } from '@/infrastructure/repositories/user.repository';
+import { AuthRepository } from '@/infrastructure/repositories/auth.repository';
+import { UserProfileAccDto } from '@/infrastructure/dto/user/user-profile-acc.dto';
+import { TokenVersionService } from '@/application/token-version/token-version.service';
+import { RegisterLocalUserDto } from '@/infrastructure/dto/user/register-local-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -33,10 +33,7 @@ export class AuthService {
     return plainToInstance(UserProfileAccDto, userCreated);
   }
 
-  async validateLocalUser(
-    email: string,
-    password: string,
-  ): Promise<UserProfileAccDto> {
+  async validateLocalUser(email: string, password: string) {
     const user = await this.authRepo.findLocalUser(email);
     if (user && user.accounts[0].provider !== 'local')
       throw new ConflictException('User signed with external provider');
@@ -47,7 +44,7 @@ export class AuthService {
     return user;
   }
 
-  async findOrCreateGoogleUser(profile: Profile): Promise<UserProfileAccDto> {
+  async findOrCreateGoogleUser(profile: Profile) {
     return this.authRepo.authenticateGoogleAccount(profile);
   }
 

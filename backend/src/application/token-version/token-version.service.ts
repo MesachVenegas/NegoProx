@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { TokenVersionRepository } from './token-version.repository';
+import { TokenVersionRepository } from '@infrastructure/repositories/token-version.repository';
 
 @Injectable()
 export class TokenVersionService {

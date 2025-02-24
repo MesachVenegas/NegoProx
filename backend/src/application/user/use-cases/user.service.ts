@@ -1,19 +1,17 @@
-import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import {
   PaginationDto,
   PaginationResponseDto,
-} from '@/shared/dto/pagination.dto';
-import { User } from './user.entity';
-import { UserRepository } from './user.repository';
-import { UpdateUserDto } from './dto/update-user.dto';
+} from '@/infrastructure/dto/pagination.dto';
 import { hashPassword } from '@/shared/utils/hash.util';
-import { ResponseUserDto } from './dto/user-response.dto';
-import { UserProfileAccDto } from './dto/user-profile-acc.dto';
-import { QuerySearchUserDto } from './dto/user-query-search.dto';
-import { RegisterLocalUserDto } from './dto/register-local-user.dto';
-import { NotFoundException } from '@/shared/exceptions/not-found.exception';
+import { UpdateUserDto } from '@/infrastructure/dto/user/update-user.dto';
+import { ResponseUserDto } from '@/infrastructure/dto/user/user-response.dto';
+import { UserRepository } from '@/infrastructure/repositories/user.repository';
+import { UserProfileAccDto } from '@/infrastructure/dto/user/user-profile-acc.dto';
+import { QuerySearchUserDto } from '@/infrastructure/dto/user/user-query-search.dto';
+import { RegisterLocalUserDto } from '@/infrastructure/dto/user/register-local-user.dto';
 
 @Injectable()
 export class UserService {
@@ -45,15 +43,16 @@ export class UserService {
     return plainToInstance(UserProfileAccDto, result);
   }
 
-  async createLocalUser(data: RegisterLocalUserDto): Promise<User> {
+  async createLocalUser(data: RegisterLocalUserDto): Promise<ResponseUserDto> {
     data.password = await hashPassword(data.password);
-    return this.repo.createLocalUser(data);
+    const user = await this.repo.createLocalUser(data);
+    return plainToInstance(ResponseUserDto, user);
   }
 
   async updateUser(dto: UpdateUserDto, id: string): Promise<UserProfileAccDto> {
     const exist = await this.repo.findUser({ id: id });
     if (!exist) throw new NotFoundException('User not found, or not exist');
-    const user = await this.repo.update(dto, id);
+    const user = await this.repo.updateUser(dto, id);
     return plainToInstance(UserProfileAccDto, user);
   }
 

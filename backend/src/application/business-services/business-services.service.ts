@@ -4,13 +4,13 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-
 import { plainToInstance } from 'class-transformer';
-import { Service } from './business-service.entity';
-import { CreateServiceDto } from './dto/create-service.dto';
-import { BusinessRepository } from '../business/business.repository';
-import { BusinessServicesResponseDto } from './dto/services-response.dto';
-import { BusinessServicesRepository } from './business-service.repository';
+
+import { Service } from '@/domain/entities';
+import { BusinessRepository } from '@infrastructure/repositories/business.repository';
+import { CreateServiceDto } from '@/infrastructure/dto/business-service/create-service.dto';
+import { BusinessServicesRepository } from '@infrastructure/repositories/business-service.repository';
+import { BusinessServicesResponseDto } from '@/infrastructure/dto/business-service/services-response.dto';
 
 @Injectable()
 export class BusinessServicesService {
