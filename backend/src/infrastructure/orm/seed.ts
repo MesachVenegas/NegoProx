@@ -1,5 +1,5 @@
-import { hashPassword } from '../shared/utils/hash.util';
 import { PrismaClient } from '@prisma/client';
+import { hashPassword } from '@shared/utils/hash.util';
 
 const prisma = new PrismaClient();
 
@@ -108,8 +108,8 @@ async function main() {
             'https://www.diysignwriting.co.uk/wp-content/uploads/2019/01/3355-Your-Custom-Company-Business-Banner.jpg',
           website: 'https://peluqueria-ejemplo.com',
           socialMedia: {
-            facebook: 'peluqueria-ejemplo',
-            instagram: '@peluqueria_ejemplo',
+            facebook: 'peluquería-ejemplo',
+            instagram: '@peluquería_ejemplo',
           },
         },
       },
@@ -149,7 +149,7 @@ async function main() {
       Availability: {
         create: [
           {
-            dayOfWeek: 1,
+            dayOfWeek: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'],
             startTime: new Date('1970-01-01T09:00:00Z'),
             endTime: new Date('1970-01-01T18:00:00Z'),
             businessId: business.id,
@@ -213,15 +213,6 @@ async function main() {
           },
         ],
       },
-      // lastMessage: {
-      //   connect: {
-      //     id: (
-      //       await prisma.message.findFirst({
-      //         where: { status: 'SENT' },
-      //       })
-      //     )?.id,
-      //   },
-      // },
     },
   });
 

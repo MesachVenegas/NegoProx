@@ -37,7 +37,7 @@ model User {
   password      String?
   phone         String?  @unique
   isDisabled    Boolean  @default(false)
-  idDeleted     Boolean  @default(false)
+  isDeleted     Boolean  @default(false)
   userType      Role     @default(USER) @map("user_type")
   registerAt    DateTime @default(now()) @map("register_at")
 
