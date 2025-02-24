@@ -1,16 +1,15 @@
-import { ConfigService } from '@nestjs/config';
 import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-
+import { ConfigService } from '@nestjs/config';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-
-import { PrismaService } from '@/prisma/prisma.service';
 import { plainToInstance } from 'class-transformer';
-import { UserTokenVersionDto } from '@/modules/user/dto/user-token.dto';
+
+import { PrismaService } from '@/infrastructure/orm/prisma.service';
+import { UserTokenVersionDto } from '@/infrastructure/dto/user/user-token.dto';
 
 interface Payload {
   sub: string;
