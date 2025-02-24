@@ -1,6 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { DoubleCsrfUtilities } from 'csrf-csrf';
 import { Request, Response } from 'express';
+import { DoubleCsrfUtilities } from 'csrf-csrf';
+import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class SecurityService {

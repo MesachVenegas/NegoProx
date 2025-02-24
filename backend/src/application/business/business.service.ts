@@ -3,20 +3,20 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { BusinessRepository } from './business.repository';
-
 import { plainToInstance } from 'class-transformer';
-import { BusinessResponseDto } from './dto/business-response.dto';
-import { BusinessProfileServiceDto } from './dto/business-profile.dto';
+
+import { Business } from '@/domain/entities';
+import { hashPassword } from '@/shared/utils/hash.util';
 import {
   RegisterBusinessDto,
   RegisterLocalBusinessDto,
-} from './dto/register-local-business.dto';
-import { hashPassword } from '@/shared/utils/hash.util';
-import { Business } from './business.entity';
-import { ResponseUserDto } from '../user/dto/user-response.dto';
-import { UpdateBusinessDto } from './dto/update-business.dto';
-import { SearchBusinessDto } from './dto/search-business.dto';
+} from '@infrastructure/dto/business/register-local-business.dto';
+import { ResponseUserDto } from '@/infrastructure/dto/user/user-response.dto';
+import { SearchBusinessDto } from '@infrastructure/dto/business/search-business.dto';
+import { BusinessRepository } from '@infrastructure/repositories/business.repository';
+import { UpdateBusinessDto } from '@/infrastructure/dto/business/update-business.dto';
+import { BusinessResponseDto } from '@infrastructure/dto/business/business-response.dto';
+import { BusinessProfileServiceDto } from '@/infrastructure/dto/business/business-profile.dto';
 
 @Injectable()
 export class BusinessService {
@@ -132,7 +132,7 @@ export class BusinessService {
     if (exist.userId !== userId)
       throw new ForbiddenException('User is not owner');
 
-    const businessData = plainToInstance(UpdateBusinessDto, dto);
+    const businessData = plainToInstance(Business, dto);
 
     return this.repo.updateBusiness(businessData, businessId);
   }
