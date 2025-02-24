@@ -167,7 +167,7 @@ export class BusinessRepository {
             name: user?.name ?? '',
             lastName: user?.lastName ?? '',
             email: user?.email ?? '',
-            password: user?.password ?? '',
+            password: user?.getPassword() ?? '',
             userType: 'BUSINESS',
             accounts: {
               create: { provider: 'local', providerId: user?.email },
