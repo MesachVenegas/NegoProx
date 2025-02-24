@@ -20,8 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "prisma": {
-    "schema": "./src/prisma/schema.prisma",
-    "seed": "ts-node ./src/prisma/seed.ts"
+    "schema": "./src/infrastructure/orm/schema.prisma",
+    "seed": "ts-node ./src/infrastructure/orm/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
