@@ -1,21 +1,12 @@
-import { plainToInstance } from 'class-transformer';
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
-import { User } from '@/domain/entities';
-import { UpdateUserDto } from '../dto/user/update-user.dto';
-import { PrismaService } from '@/infrastructure/orm/prisma.service';
-import { QuerySearchUserDto } from '../dto/user/user-query-search.dto';
-import { IPagination } from '@/shared/interfaces/pagination.interface';
-import { comparePassword, hashPassword } from '@/shared/utils/hash.util';
-import { IUserRepository } from '@/domain/interfaces/user-repository.interface';
 import { Role } from '@/domain/constants/role.enum';
+import { Account, User, UserProfile } from '@/domain/entities';
+import { PrismaService } from '@/infrastructure/orm/prisma.service';
+import { UserRepository } from '@/domain/interfaces/user-repository';
 
 @Injectable()
-export class UserRepository implements IUserRepository {
+export class UserPrismaRepository implements UserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
@@ -23,17 +14,21 @@ export class UserRepository implements IUserRepository {
    *
    * @param skip - The number of users to skip, for pagination.
    * @param limit - The maximum number of users to retrieve.
-   * @param sortBy - The field by which to sort the users.
    * @param order - The order in which to sort the users, either 'asc' or 'desc'.
    * @returns A promise that resolves with an array of User objects.
    */
-  async getAllUsers({ skip, limit, order }: Partial<IPagination>) {
+  async getAllUsers(skip: number, limit: number, order: 'asc' | 'desc') {
     const users = await this.prisma.user.findMany({
       skip,
       take: limit,
       orderBy: { registerAt: order },
     });
-    return plainToInstance(User, users);
+
+    if (!users.length) return null;
+
+    return users.map(
+      (user) => new User({ ...user, userType: user.userType as Role }),
+    );
   }
 
   /**
@@ -41,35 +36,50 @@ export class UserRepository implements IUserRepository {
    *
    * @returns A promise that resolves with the total count of users.
    */
-  async countUsers() {
-    return this.prisma.user.count();
+  async countUsers(): Promise<number> {
+    return this.prisma.user.count({
+      where: { isDeleted: false, isDisabled: false },
+    });
   }
 
   /**
-   * Finds a user in the database based on the provided query.
-   * The search can be performed using the user's ID, email, or phone number.
-   * If a user is found, their profile and associated accounts are included in the result.
+   * Retrieves a user from the database by one of the following criteria:
+   * - ID
+   * - Email
+   * - Phone
    *
-   * @param query - An object containing optional search criteria: id, email, or phone.
-   * @returns A promise that resolves with the user's profile and accounts.
-   * @throws NotFoundException if no user is found.
+   * @param id - (Optional) The unique identifier of the user to retrieve.
+   * @param email - (Optional) The email address of the user to retrieve.
+   * @param phone - (Optional) The phone number of the user to retrieve.
+   * @returns A promise that resolves with the User object if found.
    */
-
-  async findUser(dto: QuerySearchUserDto) {
-    const { id, email, phone } = dto;
+  async searchUserByQuery(id?: string, email?: string, phone?: string) {
     const user = await this.prisma.user.findFirst({
       where: {
         OR: [{ id }, { email }, { phone }],
       },
       include: {
-        userProfile: true,
-        accounts: true,
+        userProfile: { omit: { userId: true } },
+        accounts: { omit: { userId: true } },
       },
     });
-    if (!user) throw new NotFoundException('User not found');
-    return plainToInstance(User, user);
+
+    if (!user) return null;
+
+    return new User({
+      ...user,
+      userType: user.userType as Role,
+      userProfile: user.userProfile as UserProfile,
+      accounts: user.accounts as Account[],
+    });
   }
 
+  /**
+   * Creates a new user in the database with a local account.
+   *
+   * @param data - The user entity containing the data for the new user.
+   * @returns A promise that resolves with the newly created User object.
+   */
   async saveLocalUser(data: User) {
     const user = await this.prisma.user.create({
       data: {
@@ -87,19 +97,15 @@ export class UserRepository implements IUserRepository {
   }
 
   /**
-   * Updates a user's details in the database based on the provided ID.
+   * Updates a user in the database with the given id.
    *
-   * This method updates the user's name, last name, email, and phone number.
-   * Additionally, it updates the user's profile with the provided bio, profile picture,
-   * and address. The updated user's profile and associated accounts are included in the result.
-   *
-   * @param user - An object containing the user's updated details.
-   * @param id - The unique identifier of the user to be updated.
-   * @returns A promise that resolves with the updated user's profile and accounts.
+   * @param user - The user entity containing the updated data.
+   * @param id - The id of the user to update.
+   * @returns A promise that resolves with the updated User object.
    */
-  async updateUser(user: UpdateUserDto, id: string) {
+  async updateUser(user: User) {
     const userUpdated = await this.prisma.user.update({
-      where: { id },
+      where: { id: user.id },
       data: {
         name: user.name,
         lastName: user.lastName,
@@ -107,74 +113,108 @@ export class UserRepository implements IUserRepository {
         phone: user.phone,
         userProfile: {
           update: {
-            bio: user.bio,
-            profilePicture: user.profilePicture,
-            address: user.address,
+            bio: user.userProfile?.bio,
+            profilePicture: user.userProfile?.profilePicture,
+            address: user.userProfile?.address,
           },
         },
       },
       include: {
-        userProfile: true,
-        accounts: true,
+        userProfile: { omit: { userId: true } },
+        accounts: { omit: { userId: true } },
       },
     });
 
-    return plainToInstance(User, userUpdated);
+    return new User({
+      ...userUpdated,
+      userType: userUpdated.userType as Role,
+      userProfile: userUpdated.userProfile as UserProfile,
+      accounts: userUpdated.accounts as Account[],
+    });
   }
 
   /**
-   * Disables a user account.
+   * Updates the password for a user with the given ID.
    *
-   * This method sets the user's 'isDisabled' flag to true, effectively disabling their account.
-   * The updated user's profile and associated accounts are included in the result.
+   * @param password - The new password to set for the user.
+   * @param id - The unique identifier of the user whose password is to be updated.
+   * @returns A promise that resolves with the updated User object.
+   */
+  async updatePassword(password: string, id: string): Promise<User> {
+    const userUpdated = await this.prisma.user.update({
+      where: { id },
+      data: { password },
+    });
+
+    return new User({ ...userUpdated, userType: userUpdated.userType as Role });
+  }
+
+  /**
+   * Retrieves a user by their ID.
    *
-   * @param id - The unique identifier of the user to be disabled.
-   * @returns A promise that resolves with the disabled user's profile and accounts.
+   * @param id - The unique identifier of the user to retrieve.
+   * @returns A promise that resolves with the User object if found.
+   */
+  async findUserById(id: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+
+    if (!user) return null;
+
+    return new User({ ...user, userType: user.userType as Role });
+  }
+
+  /**
+   * Retrieves a user by their email address.
+   *
+   * @param email - The email address of the user to retrieve.
+   * @returns A promise that resolves with the User object if found.
+   */
+  async findUserByEmail(email: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+
+    if (!user) return null;
+
+    return new User({ ...user, userType: user.userType as Role });
+  }
+
+  /**
+   * Disables a user account by setting the `isDisabled` field to true.
+   *
+   * @param id - The unique identifier of the user account to disable.
+   * @returns A promise that resolves with the updated User object, including the user's profile and accounts.
    */
   async disableAccount(id: string) {
     const result = await this.prisma.user.update({
       where: { id },
       data: { isDisabled: true },
       include: {
-        userProfile: true,
-        accounts: true,
+        userProfile: { omit: { userId: true } },
+        accounts: { omit: { userId: true } },
       },
     });
 
-    return plainToInstance(User, result);
+    return new User({
+      ...result,
+      userType: result.userType as Role,
+      userProfile: result.userProfile as UserProfile,
+      accounts: result.accounts as Account[],
+    });
   }
 
   /**
-   * Updates a user's password.
+   * Deletes a user account logically by setting the `isDeleted` field to true.
    *
-   * This method first checks if the user exists in the database. If not, it throws a NotFoundException.
-   * It then hashes the provided password and checks if the user already has a password in the database.
-   * If the user has no password, it sets the user's password to the newly hashed password.
-   * If the user has a password, it checks if the newly hashed password is the same as the existing password.
-   * If the passwords are the same, it throws a ConflictException. Otherwise, it updates the user's password to the newly hashed password.
-   *
-   * @param id - The unique identifier of the user to be updated.
-   * @param password - The new password to be set for the user.
+   * @param id - The unique identifier of the user account to delete.
+   * @returns A promise that resolves with the deleted User object.
    */
-  async updatePassword(id: string, password: string) {
-    console.log(id);
-    const user = await this.prisma.user.findUnique({ where: { id } });
-    if (!user) throw new NotFoundException('User not found');
-    const hashed = await hashPassword(password);
-    if (!user.password) {
-      await this.changePass(id, hashed);
-      return true;
-    }
-    const match = await comparePassword(password, user.password);
-    if (match) throw new ConflictException('Password cannot be the same.');
-    await this.changePass(id, hashed);
-    return true;
-  }
-
-  private async changePass(id: string, password: string) {
-    await this.prisma.user.update({
+  async logicDeleteAccount(id: string): Promise<User> {
+    const deleted = await this.prisma.user.update({
       where: { id },
-      data: { password },
+      data: {
+        isDeleted: true,
+      },
     });
+
+    return new User({ ...deleted, userType: deleted.userType as Role });
   }
 }
