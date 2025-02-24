@@ -6,7 +6,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TokenVersionModule } from './token-version.module';
 import { AuthController } from '../controllers/auth.controller';
 import { AuthRepository } from '../repositories/auth.repository';
-import { UserRepository } from '../repositories/user.repository';
+import { UserPrismaRepository } from '../repositories/user.repository';
 import { AuthService } from '@application/auth/use-case/auth.service';
 import { JwtStrategy } from '@application/auth/strategies/jwt.strategy';
 import { LocalStrategy } from '@application/auth/strategies/local.strategy';
@@ -28,7 +28,7 @@ import { GoogleStrategy } from '@application/auth/strategies/google.strategy';
   ],
   providers: [
     AuthService,
-    UserRepository,
+    UserPrismaRepository,
     AuthRepository,
     LocalStrategy,
     GoogleStrategy,
