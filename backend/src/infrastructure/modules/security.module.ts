@@ -1,9 +1,8 @@
-import { DynamicModule, Global, Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-
 import { doubleCsrf } from 'csrf-csrf';
+import { ConfigService } from '@nestjs/config';
+import { DynamicModule, Global, Module } from '@nestjs/common';
 
-import { SecurityService } from './security.service';
+import { SecurityService } from '@application/security/security.service';
 
 @Global()
 @Module({
