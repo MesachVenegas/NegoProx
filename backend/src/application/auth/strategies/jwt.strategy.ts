@@ -1,6 +1,6 @@
 import {
   Injectable,
-  NotFoundException,
+  ForbiddenException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -27,7 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: config.get<string>('security.jwrSecret') || 'secret',
+      secretOrKey: config.get<string>('security.jwrSecret') as string,
     });
   }
 
@@ -36,12 +36,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       where: { id: payload.sub },
       include: { tokenVersion: true, userProfile: true },
     });
-    if (!user) throw new NotFoundException('User not found');
-    if (!user || user.tokenVersion?.version !== payload.tokenVersion) {
-      throw new UnauthorizedException('Invalid session');
+
+    if (!user) throw new ForbiddenException('User session invalid');
+    if (user.tokenVersion?.version !== payload.tokenVersion) {
+      throw new ForbiddenException('Session expired');
     }
     if (user.isDisabled)
       throw new UnauthorizedException('User account disabled');
+    if (user.isDeleted) throw new UnauthorizedException('User account deleted');
 
     return plainToInstance(UserTokenVersionDto, user);
   }
