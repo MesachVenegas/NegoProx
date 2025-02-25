@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/infrastructure/orm/prisma.service';
+import { TokenVersionRepository } from '@/domain/interfaces/token-version-repository';
 
 @Injectable()
-export class TokenVersionRepository {
+export class TokenVersionPrismaRepository implements TokenVersionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
