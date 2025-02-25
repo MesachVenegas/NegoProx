@@ -1,6 +1,4 @@
-import { plainToInstance } from 'class-transformer';
-
-import { User } from '@/domain/entities/user';
+import { UserProfile } from '@/domain/entities/user';
 import { UpdateUserDto } from '../dto/update-user';
 import { UserRepository } from '@/domain/interfaces/user-repository';
 
@@ -16,12 +14,13 @@ export class UpdateUserUseCase {
    * @throws Error if the user is not found or not exist.
    */
   async execute(dto: UpdateUserDto, id: string) {
-    const result = await this.userRepository.findUserById(id);
-    if (!result) throw new Error('User not found or not exist');
+    const user = await this.userRepository.findUserById(id);
+    if (!user) throw new Error('User not found or not exist');
 
-    const user = plainToInstance(User, result);
-
-    user.update(dto);
+    user.update({
+      ...dto,
+      userProfile: dto.userProfile as UserProfile,
+    });
 
     return await this.userRepository.updateUser(user);
   }

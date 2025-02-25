@@ -6,8 +6,27 @@ import {
   IsUrl,
   Matches,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+
+export class UpdateUserProfile {
+  @ApiProperty({ required: false, example: 'https://example.com/profile.jpg' })
+  @IsOptional()
+  @IsString()
+  @IsUrl()
+  profilePicture?: string;
+  @ApiProperty({ required: false, example: 'My bio' })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  bio?: string;
+  @ApiProperty({ required: false, example: '123 Main St, Anytown, USA' })
+  @IsOptional()
+  @IsString()
+  address?: string;
+}
 
 export class UpdateUserDto {
   @ApiProperty({ required: false, example: 'John' })
@@ -29,20 +48,13 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   phone?: string;
-  @ApiProperty({ required: false, example: 'https://example.com/profile.jpg' })
+
+  @ApiPropertyOptional({ type: UpdateUserProfile })
   @IsOptional()
-  @IsString()
-  @IsUrl()
-  profilePicture?: string;
-  @ApiProperty({ required: false, example: 'My bio' })
-  @IsOptional()
-  @IsString()
+  @Type(() => UpdateUserProfile)
+  @ValidateNested({ each: true })
   @IsNotEmpty()
-  bio?: string;
-  @ApiProperty({ required: false, example: '123 Main St, Anytown, USA' })
-  @IsOptional()
-  @IsString()
-  address?: string;
+  userProfile?: UpdateUserProfile;
 }
 
 export class UpdateUserPasswordDto {
