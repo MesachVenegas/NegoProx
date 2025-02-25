@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { BusinessRepository } from '@infrastructure/repositories/business.repository';
+import { BusinessPrismaRepository } from '@infrastructure/repositories/business.repository';
 import { BusinessServicesService } from '@application/business-services/business-services.service';
 import { BusinessServicesController } from '@infrastructure/controllers/business-services.controller';
 import { BusinessServicesRepository } from '@infrastructure/repositories/business-service.repository';
@@ -10,7 +10,7 @@ import { BusinessServicesRepository } from '@infrastructure/repositories/busines
   providers: [
     BusinessServicesService,
     BusinessServicesRepository,
-    BusinessRepository,
+    BusinessPrismaRepository,
   ],
 })
 export class BusinessServicesModule {}
