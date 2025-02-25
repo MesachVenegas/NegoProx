@@ -5,7 +5,7 @@ import { Profile, Strategy } from 'passport-google-oauth20';
 
 import { AccountPrismaRepository } from '@/infrastructure/repositories/account.repository';
 import { AuthPrismaRepository } from '@/infrastructure/repositories/auth.repository';
-import { GoogleLoginUseCase } from '../use-case/login-google';
+import { GoogleLoginUseCase } from '../../application/auth/use-cases/login-google';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
