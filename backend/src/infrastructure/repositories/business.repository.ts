@@ -106,7 +106,13 @@ export class BusinessPrismaRepository implements BusinessRepository {
       latitude: business.latitude?.toNumber() ?? 0,
       longitude: business.longitude?.toNumber() ?? 0,
       images: business.images as BusinessImage[],
-      services: business.services as BusinessService[],
+      services: business.services.map(
+        (item) =>
+          new BusinessService({
+            ...item,
+            price: item.price.toNumber() ?? 0,
+          }),
+      ),
       businessProfile: business.businessProfile as BusinessProfile,
     });
 
@@ -144,7 +150,13 @@ export class BusinessPrismaRepository implements BusinessRepository {
       latitude: business.latitude?.toNumber() ?? 0,
       longitude: business.longitude?.toNumber() ?? 0,
       businessProfile: business.businessProfile as BusinessProfile,
-      services: business.services as BusinessService[],
+      services: business.services.map(
+        (item) =>
+          new BusinessService({
+            ...item,
+            price: item.price.toNumber() ?? 0,
+          }),
+      ),
       categories: business.categories as BusinessCategory[],
     });
   }
