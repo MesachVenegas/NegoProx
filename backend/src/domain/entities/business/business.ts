@@ -1,13 +1,14 @@
-import { Work } from './work.entity';
-import { User } from './user.entity';
-import { Review } from './review.entity';
-import { Payment } from './payment.entity';
-import { Appointment } from './appointment.entity';
-import { Service } from './business-service.entity';
-import { Availability } from './availability.entity';
-import { BusinessImage } from './business-image.entity';
-import { BusinessProfile } from './business-profile.entity';
-import { BusinessCategory } from './business-category.entity';
+import { Work } from '../work';
+import { User } from '../user/user';
+import { Review } from '../review';
+import { Payment } from '../payment';
+import { Appointment } from '../appointment';
+
+import { Availability } from '../availability';
+import { BusinessImage } from './business-image';
+import { BusinessProfile } from './business-profile';
+import { BusinessService } from './business-service';
+import { BusinessCategory } from './business-category';
 
 export class Business {
   public id: string;
@@ -25,7 +26,7 @@ export class Business {
 
   public user?: User;
   public userId?: string;
-  public services?: Service[];
+  public services?: BusinessService[];
   public appointments?: Appointment[];
   public works?: Work[];
   public businessProfile?: BusinessProfile;

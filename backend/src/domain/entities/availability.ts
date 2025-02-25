@@ -1,5 +1,4 @@
-import { Business } from './business.entity';
-import { Service } from './business-service.entity';
+import { Business, BusinessService } from './business';
 
 export class Availability {
   public id: string;
@@ -9,7 +8,7 @@ export class Availability {
   public businessId: Date;
   public business?: Business;
   public serviceId: string;
-  public service?: Service;
+  public service?: BusinessService;
 
   /**
    * Updates the availability with the provided data.

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 
-import { Service } from '@/domain/entities';
+import { BusinessService } from '@/domain/entities/business';
 import { PrismaService } from '@/infrastructure/orm/prisma.service';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class BusinessServicesRepository {
       orderBy: { name: 'asc' },
     });
 
-    return plainToInstance(Service, result);
+    return plainToInstance(BusinessService, result);
   }
 
   /**
@@ -34,7 +34,7 @@ export class BusinessServicesRepository {
       include: { business: true },
     });
 
-    return plainToInstance(Service, result);
+    return plainToInstance(BusinessService, result);
   }
 
   /**
@@ -49,7 +49,7 @@ export class BusinessServicesRepository {
       include: { business: true },
     });
 
-    return plainToInstance(Service, result);
+    return plainToInstance(BusinessService, result);
   }
 
   /**
@@ -58,7 +58,7 @@ export class BusinessServicesRepository {
    * @param service - The service entity containing the data for the new service.
    * @returns A promise that resolves with the newly created Service object.
    */
-  async createService(service: Service) {
+  async createService(service: BusinessService) {
     const result = await this.prisma.service.create({
       data: {
         name: service.name,
@@ -70,7 +70,7 @@ export class BusinessServicesRepository {
       include: { business: true },
     });
 
-    return plainToInstance(Service, result);
+    return plainToInstance(BusinessService, result);
   }
 
   /**
@@ -79,7 +79,7 @@ export class BusinessServicesRepository {
    * @param service - The service entity containing updated data.
    * @returns A promise that resolves with the updated Service object.
    */
-  async updateService(service: Service) {
+  async updateService(service: BusinessService) {
     const result = await this.prisma.service.update({
       where: { id: service.id },
       data: {
@@ -90,7 +90,7 @@ export class BusinessServicesRepository {
       },
     });
 
-    return plainToInstance(Service, result);
+    return plainToInstance(BusinessService, result);
   }
 
   /**
@@ -105,7 +105,7 @@ export class BusinessServicesRepository {
       data: { isDisabled: true },
     });
 
-    return plainToInstance(Service, result);
+    return plainToInstance(BusinessService, result);
   }
 
   /**
@@ -120,7 +120,7 @@ export class BusinessServicesRepository {
       where: { id },
     });
 
-    return plainToInstance(Service, result);
+    return plainToInstance(BusinessService, result);
   }
 
   /**
@@ -137,6 +137,6 @@ export class BusinessServicesRepository {
       },
     });
 
-    return plainToInstance(Service, result);
+    return plainToInstance(BusinessService, result);
   }
 }

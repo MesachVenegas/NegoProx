@@ -1,28 +1,26 @@
-import { Business } from './business.entity';
+import { Business } from './business';
 
-export class BusinessProfile {
+export class BusinessService {
   public id: string;
-  public bannerImage?: string;
-  public website?: string;
-  public socialMedia?: object;
-  public createdAt: Date;
-  public updatedAt: Date;
+  public name: string;
+  public price: number;
+  public description: string;
+  public time: number;
+  public isDisabled: boolean;
   public businessId: string;
   public business?: Business;
 
   /**
-   * Updates the business profile with the provided data.
+   * Updates the service with the provided data.
    *
    * @param partial - A partial object containing the updated data. The following
    *                  properties are not allowed and will be deleted if present:
    *                    - id
    *                    - businessId
-   *                    - createdAt
    */
-  update(partial: Partial<BusinessProfile>) {
+  update(partial: Partial<BusinessService>) {
     delete partial.id;
     delete partial.businessId;
-    delete partial.createdAt;
 
     Object.assign(this, partial);
   }

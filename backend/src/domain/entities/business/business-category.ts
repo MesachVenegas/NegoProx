@@ -1,5 +1,5 @@
-import { Business } from './business.entity';
-import { Category } from './category.entity';
+import { Category } from '../category';
+import { Business } from './business';
 
 export class BusinessCategory {
   public businessId: string;

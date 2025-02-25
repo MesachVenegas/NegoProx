@@ -1,4 +1,4 @@
-import { BusinessCategory } from './business-category.entity';
+import { BusinessCategory } from './business';
 
 export class Category {
   public id: string;

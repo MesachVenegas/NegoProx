@@ -1,6 +1,6 @@
 import { Profile } from 'passport-google-oauth20';
 
-import { User } from '../entities';
+import { User } from '../entities/user';
 
 export interface AuthRepository {
   registerGoogleAccount(profile: Profile): Promise<User>;
