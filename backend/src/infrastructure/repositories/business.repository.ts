@@ -1,19 +1,19 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
+import { Injectable } from '@nestjs/common';
 
+import {
+  Business,
+  BusinessCategory,
+  BusinessImage,
+  BusinessProfile,
+  BusinessService,
+} from '@/domain/entities/business';
 import { Role } from '@/domain/constants/role.enum';
-import { ResponseUserDto } from '../dto/user/user-response.dto';
 import { PrismaService } from '@/infrastructure/orm/prisma.service';
 import { IPagination } from '@/shared/interfaces/pagination.interface';
-import { BusinessProfileDto } from '../dto/business/profile-response.dto';
-import { Business } from '@/domain/entities';
+import { BusinessRepository } from '@/domain/interfaces/business-repository';
 
 @Injectable()
-export class BusinessRepository {
+export class BusinessPrismaRepository implements BusinessRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
@@ -64,7 +64,16 @@ export class BusinessRepository {
       orderBy: { name: order },
     });
 
-    return plainToInstance(Business, results);
+    if (!results || results.length === 0) return null;
+
+    return results.map(
+      (item) =>
+        new Business({
+          ...item,
+          latitude: item.latitude?.toNumber() ?? 0,
+          longitude: item.longitude?.toNumber() ?? 0,
+        }),
+    );
   }
 
   /**
@@ -82,10 +91,6 @@ export class BusinessRepository {
           images: { omit: { businessId: true } },
           services: { omit: { businessId: true } },
           businessProfile: { omit: { businessId: true } },
-          categories: {
-            omit: { businessId: true, categoryId: true },
-            include: { category: true },
-          },
         },
       }),
       await this.prisma.review.aggregate({
@@ -94,12 +99,23 @@ export class BusinessRepository {
       }),
     ]);
 
-    if (!business) throw new NotFoundException('Business not found');
-    const businessRated = {
+    if (!business) return null;
+
+    const businessEntity = new Business({
       ...business,
+      latitude: business.latitude?.toNumber() ?? 0,
+      longitude: business.longitude?.toNumber() ?? 0,
+      images: business.images as BusinessImage[],
+      services: business.services as BusinessService[],
+      businessProfile: business.businessProfile as BusinessProfile,
+    });
+
+    const result = {
+      business: businessEntity,
       rate: review._avg.rate ?? 0,
     };
-    return businessRated;
+
+    return result;
   }
 
   /**
@@ -121,20 +137,32 @@ export class BusinessRepository {
       },
     });
 
-    return plainToInstance(BusinessProfileDto, business);
+    if (!business) return null;
+
+    return new Business({
+      ...business,
+      latitude: business.latitude?.toNumber() ?? 0,
+      longitude: business.longitude?.toNumber() ?? 0,
+      businessProfile: business.businessProfile as BusinessProfile,
+      services: business.services as BusinessService[],
+      categories: business.categories as BusinessCategory[],
+    });
   }
 
   /**
-   * Retrieves a list of businesses from the database with optional pagination and sorting.
+   * Retrieves a list of businesses with optional pagination and sorting.
    *
    * @param skip - The number of businesses to skip, for pagination.
    * @param limit - The maximum number of businesses to retrieve.
-   * @param sortBy - The field by which to sort the businesses.
    * @param order - The order in which to sort the businesses, either 'asc' or 'desc'.
-   * @returns A promise that resolves with an array of BusinessResponseDto objects.
+   * @returns A promise that resolves with an array of Business entities, or null if no businesses are found.
    */
-  async getAllBusiness({ skip, limit, order }: Partial<IPagination>) {
-    return await this.prisma.business.findMany({
+  async getAllBusiness({
+    skip,
+    limit,
+    order,
+  }: Partial<IPagination>): Promise<Business[] | null> {
+    const business = await this.prisma.business.findMany({
       where: { isDeleted: false },
       skip,
       take: limit,
@@ -146,6 +174,17 @@ export class BusinessRepository {
         },
       },
     });
+
+    if (!business || business.length === 0) return null;
+
+    return business.map((item) => {
+      return new Business({
+        ...item,
+        latitude: item.latitude?.toNumber() ?? 0,
+        longitude: item.longitude?.toNumber() ?? 0,
+        categories: item.categories as BusinessCategory[],
+      });
+    });
   }
 
   /**
@@ -156,7 +195,8 @@ export class BusinessRepository {
    */
   async saveLocalBusiness(entity: Business) {
     const { name, description, address, phone, user } = entity;
-    return this.prisma.business.create({
+
+    const business = await this.prisma.business.create({
       data: {
         name,
         description,
@@ -178,6 +218,29 @@ export class BusinessRepository {
         },
       },
     });
+
+    return new Business({
+      ...business,
+      latitude: business.latitude?.toNumber() ?? 0,
+      longitude: business.longitude?.toNumber() ?? 0,
+    });
+  }
+
+  /**
+   * Checks if a business with the given name and user ID exists in the database.
+   *
+   * @param name - The name of the business to check for existence.
+   * @param userId - The ID of the user associated with the business.
+   * @returns A promise that resolves to true if the business exists, otherwise false.
+   */
+  async checkExistBusiness(name: string, userId: string): Promise<boolean> {
+    const exist = await this.prisma.business.findUnique({
+      where: { name_userId: { name, userId } },
+    });
+
+    if (exist) return true;
+
+    return false;
   }
 
   /**
@@ -189,15 +252,10 @@ export class BusinessRepository {
    * @returns The created business entity with the connected user.
    * @throws ConflictException if a business with the same name and user already exists.
    */
-  async promoteBusinessOwner(entity: Business, user: ResponseUserDto) {
+  async promoteBusinessOwner(entity: Business, userId: string, role: Role) {
     const { name, description, address, phone } = entity;
 
-    const exist = await this.prisma.business.findUnique({
-      where: { name_userId: { name, userId: user.id } },
-    });
-    if (exist) throw new ConflictException('Business already exist');
-
-    return this.prisma.$transaction(async (tx) => {
+    const newBusiness = await this.prisma.$transaction(async (tx) => {
       const business = await tx.business.create({
         data: {
           name,
@@ -205,20 +263,27 @@ export class BusinessRepository {
           address,
           phone,
           user: {
-            connect: { id: user.id },
+            connect: { id: userId },
           },
         },
-        include: { user: true },
       });
 
-      if (user.userType !== Role.BUSINESS) {
+      if (role !== Role.BUSINESS) {
         await tx.user.update({
-          where: { id: user.id },
+          where: { id: userId },
           data: { userType: Role.BUSINESS },
         });
       }
 
       return business;
+    });
+
+    if (!newBusiness) return null;
+
+    return new Business({
+      ...newBusiness,
+      latitude: newBusiness.latitude?.toNumber() ?? 0,
+      longitude: newBusiness.longitude?.toNumber() ?? 0,
     });
   }
 
@@ -229,7 +294,7 @@ export class BusinessRepository {
    * @returns The updated business entity.
    */
   async updateBusiness(business: Business, businessId: string) {
-    return this.prisma.business.update({
+    const updated = await this.prisma.business.update({
       where: { id: businessId },
       data: {
         name: business.name,
@@ -239,6 +304,12 @@ export class BusinessRepository {
         latitude: business.latitude,
         longitude: business.longitude,
       },
+    });
+
+    return new Business({
+      ...updated,
+      latitude: updated.latitude?.toNumber() ?? 0,
+      longitude: updated.longitude?.toNumber() ?? 0,
     });
   }
 
@@ -252,9 +323,17 @@ export class BusinessRepository {
    * @throws NotFoundException if the business with the given ID is not found.
    */
   async deleteBusiness(id: string) {
-    return this.prisma.business.update({
+    const business = await this.prisma.business.update({
       where: { id },
       data: { isDeleted: true },
+    });
+
+    if (!business) return null;
+
+    return new Business({
+      ...business,
+      latitude: business.latitude?.toNumber() ?? 0,
+      longitude: business.longitude?.toNumber() ?? 0,
     });
   }
 }
