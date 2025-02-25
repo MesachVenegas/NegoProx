@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { Profile } from 'passport-google-oauth20';
 
 import { Role } from '@/domain/constants/role.enum';
+import { Account, TokenVersion } from '@/domain/entities';
+import { User, UserProfile } from '@/domain/entities/user';
 import { PrismaService } from '@/infrastructure/orm/prisma.service';
 import { AuthRepository } from '@/domain/interfaces/auth-repository';
-import { Account, TokenVersion, User, UserProfile } from '@/domain/entities';
 
 @Injectable()
 export class AuthPrismaRepository implements AuthRepository {

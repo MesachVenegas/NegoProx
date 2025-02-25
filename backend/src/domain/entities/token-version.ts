@@ -1,4 +1,4 @@
-import { User } from './user.entity';
+import { User } from './user/user';
 
 export class TokenVersion {
   public id: string;

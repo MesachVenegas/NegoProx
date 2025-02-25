@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 
-import { Service } from '@/domain/entities';
+import { BusinessService } from '@/domain/entities/business';
 import { BusinessRepository } from '@infrastructure/repositories/business.repository';
 import { CreateServiceDto } from '@/infrastructure/dto/business-service/create-service.dto';
 import { BusinessServicesRepository } from '@infrastructure/repositories/business-service.repository';
@@ -73,7 +73,7 @@ export class BusinessServicesService {
       businessId,
     );
     if (exist) throw new ConflictException('Service already exist');
-    const service = plainToInstance(Service, dto);
+    const service = plainToInstance(BusinessService, dto);
     service.businessId = businessId;
 
     const result = await this.serviceRepo.createService(service);

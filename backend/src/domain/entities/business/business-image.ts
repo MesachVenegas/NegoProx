@@ -1,4 +1,4 @@
-import { Business } from './business.entity';
+import { Business } from './business';
 
 export class BusinessImage {
   public id: string;

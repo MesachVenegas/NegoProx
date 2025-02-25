@@ -1,6 +1,6 @@
 import { ConflictException } from '@nestjs/common';
 
-import { User } from '@/domain/entities';
+import { User } from '@/domain/entities/user';
 import { hashPassword } from '@/shared/utils/hash.util';
 import { UserRepository } from '@/domain/interfaces/user-repository';
 import { RegisterLocalUserDto } from '@/infrastructure/dto/user/register-local-user.dto';

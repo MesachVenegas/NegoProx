@@ -1,4 +1,4 @@
-import { User } from '../entities';
+import { User } from '../entities/user';
 
 export interface UserRepository {
   countUsers(): Promise<number>;

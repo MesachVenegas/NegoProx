@@ -1,7 +1,8 @@
-import { UserRepository } from '@/domain/interfaces/user-repository';
-import { UpdateUserDto } from '../dto/update-user';
-import { User } from '@/domain/entities';
 import { plainToInstance } from 'class-transformer';
+
+import { User } from '@/domain/entities/user';
+import { UpdateUserDto } from '../dto/update-user';
+import { UserRepository } from '@/domain/interfaces/user-repository';
 
 export class UpdateUserUseCase {
   constructor(private readonly userRepository: UserRepository) {}

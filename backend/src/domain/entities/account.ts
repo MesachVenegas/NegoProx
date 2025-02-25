@@ -1,4 +1,4 @@
-import { User } from './user.entity';
+import { User } from './user/user';
 
 export class Account {
   public id: string | undefined;

@@ -1,8 +1,8 @@
-import { User } from './user.entity';
-import { Review } from './review.entity';
-import { Payment } from './payment.entity';
-import { Business } from './business.entity';
-import { Appointment } from './appointment.entity';
+import { User } from './user/user';
+import { Review } from './review';
+import { Payment } from './payment';
+import { Business } from './business/business';
+import { Appointment } from './appointment';
 import { Status } from '@/domain/constants/status.enum';
 
 export class Work {

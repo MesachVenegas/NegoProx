@@ -1,4 +1,4 @@
-import { User } from '@/domain/entities';
+import { User } from '@/domain/entities/user';
 import { Role } from '@/domain/constants/role.enum';
 import { PrismaService } from '../orm/prisma.service';
 import { AccountRepository } from '@/domain/interfaces/account-repository';
