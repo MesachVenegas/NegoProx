@@ -1,6 +1,7 @@
+import { Profile } from 'passport-google-oauth20';
+
 import { AccountRepository } from '@/domain/interfaces/account-repository';
 import { AuthRepository } from '@/domain/interfaces/auth-repository';
-import { Profile } from 'passport-google-oauth20';
 
 export class GoogleLoginUseCase {
   constructor(
