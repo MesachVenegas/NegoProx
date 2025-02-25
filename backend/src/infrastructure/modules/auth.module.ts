@@ -5,12 +5,14 @@ import { PassportModule } from '@nestjs/passport';
 
 import { TokenVersionModule } from './token-version.module';
 import { AuthController } from '../controllers/auth.controller';
-import { AuthRepository } from '../repositories/auth.repository';
 import { UserPrismaRepository } from '../repositories/user.repository';
-import { AuthService } from '@application/auth/use-case/auth.service';
+import { AuthPrismaRepository } from '../repositories/auth.repository';
 import { JwtStrategy } from '@application/auth/strategies/jwt.strategy';
 import { LocalStrategy } from '@application/auth/strategies/local.strategy';
 import { GoogleStrategy } from '@application/auth/strategies/google.strategy';
+import { AccountPrismaRepository } from '../repositories/account.repository';
+import { TokenVersionPrismaRepository } from '../repositories/token-version.repository';
+import { AccountModule } from './account.module';
 
 @Module({
   imports: [
@@ -25,16 +27,18 @@ import { GoogleStrategy } from '@application/auth/strategies/google.strategy';
       inject: [ConfigService],
     }),
     TokenVersionModule,
+    AccountModule,
   ],
   providers: [
-    AuthService,
-    UserPrismaRepository,
-    AuthRepository,
+    JwtStrategy,
     LocalStrategy,
     GoogleStrategy,
-    JwtStrategy,
+    UserPrismaRepository,
+    AuthPrismaRepository,
+    AccountPrismaRepository,
+    TokenVersionPrismaRepository,
   ],
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthPrismaRepository],
 })
 export class AuthModule {}

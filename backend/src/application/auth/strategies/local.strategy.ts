@@ -3,17 +3,20 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { plainToInstance } from 'class-transformer';
 
-import { AuthService } from '../use-case/auth.service';
-import { UserTokenVersionDto } from '@/infrastructure/dto/user/user-token.dto';
+import { LoginLocalUseCase } from '../use-case';
+import { UserProfileAccDto } from '@/infrastructure/dto/user/user-profile-acc.dto';
+import { AuthPrismaRepository } from '@/infrastructure/repositories/auth.repository';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly authService: AuthService) {
+  constructor(private readonly authRepository: AuthPrismaRepository) {
     super({ usernameField: 'email' });
   }
 
   async validate(email: string, password: string) {
-    const user = await this.authService.validateLocalUser(email, password);
-    return plainToInstance(UserTokenVersionDto, user);
+    const useCase = new LoginLocalUseCase(this.authRepository);
+    const user = await useCase.execute(email, password);
+
+    return plainToInstance(UserProfileAccDto, user);
   }
 }
