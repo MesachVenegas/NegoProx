@@ -5,5 +5,5 @@ export class BusinessCategory {
   public businessId: string;
   public business?: Business[];
   public categoryId: string;
-  public category?: Category[];
+  public category?: Category;
 }
