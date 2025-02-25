@@ -25,7 +25,7 @@ import { plainToInstance } from 'class-transformer';
 import {
   AuthenticateUserUseCase,
   LogOutUserUseCase,
-} from '@/application/auth/use-case';
+} from '@/application/auth/use-cases';
 import { LoginDto } from '../dto/auth/login.dto';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { Public } from '@/shared/decorators/public.decorator';
