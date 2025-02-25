@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -167,8 +168,11 @@ export class UserController {
     description: 'Data of user updated',
   })
   async updateUser(@Body() dto: UpdateUserDto, @Query('id') id: string) {
-    const useCase = new UpdateUserUseCase(this.userPrismaRepository);
-    const user = await useCase.execute(dto, id);
+    if (!dto || Object.keys(dto).length === 0)
+      throw new BadRequestException('No data to update');
+
+    const UpdateUser = new UpdateUserUseCase(this.userPrismaRepository);
+    const user = await UpdateUser.execute(dto, id);
 
     return plainToInstance(UserProfileAccDto, user);
   }

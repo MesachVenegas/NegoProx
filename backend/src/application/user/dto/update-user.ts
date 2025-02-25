@@ -3,41 +3,39 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUrl,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
+import { UpdateUserProfileDto } from './update-user-profile';
+import { Type } from 'class-transformer';
 
 export class UpdateUserDto {
   @IsOptional()
   @IsString()
   @MinLength(3)
+  @IsNotEmpty()
   name?: string;
 
   @IsOptional()
   @IsString()
   @MinLength(3)
+  @IsNotEmpty()
   lastName?: string;
 
   @IsOptional()
   @IsString()
   @IsEmail()
+  @IsNotEmpty()
   email?: string;
 
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
   phone?: string;
 
   @IsOptional()
-  @IsString()
-  @IsUrl()
-  profilePicture?: string;
-
-  @IsOptional()
-  @IsString()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateUserProfileDto)
   @IsNotEmpty()
-  bio?: string;
-
-  @IsOptional()
-  @IsString()
-  address?: string;
+  userProfile?: UpdateUserProfileDto;
 }
