@@ -1,5 +1,3 @@
-import { Request, Response } from 'express';
-import { AuthGuard } from '@nestjs/passport';
 import {
   Controller,
   Post,
@@ -19,22 +17,37 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { JwtService } from '@nestjs/jwt';
+import { Request, Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 import { plainToInstance } from 'class-transformer';
 
+import {
+  AuthenticateUserUseCase,
+  LogOutUserUseCase,
+} from '@/application/auth/use-case';
 import { LoginDto } from '../dto/auth/login.dto';
-import { JwtGuard } from '../../shared/guards/jwt.guard';
-import { AuthService } from '../../application/auth/use-case/auth.service';
-import { AuthResponseDto } from '../dto/auth/auth-response.dto';
+import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { Public } from '@/shared/decorators/public.decorator';
-import { RegisterLocalUserDto } from '../dto/user/register-local-user.dto';
-import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { AuthResponseDto } from '../dto/auth/auth-response.dto';
 import { UserProfileAccDto } from '../dto/user/user-profile-acc.dto';
+import { CreateLocalUserUseCase } from '@/application/user/use-cases';
+import { UserPrismaRepository } from '../repositories/user.repository';
+import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { SecurityService } from '@/application/security/security.service';
+import { RegisterLocalUserDto } from '../dto/user/register-local-user.dto';
 import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
+import { TokenVersionPrismaRepository } from '../repositories/token-version.repository';
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly securityService: SecurityService,
+    private readonly userPrismaRepository: UserPrismaRepository,
+    private readonly tokenVersionPrismaRepository: TokenVersionPrismaRepository,
+  ) {}
 
   @Public()
   @UseGuards(AuthGuard('local'))
@@ -57,11 +70,18 @@ export class AuthController {
     @Body() dto: LoginDto,
     @Req() req: Request,
     @Res() res: Response,
-  ): Promise<AuthResponseDto | undefined> {
+  ): Promise<AuthResponseDto | void> {
     if (!req.user) return;
     const user = plainToInstance(UserProfileAccDto, req.user);
-    const result = await this.authService.authResponse(user, req, res);
-    res.json(result);
+    const Authenticate = new AuthenticateUserUseCase(
+      this.jwtService,
+      this.tokenVersionPrismaRepository,
+    );
+
+    this.securityService.generateCsrfToken(req, res);
+    const authenticate = await Authenticate.execute(user);
+
+    res.json(plainToInstance(AuthResponseDto, authenticate));
   }
 
   @Public()
@@ -83,8 +103,15 @@ export class AuthController {
         'Something went wrong, the user cannot be authenticated',
       );
     const user = plainToInstance(UserProfileAccDto, req.user);
-    const response = await this.authService.authResponse(user, req, res);
-    res.json(response);
+    const Authenticate = new AuthenticateUserUseCase(
+      this.jwtService,
+      this.tokenVersionPrismaRepository,
+    );
+
+    this.securityService.generateCsrfToken(req, res);
+    const authenticate = await Authenticate.execute(user);
+
+    res.json(plainToInstance(AuthResponseDto, authenticate));
   }
 
   @Public()
@@ -92,7 +119,10 @@ export class AuthController {
   @ApiOkResponse({ type: UserProfileAccDto })
   @ApiOperation({ description: 'Register a new user with email and password' })
   async registerLocalUser(@Body() dto: RegisterLocalUserDto) {
-    return await this.authService.registerLocalUser(dto);
+    const Register = new CreateLocalUserUseCase(this.userPrismaRepository);
+    const user = await Register.execute(dto);
+
+    return plainToInstance(UserProfileAccDto, user);
   }
 
   @Get('logout')
@@ -109,7 +139,11 @@ export class AuthController {
     },
   })
   async logout(@CurrentUser() user: UserProfileAccDto) {
-    await this.authService.logout(user);
+    const Logout = new LogOutUserUseCase(this.tokenVersionPrismaRepository);
+    const result = await Logout.execute(user.id);
+
+    if (!result) throw new UnauthorizedException('User not found or not exist');
+
     return {
       message: 'Logout successful',
     };
