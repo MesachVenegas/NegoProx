@@ -3,10 +3,10 @@ import { IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { BusinessResponseDto } from './business-response.dto';
-import { BusinessProfileDto } from '../business-profile/profile-response.dto';
-import { BusinessImageResponseDto } from '../business-image/images-response.dto';
-import { BusinessServicesResponseDto } from '../business-service/services-response.dto';
-import { BusinessCategoryResponseDto } from '../business-category/categories-response.dto';
+import { BusinessProfileDto } from './profile-response.dto';
+import { BusinessImageResponseDto } from './images-response.dto';
+import { BusinessServicesResponseDto } from './services-response.dto';
+import { BusinessCategoryResponseDto } from './categories-response.dto';
 
 export class BusinessProfileServiceDto extends BusinessResponseDto {
   @ApiProperty({ type: [BusinessImageResponseDto] })

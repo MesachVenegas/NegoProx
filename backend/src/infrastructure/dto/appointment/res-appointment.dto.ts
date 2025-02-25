@@ -4,9 +4,9 @@ import { IsDate, IsEnum, IsString, ValidateNested } from 'class-validator';
 
 import { Status } from '@/domain/constants/status.enum';
 import { WorkResponseDto } from '@/infrastructure/dto/work/res-work.dto';
-import { BusinessServicesResponseDto } from '../business-service/services-response.dto';
+import { BusinessServicesResponseDto } from '../business/services-response.dto';
 import { BusinessResponseDto } from '@/infrastructure/dto/business/business-response.dto';
-import { UserProfileResponseDto } from '@/infrastructure/dto/user-profile/userprofile-response.dto';
+import { UserProfileResponseDto } from '@/infrastructure/dto/user/userprofile-response.dto';
 
 export class AppointmentResponseDto {
   @ApiProperty({ example: '1' })
