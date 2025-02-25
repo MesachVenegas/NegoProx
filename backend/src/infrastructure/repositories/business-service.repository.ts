@@ -81,7 +81,7 @@ export class BusinessServicesRepository {
    */
   async updateService(service: BusinessService) {
     const result = await this.prisma.service.update({
-      where: { id: service.id },
+      where: { id: service.id as string },
       data: {
         name: service.name,
         price: service.price,
