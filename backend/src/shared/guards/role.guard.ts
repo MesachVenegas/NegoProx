@@ -36,7 +36,7 @@ export class RoleGuard implements CanActivate {
 
     if (!isAuthorized)
       throw new ForbiddenException(
-        'Access Denied, user level no have necessary permissions',
+        'Access Denied!, user no have a role with necessary permissions',
       );
 
     return true;
