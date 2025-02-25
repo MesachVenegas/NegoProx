@@ -1,10 +1,9 @@
+import { TokenVersionPrismaRepository } from '@/infrastructure/repositories/token-version.repository';
 import { Injectable } from '@nestjs/common';
-
-import { TokenVersionRepository } from '@infrastructure/repositories/token-version.repository';
 
 @Injectable()
 export class TokenVersionService {
-  constructor(private readonly repo: TokenVersionRepository) {}
+  constructor(private readonly repo: TokenVersionPrismaRepository) {}
 
   async getTokenVersion(id: string): Promise<number> {
     return await this.repo.getVersion(id);
