@@ -1,4 +1,4 @@
-import { BusinessProfileDto } from '@/infrastructure/dto/business-profile/profile-response.dto';
+import { BusinessProfileDto } from '@/infrastructure/dto/business/profile-response.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Type } from 'class-transformer';
 import { IsNumber, IsString, ValidateNested } from 'class-validator';

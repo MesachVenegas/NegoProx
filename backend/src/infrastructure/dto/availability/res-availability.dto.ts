@@ -3,7 +3,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDate, IsNumber, IsString, ValidateNested } from 'class-validator';
 
 import { BusinessResponseDto } from '../business/business-response.dto';
-import { BusinessServicesResponseDto } from '../business-service/services-response.dto';
+import { BusinessServicesResponseDto } from '../business/services-response.dto';
 
 export class AvailabilityResponseDto {
   @ApiProperty({ example: '1123213-0213' })

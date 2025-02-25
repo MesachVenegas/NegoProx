@@ -9,7 +9,7 @@ import { Role } from '@/domain/constants/role.enum';
 import { ResponseUserDto } from '../dto/user/user-response.dto';
 import { PrismaService } from '@/infrastructure/orm/prisma.service';
 import { IPagination } from '@/shared/interfaces/pagination.interface';
-import { BusinessProfileDto } from '../dto/business-profile/profile-response.dto';
+import { BusinessProfileDto } from '../dto/business/profile-response.dto';
 import { Business } from '@/domain/entities';
 
 @Injectable()

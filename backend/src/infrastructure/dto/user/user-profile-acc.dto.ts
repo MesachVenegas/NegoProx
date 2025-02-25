@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { ResponseUserDto } from './user-response.dto';
 import { AccountResponseDto } from '@/infrastructure/dto/account/account-response.dto';
-import { UserProfileResponseDto } from '@/infrastructure/dto/user-profile/userprofile-response.dto';
+import { UserProfileResponseDto } from '@/infrastructure/dto/user/userprofile-response.dto';
 
 @Exclude()
 export class UserProfileAccDto extends ResponseUserDto {

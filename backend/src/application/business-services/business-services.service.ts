@@ -8,9 +8,9 @@ import { plainToInstance } from 'class-transformer';
 
 import { BusinessService } from '@/domain/entities/business';
 import { BusinessRepository } from '@infrastructure/repositories/business.repository';
-import { CreateServiceDto } from '@/infrastructure/dto/business-service/create-service.dto';
+import { CreateServiceDto } from '@/infrastructure/dto/business/create-service.dto';
 import { BusinessServicesRepository } from '@infrastructure/repositories/business-service.repository';
-import { BusinessServicesResponseDto } from '@/infrastructure/dto/business-service/services-response.dto';
+import { BusinessServicesResponseDto } from '@/infrastructure/dto/business/services-response.dto';
 
 @Injectable()
 export class BusinessServicesService {

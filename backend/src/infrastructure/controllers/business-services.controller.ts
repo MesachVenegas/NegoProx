@@ -25,9 +25,9 @@ import { Roles } from '@/shared/decorators/role.decorator';
 import { Public } from '@/shared/decorators/public.decorator';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
-import { BusinessServicesResponseDto } from '../dto/business-service/services-response.dto';
+import { BusinessServicesResponseDto } from '../dto/business/services-response.dto';
 import { BusinessServicesService } from '@/application/business-services/business-services.service';
-import { CreateServiceDto } from '../dto/business-service/create-service.dto';
+import { CreateServiceDto } from '../dto/business/create-service.dto';
 import { UserTokenVersionDto } from '../dto/user/user-token.dto';
 
 @Controller('services')
