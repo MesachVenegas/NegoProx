@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotAcceptableException,
   Post,
   Put,
   Query,
@@ -34,10 +35,20 @@ import { UserTokenVersionDto } from '../dto/user/user-token.dto';
 import { UpdateBusinessDto } from '../dto/business/update-business.dto';
 import { SearchBusinessDto } from '../dto/business/search-business.dto';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
-import { BusinessService } from '@/application/business/business.service';
 import { PaginationResponseDto } from '@/infrastructure/dto/pagination.dto';
 import { BusinessResponseDto } from '../dto/business/business-response.dto';
+import { BusinessPrismaRepository } from '../repositories/business.repository';
 import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
+import {
+  CreateBusinessUseCase,
+  FilterBusinessByUserByCategoryNameUseCase,
+  GetBusinessByIdUseCase,
+  LogicDeleteBusinessUseCase,
+  PromoteUserToBusinessUseCase,
+  UpdateBusinessUseCase,
+} from '@/application/business/use-cases';
+import { plainToInstance } from 'class-transformer';
+import { UserPrismaRepository } from '../repositories/user.repository';
 
 @ApiTags('Business')
 @Controller('business')
@@ -56,7 +67,10 @@ import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.d
 })
 @ApiExtraModels(PaginationResponseDto, BusinessResponseDto)
 export class BusinessController {
-  constructor(private readonly businessService: BusinessService) {}
+  constructor(
+    private readonly BusinessRepository: BusinessPrismaRepository,
+    private readonly UserRepository: UserPrismaRepository,
+  ) {}
 
   // -- Search business by name or category, if params are empty returns all
   @Get()
@@ -82,7 +96,12 @@ export class BusinessController {
     },
   })
   async searchBusiness(@Query() query: SearchBusinessDto) {
-    return await this.businessService.searchBusiness(query);
+    const FilterBusiness = new FilterBusinessByUserByCategoryNameUseCase(
+      this.BusinessRepository,
+    );
+    const result = await FilterBusiness.execute(query);
+
+    return result;
   }
 
   // -- Get business by id
@@ -94,7 +113,10 @@ export class BusinessController {
     type: BusinessResponseDto,
   })
   async findBusiness(@Query('id') id: string) {
-    return await this.businessService.findBusinessById(id);
+    const GetBusiness = new GetBusinessByIdUseCase(this.BusinessRepository);
+    const result = await GetBusiness.execute(id);
+
+    return result;
   }
 
   // -- Create a new business
@@ -108,11 +130,13 @@ export class BusinessController {
   async createBusiness(
     @Body() dto: RegisterLocalBusinessDto,
   ): Promise<BusinessResponseDto> {
-    return await this.businessService.createLocalBusiness(dto);
+    const CreateBusiness = new CreateBusinessUseCase(this.BusinessRepository);
+    const result = await CreateBusiness.execute(dto);
+
+    return plainToInstance(BusinessResponseDto, result);
   }
 
   // -- Promote a existing user as business owner
-  // Review: review whit test
   @Post('promote')
   @ApiBearerAuth()
   @Roles(Role.USER)
@@ -124,12 +148,17 @@ export class BusinessController {
     @CurrentUser() user: UserTokenVersionDto,
     @Body() dto: RegisterBusinessDto,
   ) {
-    return this.businessService.promoteBusinessOwner(dto, user);
+    const PromoteUser = new PromoteUserToBusinessUseCase(
+      this.BusinessRepository,
+    );
+    const result = PromoteUser.execute({ user, dto });
+
+    return plainToInstance(BusinessResponseDto, result);
   }
 
   @Put('update')
   @ApiBearerAuth()
-  @Roles(Role.BUSINESS)
+  @Roles(Role.BUSINESS, Role.ADMIN)
   @ApiOperation({ description: 'Update a business by id, if is the owner' })
   @ApiOkResponse({
     type: BusinessResponseDto,
@@ -139,13 +168,21 @@ export class BusinessController {
     @Body() dto: UpdateBusinessDto,
     @CurrentUser() user: UserTokenVersionDto,
   ) {
-    return this.businessService.updateBusiness(user.id, id, dto);
+    const UpdateBusiness = new UpdateBusinessUseCase(this.BusinessRepository);
+    const result = UpdateBusiness.execute({
+      businessId: id,
+      userId: user.id,
+      dto,
+      role: user.userType as Role,
+    });
+
+    return plainToInstance(BusinessResponseDto, result);
   }
 
   // -- Delete a business by id
   @Delete('delete')
   @ApiBearerAuth()
-  @Roles(Role.BUSINESS)
+  @Roles(Role.BUSINESS, Role.ADMIN)
   @ApiOperation({ description: 'Disable a business account' })
   @ApiOkResponse({
     type: BusinessResponseDto,
@@ -154,6 +191,18 @@ export class BusinessController {
     @Query('id') id: string,
     @CurrentUser() user: UserTokenVersionDto,
   ) {
-    return await this.businessService.deleteBusiness(id, user.id);
+    const DeleteBusiness = new LogicDeleteBusinessUseCase(
+      this.BusinessRepository,
+      this.UserRepository,
+    );
+    const result = await DeleteBusiness.execute({
+      id,
+      userId: user.id,
+      userType: user.userType as Role,
+    });
+
+    if (!result) throw new NotAcceptableException('Business cannot be deleted');
+
+    return plainToInstance(BusinessResponseDto, result);
   }
 }
