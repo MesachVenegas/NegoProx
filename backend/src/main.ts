@@ -77,6 +77,7 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       transform: true,
+      forbidUnknownValues: true,
       validationError: { target: false, value: false },
     }),
   );
@@ -126,7 +127,7 @@ async function bootstrap() {
       `🚀 Application is running on: http://localhost:${envs.get<string>('app.port') ?? 3000}`,
     );
     Logger.log(
-      `Read Documentation📄: http://localhost:${envs.get<string>('app.port') ?? 3000}/api/v${envs.get<string>('app.version')}/docs`,
+      `📄 Read Documentation: http://localhost:${envs.get<string>('app.port') ?? 3000}/api/v${envs.get<string>('app.version')}/docs`,
     );
   });
 }
