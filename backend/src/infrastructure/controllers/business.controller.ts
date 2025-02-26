@@ -116,7 +116,10 @@ export class BusinessController {
     const GetBusiness = new GetBusinessByIdUseCase(this.BusinessRepository);
     const result = await GetBusiness.execute(id);
 
-    return result;
+    return {
+      business: plainToInstance(BusinessResponseDto, result.business),
+      rate: result.rate,
+    };
   }
 
   // -- Create a new business

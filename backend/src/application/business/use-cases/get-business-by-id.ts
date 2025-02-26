@@ -1,7 +1,5 @@
 import { NotFoundException } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
 
-import { BusinessResponseDto } from '@/infrastructure/dto/business';
 import { BusinessRepository } from '@/domain/interfaces/business-repository';
 
 export class GetBusinessByIdUseCase {
@@ -26,7 +24,7 @@ export class GetBusinessByIdUseCase {
     const { business, rate } = result;
 
     return {
-      business: plainToInstance(BusinessResponseDto, business),
+      business: business,
       rate: rate,
     };
   }
