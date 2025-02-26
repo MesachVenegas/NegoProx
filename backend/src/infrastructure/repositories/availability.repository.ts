@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
+import { Business } from '@/domain/entities';
 import { PrismaService } from '../orm/prisma.service';
 import { Availability } from '@/domain/entities/business/business-availability';
 import { AvailabilityRepository } from '@/domain/interfaces/availability-repository';
-import { Business } from '@/domain/entities';
 
 @Injectable()
 export class AvailabilityPrismaRepository implements AvailabilityRepository {
