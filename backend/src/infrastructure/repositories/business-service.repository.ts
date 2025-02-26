@@ -138,6 +138,7 @@ export class BusinessServicesPrismaRepository
         price: service.price,
         description: service.description,
         time: service.time,
+        isDisabled: service.isDisabled,
       },
     });
 
@@ -155,7 +156,7 @@ export class BusinessServicesPrismaRepository
    * @param id - The unique identifier of the service to disable.
    * @returns A promise that resolves with true if the service is disabled, otherwise false.
    */
-  async disableService(id: string): Promise<boolean> {
+  async disableService(id: string): Promise<BusinessService | false> {
     const result = await this.prisma.service.update({
       where: { id },
       data: { isDisabled: true },
@@ -163,7 +164,7 @@ export class BusinessServicesPrismaRepository
 
     if (!result) return false;
 
-    return true;
+    return new BusinessService({ ...result, price: result.price.toNumber() });
   }
 
   /**
