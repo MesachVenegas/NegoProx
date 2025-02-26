@@ -3,6 +3,7 @@ import {
   Logger,
   ValidationPipe,
 } from '@nestjs/common';
+import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
@@ -12,21 +13,54 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { VersioningType } from '@nestjs/common';
-import { HttpExceptionFilter } from '@shared/exceptions/http-exceptions.filter';
+import { HttpExceptionFilter } from '@/shared/filters/http-exceptions.filter';
 import { ResponseInterceptor } from '@shared/interceptors/response.interceptor';
-import { PrismaKnownExceptionFilter } from '@/shared/exceptions/prisma-know-exceptions.filter';
-import { PrismaUnknownExceptionFilter } from './shared/exceptions/prisma-unknown-exceptions.filter';
+import { PrismaKnownExceptionFilter } from '@/shared/filters/prisma-know-exceptions.filter';
+import { PrismaUnknownExceptionFilter } from './shared/filters/prisma-unknown-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const envs = app.get(ConfigService);
+  const isProduction = envs.get<string>('app.environment') === 'production';
 
   // Security
+  app.use(cookieParser());
   app.enableCors({
     origin: envs.get<string>('security.originUrl') ?? '*',
     methods: 'GET,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'"],
+          connectSrc: [
+            "'self'",
+            'https://accounts.google.com',
+            'https://*.googleapis.com',
+            // frontend url
+            // payment provider url
+          ],
+          objectSrc: ["'none'"],
+          baseUri: ["'none'"],
+          formAction: ["'self'"],
+          upgradeInsecureRequests: isProduction ? [] : null,
+        },
+      },
+      xContentTypeOptions: true,
+      xFrameOptions: { action: 'deny' },
+      strictTransportSecurity: isProduction
+        ? {
+            maxAge: 31536000,
+            includeSubDomains: true,
+            preload: true,
+          }
+        : false,
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    }),
+  );
 
   // Global Filters
   app.useGlobalFilters(
@@ -43,6 +77,7 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       transform: true,
+      forbidUnknownValues: true,
       validationError: { target: false, value: false },
     }),
   );
@@ -54,8 +89,6 @@ async function bootstrap() {
       filter: shouldCompress,
     }),
   );
-
-  app.use(cookieParser());
 
   // APi Prefix and Versioning
   app.setGlobalPrefix('api');
@@ -94,7 +127,7 @@ async function bootstrap() {
       `🚀 Application is running on: http://localhost:${envs.get<string>('app.port') ?? 3000}`,
     );
     Logger.log(
-      `Read Documentation📄: http://localhost:${envs.get<string>('app.port') ?? 3000}/api/v${envs.get<string>('app.version')}/docs`,
+      `📄 Read Documentation: http://localhost:${envs.get<string>('app.port') ?? 3000}/api/v${envs.get<string>('app.version')}/docs`,
     );
   });
 }

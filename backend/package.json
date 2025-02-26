@@ -20,8 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "prisma": {
-    "schema": "./src/prisma/schema.prisma",
-    "seed": "ts-node ./src/prisma/seed.ts"
+    "schema": "./src/infrastructure/orm/schema.prisma",
+    "seed": "ts-node ./src/infrastructure/orm/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -42,6 +42,7 @@
     "cookie-parser": "^1.4.7",
     "cross-env": "^7.0.3",
     "csrf-csrf": "^3.1.0",
+    "helmet": "^8.0.0",
     "joi": "^17.13.3",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",

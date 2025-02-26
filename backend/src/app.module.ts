@@ -1,17 +1,23 @@
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
-import { envSchema } from './config/config.schema';
-import configuration from './config/configuration';
-import { PrismaModule } from '@prisma/prisma.module';
-import { UserModule } from './modules/user/user.module';
-import { AuthModule } from './modules/auth/auth.module';
-// import { SecurityModule } from './security/security.module';
-import { HttpLoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
-import { BusinessModule } from './modules/business/business.module';
-import { BusinessServicesModule } from './modules/business-services/business-services.module';
+import { UserModule } from '@modules/user.module';
+import { AuthModule } from '@modules/auth.module';
+import { CsrfGuard } from '@/shared/guards/csrf.guard';
+import { BusinessModule } from '@modules/business.module';
+import { envSchema } from '@/infrastructure/config/config.schema';
+import configuration from '@/infrastructure/config/configuration';
+import { PrismaModule } from '@/infrastructure/orm/prisma.module';
+import { SecurityModule } from '@/infrastructure/modules/csrf.module';
+import { BusinessServicesModule } from '@modules/business-services.module';
+import { HttpLoggerMiddleware } from '@/shared/middlewares/http-logger.middleware';
 
 @Module({
   imports: [
@@ -32,7 +38,7 @@ import { BusinessServicesModule } from './modules/business-services/business-ser
     UserModule,
     BusinessModule,
     BusinessServicesModule,
-    // SecurityModule.forRoot(),
+    SecurityModule.forRoot(),
   ],
   controllers: [],
   providers: [
@@ -40,10 +46,16 @@ import { BusinessServicesModule } from './modules/business-services/business-ser
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    {
+      provide: APP_GUARD,
+      useClass: CsrfGuard,
+    },
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(HttpLoggerMiddleware).forRoutes('/*path');
+    consumer
+      .apply(HttpLoggerMiddleware)
+      .forRoutes({ path: '/*path', method: RequestMethod.ALL });
   }
 }
