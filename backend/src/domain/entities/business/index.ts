@@ -3,3 +3,7 @@ export * from './business-image';
 export * from './business-profile';
 export * from './business-service';
 export * from './business';
+export * from './business-availability';
+export * from './payment';
+export * from './work';
+export * from './review';

@@ -1,14 +1,12 @@
-import { User } from './user/user';
+import { User } from '../user/user';
 import { Work } from './work';
-import { Business } from './business/business';
+import { Business } from './business';
 
-export class Payment {
+export class Review {
   public id: string;
-  public amount: number;
-  public status: string;
-  public paymentMethod: string;
-  public transactionId?: string;
-  public timestamp: Date;
+  public rate: number;
+  public comment?: string;
+  public reviewedAt: Date;
   public workId: string;
   public work?: Work;
   public clientId: string;
@@ -17,7 +15,7 @@ export class Payment {
   public business?: Business;
 
   /**
-   * Updates the payment with the provided data.
+   * Updates the review with the provided data.
    *
    * @param partial - A partial object containing the updated data. The following
    *                  properties are not allowed and will be deleted if present:
@@ -26,7 +24,7 @@ export class Payment {
    *                    - clientId
    *                    - businessId
    */
-  update(partial: Partial<Payment>) {
+  update(partial: Partial<Review>) {
     delete partial.id;
     delete partial.workId;
     delete partial.clientId;

@@ -1,8 +1,8 @@
-import { User } from './user/user';
+import { User } from '../user';
 import { Review } from './review';
 import { Payment } from './payment';
-import { Business } from './business/business';
-import { Appointment } from './appointment';
+import { Business } from './business';
+import { Appointment } from '../appointment';
 import { Status } from '@/domain/constants/status.enum';
 
 export class Work {

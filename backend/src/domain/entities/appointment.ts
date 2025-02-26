@@ -1,7 +1,6 @@
-import { Work } from './work';
 import { User } from './user/user';
 import { Status } from '@/domain/constants/status.enum';
-import { Business, BusinessService } from './business';
+import { Business, BusinessService, Work } from './business';
 
 export class Appointment {
   public id: string;
