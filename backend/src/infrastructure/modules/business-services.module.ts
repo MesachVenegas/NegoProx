@@ -1,16 +1,11 @@
 import { Module } from '@nestjs/common';
 
 import { BusinessPrismaRepository } from '@infrastructure/repositories/business.repository';
-import { BusinessServicesService } from '@application/business-services/business-services.service';
 import { BusinessServicesController } from '@infrastructure/controllers/business-services.controller';
-import { BusinessServicesRepository } from '@infrastructure/repositories/business-service.repository';
+import { BusinessServicesPrismaRepository } from '@infrastructure/repositories/business-service.repository';
 
 @Module({
   controllers: [BusinessServicesController],
-  providers: [
-    BusinessServicesService,
-    BusinessServicesRepository,
-    BusinessPrismaRepository,
-  ],
+  providers: [BusinessServicesPrismaRepository, BusinessPrismaRepository],
 })
 export class BusinessServicesModule {}
