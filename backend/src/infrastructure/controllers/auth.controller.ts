@@ -30,11 +30,11 @@ import { LoginDto } from '../dto/auth/login.dto';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { Public } from '@/shared/decorators/public.decorator';
 import { AuthResponseDto } from '../dto/auth/auth-response.dto';
+import { CsrfService } from '@/infrastructure/services/csrf.service';
 import { UserProfileAccDto } from '../dto/user/user-profile-acc.dto';
 import { CreateLocalUserUseCase } from '@/application/user/use-cases';
 import { UserPrismaRepository } from '../repositories/user.repository';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
-import { SecurityService } from '@/application/security/security.service';
 import { RegisterLocalUserDto } from '../dto/user/register-local-user.dto';
 import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
 import { TokenVersionPrismaRepository } from '../repositories/token-version.repository';
@@ -44,7 +44,7 @@ import { TokenVersionPrismaRepository } from '../repositories/token-version.repo
 export class AuthController {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly securityService: SecurityService,
+    private readonly securityService: CsrfService,
     private readonly userPrismaRepository: UserPrismaRepository,
     private readonly tokenVersionPrismaRepository: TokenVersionPrismaRepository,
   ) {}

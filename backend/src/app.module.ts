@@ -15,7 +15,7 @@ import { BusinessModule } from '@modules/business.module';
 import { envSchema } from '@/infrastructure/config/config.schema';
 import configuration from '@/infrastructure/config/configuration';
 import { PrismaModule } from '@/infrastructure/orm/prisma.module';
-import { SecurityModule } from '@/infrastructure/modules/security.module';
+import { SecurityModule } from '@/infrastructure/modules/csrf.module';
 import { BusinessServicesModule } from '@modules/business-services.module';
 import { HttpLoggerMiddleware } from '@/shared/middlewares/http-logger.middleware';
 
