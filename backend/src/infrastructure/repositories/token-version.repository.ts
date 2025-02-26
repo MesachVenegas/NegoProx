@@ -17,7 +17,8 @@ export class TokenVersionPrismaRepository implements TokenVersionRepository {
       where: { userId: id },
     });
 
-    if (!token) throw new NotFoundException('Token not found');
+    if (!token) return null;
+
     return token?.version;
   }
 
