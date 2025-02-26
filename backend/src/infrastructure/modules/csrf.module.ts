@@ -2,12 +2,12 @@ import { doubleCsrf } from 'csrf-csrf';
 import { ConfigService } from '@nestjs/config';
 import { DynamicModule, Global, Module } from '@nestjs/common';
 
-import { SecurityService } from '@application/security/security.service';
+import { CsrfService } from '@/infrastructure/services/csrf.service';
 
 @Global()
 @Module({
-  providers: [SecurityService],
-  exports: [SecurityService],
+  providers: [CsrfService],
+  exports: [CsrfService],
 })
 export class SecurityModule {
   static forRoot(): DynamicModule {
@@ -39,9 +39,9 @@ export class SecurityModule {
           },
           inject: [ConfigService],
         },
-        SecurityService,
+        CsrfService,
       ],
-      exports: [SecurityService, 'CSRF_UTILITIES'],
+      exports: [CsrfService, 'CSRF_UTILITIES'],
     };
   }
 }

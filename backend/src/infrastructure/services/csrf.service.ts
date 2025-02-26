@@ -3,7 +3,7 @@ import { DoubleCsrfUtilities } from 'csrf-csrf';
 import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
-export class SecurityService {
+export class CsrfService {
   constructor(
     @Inject('CSRF_UTILITIES') private readonly csrfUtils: DoubleCsrfUtilities,
   ) {}
