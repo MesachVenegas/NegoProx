@@ -18,6 +18,7 @@ import { PrismaModule } from '@/infrastructure/orm/prisma.module';
 import { SecurityModule } from '@/infrastructure/modules/csrf.module';
 import { BusinessServicesModule } from '@modules/business-services.module';
 import { HttpLoggerMiddleware } from '@/shared/middlewares/http-logger.middleware';
+import { AvailabilityModule } from './infrastructure/modules/availability.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { HttpLoggerMiddleware } from '@/shared/middlewares/http-logger.middlewar
     UserModule,
     BusinessModule,
     BusinessServicesModule,
+    AvailabilityModule,
     SecurityModule.forRoot(),
   ],
   controllers: [],
