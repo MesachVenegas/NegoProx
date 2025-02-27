@@ -5,6 +5,8 @@ const prisma = new PrismaClient();
 
 async function main() {
   const hashedPassword = await hashPassword('Password123!');
+  const adminPass = process.env.ADMIN_PASS || 'Admin123!';
+  const adminHashed = await hashPassword(adminPass);
   // Crear categorías primero
   await prisma.category.upsert({
     where: { name: 'Peluquería' },
@@ -55,6 +57,33 @@ async function main() {
           token: 'verification_token',
           tokenExp: new Date(Date.now() + 3600000),
         },
+      },
+    },
+  });
+
+  // Crear usuario administrador
+  await prisma.user.upsert({
+    where: { email: 'mesach.venegas@hotmail.com' },
+    update: {},
+    create: {
+      name: 'Mesach',
+      lastName: 'Venegas',
+      email: 'mesach.venegas@hotmail.com',
+      password: adminHashed,
+      phone: '(+52)663-166-2698',
+      userType: 'ADMIN',
+      emailVerified: true,
+      accounts: {
+        create: {
+          provider: 'local',
+          providerId: 'mesach.venegas@hotmail.com',
+        },
+      },
+      userProfile: {
+        create: {},
+      },
+      tokenVersion: {
+        create: {},
       },
     },
   });
@@ -149,9 +178,9 @@ async function main() {
       Availability: {
         create: [
           {
-            dayOfWeek: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'],
-            startTime: new Date('1970-01-01T09:00:00Z'),
-            endTime: new Date('1970-01-01T18:00:00Z'),
+            dayOfWeek: 7,
+            startTime: '9:00',
+            endTime: '17:00',
             businessId: business.id,
           },
         ],
@@ -227,9 +256,15 @@ async function main() {
       )?.id,
     },
   });
+
+  return adminPass;
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+main()
+  .then((res) => {
+    console.log(`Admin password: ${res}`);
+  })
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
