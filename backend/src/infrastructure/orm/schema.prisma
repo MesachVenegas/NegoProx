@@ -326,10 +326,10 @@ model BusinessImage {
 }
 
 model Availability {
-  id        String   @id @default(cuid())
-  dayOfWeek String[] @map("day_of_week")
-  startTime DateTime @map("start_time")
-  endTime   DateTime @map("end_time")
+  id        String @id @default(cuid())
+  dayOfWeek Int    @map("day_of_week")
+  startTime String @map("start_time")
+  endTime   String @map("end_time")
 
   business   Business @relation(fields: [businessId], references: [id])
   businessId String
