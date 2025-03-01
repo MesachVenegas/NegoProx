@@ -178,9 +178,9 @@ async function main() {
       Availability: {
         create: [
           {
-            dayOfWeek: 7,
-            startTime: '9:00',
-            endTime: '17:00',
+            dayOfWeek: 5,
+            startTime: new Date('1970-01-01T09:00:00Z'),
+            endTime: new Date('1970-01-01T18:00:00Z'),
             businessId: business.id,
           },
         ],
