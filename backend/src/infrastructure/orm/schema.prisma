@@ -336,6 +336,8 @@ model Availability {
   service    Service? @relation(fields: [serviceId], references: [id])
   serviceId  String?
 
+  @@unique([businessId, dayOfWeek])
+  @@unique([businessId, dayOfWeek, serviceId])
   @@index([startTime, endTime]) // search by start time and end time
   @@index([dayOfWeek]) // search by day and calculate availability
   @@index([serviceId]) // search by service id
