@@ -5,7 +5,7 @@ import {
   IsUrl,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Exclude, Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { BusinessResponseDto } from '@/infrastructure/dto/business/business-response.dto';
@@ -34,10 +34,12 @@ export class BusinessProfileDto {
 
   @ApiProperty({ example: '2023-01-01T00:00:00.000Z' })
   @IsDate()
+  @Exclude()
   createdAt: Date;
 
   @ApiProperty({ example: '2023-01-01T00:00:00.000Z' })
   @IsDate()
+  @Exclude()
   updatedAt: Date;
 
   @ApiProperty({ example: '1' })
