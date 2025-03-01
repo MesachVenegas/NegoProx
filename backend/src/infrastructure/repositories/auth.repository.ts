@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Profile } from 'passport-google-oauth20';
 
 import { Role } from '@/domain/constants/role.enum';
-import { Account, TokenVersion } from '@/domain/entities';
+import { Account, Business, TokenVersion } from '@/domain/entities';
 import { User, UserProfile } from '@/domain/entities/user';
 import { PrismaService } from '@/infrastructure/orm/prisma.service';
 import { AuthRepository } from '@/domain/interfaces/auth-repository';
@@ -20,7 +20,12 @@ export class AuthPrismaRepository implements AuthRepository {
   async findLocalUser(email: string) {
     const user = await this.prisma.user.findUnique({
       where: { email },
-      include: { userProfile: true, accounts: true, tokenVersion: true },
+      include: {
+        userProfile: true,
+        accounts: true,
+        tokenVersion: true,
+        businesses: true,
+      },
     });
 
     if (!user) return null;
@@ -31,6 +36,14 @@ export class AuthPrismaRepository implements AuthRepository {
       tokenVersion: user.tokenVersion as TokenVersion,
       userProfile: user.userProfile as UserProfile,
       accounts: user.accounts as Account[],
+      businesses: user.businesses.map(
+        (business) =>
+          new Business({
+            ...business,
+            latitude: business.latitude?.toNumber(),
+            longitude: business.longitude?.toNumber(),
+          }),
+      ),
     });
   }
 
