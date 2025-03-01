@@ -1,14 +1,14 @@
 import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
-import { CreateAvailabilityDto } from '@/infrastructure/dto/availability/create-availability';
 import { AuthorizationDto } from '@/infrastructure/dto/auth/authorization.dto';
+import { UpdateAvailabilityDto } from '@/infrastructure/dto/availability/update-availability';
 
 export class UpdateAvalability extends AuthorizationDto {
   @IsString()
   @IsNotEmpty()
-  businessId: string;
+  availabilityId: string;
 
   @IsNotEmpty()
   @ValidateNested({ each: true })
-  data: Partial<CreateAvailabilityDto>;
+  data: UpdateAvailabilityDto;
 }
