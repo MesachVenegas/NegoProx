@@ -3,7 +3,7 @@ import { BusinessService } from './business-service';
 
 export class Availability {
   public id: string | undefined;
-  public dayOfWeek: string[];
+  public dayOfWeek: number;
   public startTime: Date;
   public endTime: Date;
   public businessId: string;
@@ -14,7 +14,7 @@ export class Availability {
 
   constructor(params: {
     id?: string;
-    dayOfWeek: string[];
+    dayOfWeek: number;
     startTime: Date;
     endTime: Date;
     businessId: string;
