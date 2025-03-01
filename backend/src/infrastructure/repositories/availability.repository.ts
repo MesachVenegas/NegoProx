@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { Business } from '@/domain/entities';
 import { PrismaService } from '../orm/prisma.service';
@@ -10,29 +10,35 @@ export class AvailabilityPrismaRepository implements AvailabilityRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Retrieves a business's availability by its ID from the database.
+   * Retrieves the availability records of a business by its ID from the database.
    *
-   * @param businessId - The unique identifier of the business to retrieve its availability.
-   * @returns A promise that resolves with a single Availability object, or null if no business with the given ID is found.
+   * @param businessId - The unique identifier of the business to retrieve its availability records.
+   * @returns A promise that resolves with an array of Availability objects, or null if no availability records
+   *          are found for the given business ID.
    */
   async getAvailabilityByBusinessId(
     businessId: string,
-  ): Promise<Availability | null> {
-    const result = await this.prisma.availability.findUnique({
-      where: { id: businessId },
+  ): Promise<Availability[] | null> {
+    const result = await this.prisma.availability.findMany({
+      where: { businessId: businessId },
       include: { business: true },
     });
 
     if (!result) return null;
 
-    return new Availability({
-      ...result,
-      business: new Business({
-        ...result.business,
-        latitude: result.business.latitude?.toNumber(),
-        longitude: result.business.longitude?.toNumber(),
-      }),
-    });
+    const availability = result.map(
+      (item) =>
+        new Availability({
+          ...item,
+          business: new Business({
+            ...item.business,
+            latitude: item.business.latitude?.toNumber(),
+            longitude: item.business.longitude?.toNumber(),
+          }),
+        }),
+    );
+
+    return availability;
   }
 
   /**
@@ -61,31 +67,46 @@ export class AvailabilityPrismaRepository implements AvailabilityRepository {
     });
   }
 
-  /**
-   * Creates a new availability in the database.
-   *
-   * @param availability - The Availability object to save.
-   * @returns A promise that resolves with the newly created Availability object.
-   */
-  async saveAvailability(availability: Availability): Promise<Availability> {
-    const newRecord = await this.prisma.availability.create({
-      data: {
-        dayOfWeek: availability.dayOfWeek,
-        startTime: availability.startTime,
-        endTime: availability.endTime,
-        business: { connect: { id: availability.businessId } },
-      },
+  async getAvailabilityById(id: string): Promise<Availability | null> {
+    const result = await this.prisma.availability.findUnique({
+      where: { id },
       include: { business: true },
     });
 
+    if (!result)
+      throw new NotFoundException('Availability not found or not exist');
+
     return new Availability({
-      ...newRecord,
+      ...result,
       business: new Business({
-        ...newRecord.business,
-        latitude: newRecord.business.latitude?.toNumber(),
-        longitude: newRecord.business.longitude?.toNumber(),
+        ...result.business,
+        latitude: result.business.latitude?.toNumber(),
+        longitude: result.business.longitude?.toNumber(),
       }),
     });
+  }
+
+  /**
+   * Saves multiple availability records to the database and returns the saved entities.
+   *
+   * @param availability - An array of Availability objects to be saved.
+   * @returns A promise that resolves with an array of saved Availability objects.
+   */
+  async saveAvailability(
+    availability: Availability[],
+  ): Promise<Availability[]> {
+    const data = availability.map((item) => ({
+      dayOfWeek: item.dayOfWeek,
+      startTime: item.startTime,
+      endTime: item.endTime,
+      businessId: item.businessId,
+    }));
+
+    const records = await this.prisma.availability.createManyAndReturn({
+      data,
+    });
+
+    return records.map((item) => new Availability(item));
   }
 
   /**
