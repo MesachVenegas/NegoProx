@@ -28,9 +28,9 @@ export class UpdateAvailabilityUseCase {
    * @throws Error if the user does not have the necessary permission.
    */
 
-  async execute({ userId, role, businessId, data }: UpdateAvalability) {
+  async execute({ userId, role, availabilityId, data }: UpdateAvalability) {
     const availability =
-      await this.availabilityRepository.getAvailabilityByBusinessId(businessId);
+      await this.availabilityRepository.getAvailabilityById(availabilityId);
     if (!availability) throw new Error('Availability not found.');
 
     if (availability.business?.userId !== userId && role !== Role.ADMIN) {
