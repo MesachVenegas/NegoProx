@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import {
+  Availability,
   Business,
   BusinessCategory,
   BusinessImage,
@@ -91,6 +92,7 @@ export class BusinessPrismaRepository implements BusinessRepository {
           images: { omit: { businessId: true } },
           services: { omit: { businessId: true } },
           businessProfile: { omit: { businessId: true } },
+          availability: true,
         },
       }),
       await this.prisma.review.aggregate({
@@ -114,6 +116,7 @@ export class BusinessPrismaRepository implements BusinessRepository {
           }),
       ),
       businessProfile: business.businessProfile as BusinessProfile,
+      availability: business.availability.map((item) => new Availability(item)),
     });
 
     const result = {
@@ -228,6 +231,7 @@ export class BusinessPrismaRepository implements BusinessRepository {
             tokenVersion: { create: {} },
           },
         },
+        businessProfile: { create: {} },
       },
     });
 
