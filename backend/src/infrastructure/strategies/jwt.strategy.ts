@@ -34,7 +34,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: Payload) {
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
-      include: { tokenVersion: true, userProfile: true },
+      include: {
+        tokenVersion: true,
+        userProfile: true,
+        businesses: { select: { id: true } },
+      },
     });
 
     if (!user) throw new ForbiddenException('User session invalid');
@@ -45,6 +49,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('User account disabled');
     if (user.isDeleted) throw new UnauthorizedException('User account deleted');
 
-    return plainToInstance(UserTokenVersionDto, user);
+    const result = plainToInstance(UserTokenVersionDto, user);
+
+    return result;
   }
 }
