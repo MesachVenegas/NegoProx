@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   NotAcceptableException,
+  Param,
   Post,
   Put,
   Query,
@@ -21,7 +22,16 @@ import {
   ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
+import { plainToInstance } from 'class-transformer';
 
+import {
+  CreateBusinessUseCase,
+  UpdateBusinessUseCase,
+  GetBusinessByIdUseCase,
+  LogicDeleteBusinessUseCase,
+  PromoteUserToBusinessUseCase,
+  FilterBusinessByUserByCategoryNameUseCase,
+} from '@/application/business/use-cases';
 import {
   RegisterBusinessDto,
   RegisterLocalBusinessDto,
@@ -30,8 +40,10 @@ import { Role } from '@/domain/constants/role.enum';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { RoleGuard } from '@/shared/guards/role.guard';
 import { Roles } from '@/shared/decorators/role.decorator';
+import { BusinessProfileResponseDto } from '../dto/business';
 import { Public } from '@/shared/decorators/public.decorator';
 import { UserTokenVersionDto } from '../dto/user/user-token.dto';
+import { UserPrismaRepository } from '../repositories/user.repository';
 import { UpdateBusinessDto } from '../dto/business/update-business.dto';
 import { SearchBusinessDto } from '../dto/business/search-business.dto';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
@@ -39,16 +51,6 @@ import { PaginationResponseDto } from '@/infrastructure/dto/pagination.dto';
 import { BusinessResponseDto } from '../dto/business/business-response.dto';
 import { BusinessPrismaRepository } from '../repositories/business.repository';
 import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
-import {
-  CreateBusinessUseCase,
-  FilterBusinessByUserByCategoryNameUseCase,
-  GetBusinessByIdUseCase,
-  LogicDeleteBusinessUseCase,
-  PromoteUserToBusinessUseCase,
-  UpdateBusinessUseCase,
-} from '@/application/business/use-cases';
-import { plainToInstance } from 'class-transformer';
-import { UserPrismaRepository } from '../repositories/user.repository';
 
 @ApiTags('Business')
 @Controller('business')
@@ -105,21 +107,24 @@ export class BusinessController {
   }
 
   // -- Get business by id
-  @Get('find')
+  @Get('profile/:id')
   @Public()
   @ApiOperation({ description: 'Retrieve business by id' })
   @ApiOkResponse({
     description: 'Business found',
-    type: BusinessResponseDto,
+    type: BusinessProfileResponseDto,
   })
-  async findBusiness(@Query('id') id: string) {
+  async businessProfile(@Param('id') id: string) {
     const GetBusiness = new GetBusinessByIdUseCase(this.BusinessRepository);
     const result = await GetBusiness.execute(id);
 
-    return {
-      business: plainToInstance(BusinessResponseDto, result.business),
-      rate: result.rate,
-    };
+    const business = plainToInstance(
+      BusinessProfileResponseDto,
+      result.business,
+    );
+    business.rating_average = result.rate;
+
+    return business;
   }
 
   // -- Create a new business
