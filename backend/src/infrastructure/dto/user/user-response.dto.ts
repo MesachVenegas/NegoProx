@@ -1,7 +1,8 @@
 import { Role, TRole } from '@/domain/constants/role.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { IsBoolean, IsDate, IsEnum, IsString } from 'class-validator';
+import { BusinessResponseDto } from '../business';
 
 @Exclude()
 export class ResponseUserDto {
@@ -49,4 +50,9 @@ export class ResponseUserDto {
   @Expose()
   @IsDate()
   registerAt: Date;
+
+  @ApiProperty({ example: '2023-01-01T00:00:00.000Z' })
+  @Expose()
+  @Type(() => BusinessResponseDto)
+  business?: BusinessResponseDto[];
 }
