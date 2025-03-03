@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 
 import "../styles/globals.css";
+import { ThemeProvider } from "@/components/containers/ThemeProvider";
 
 const poppins = Poppins({
 	weight: ["400", "500", "600", "700"],
@@ -23,9 +24,17 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="es">
+		<html lang="es" suppressHydrationWarning>
 			<body className={`${poppins.variable} antialiased`}>
-				<div>{children}</div>
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					enableSystem
+					disableTransitionOnChange>
+					<div className="flex min-h-screen flex-col">
+						<main className="flex-1">{children}</main>
+					</div>
+				</ThemeProvider>
 			</body>
 		</html>
 	);
