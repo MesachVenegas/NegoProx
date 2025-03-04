@@ -1,13 +1,13 @@
-import "../../styles/globals.css";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import { routing } from "@/i18n/routing";
-import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 
+import "../styles/globals.css";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/containers/ThemeProvider";
+import NotFound from "./not-found";
+import { routing } from "@/i18n/routing";
 
 const poppins = Poppins({
 	weight: ["400", "500", "600", "700"],
@@ -21,6 +21,9 @@ export const metadata: Metadata = {
 	title: "NegoProx - Conectando negocios",
 	description:
 		"Conectando negocios, desde la comodidad de tu hogar y facilitando la comunicación con tus clientes.",
+	icons: {
+		icon: "/favicon.ico",
+	},
 };
 
 export default async function RootLayout({
@@ -31,10 +34,9 @@ export default async function RootLayout({
 	params: Promise<{ locale: "es" | "en" }>;
 }>) {
 	const locale = (await params).locale;
-	if (!routing.locales.includes(locale)) {
-		notFound();
+	if (!locale || !routing.locales.includes(locale)) {
+		NotFound();
 	}
-
 	const messages = await getMessages();
 
 	return (
