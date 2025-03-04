@@ -14,6 +14,11 @@
     "logout": "Cerrar sesión"
   },
   "HomePage": {
-    "title": "Bienvenido a Next.js! con Shadcn UI y Tailwindcss"
+    "hero": {
+      "title": "Descubre negocios locales & servicios en tu ciudad",
+      "subtitle": "Conecta con los mejores negocios locales y servicios en tu ciudad, agenda citas con solo unos pocos clicks.",
+      "button1": "Encontrar negocios",
+      "button2": "Registra tu negocio"
+    }
   }
 }

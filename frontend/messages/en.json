@@ -14,6 +14,11 @@
     "logout": "Logout"
   },
   "HomePage": {
-    "title": "Welcome to Next.js! with Shadcn UI and Tailwindcss"
+    "hero": {
+      "title": "Discover local businesses & services in your city",
+      "subtitle": "Connect with the best local businesses and services in your city, schedule appointments with just a few clicks.",
+      "button1": "Find businesses",
+      "button2": "Register your business"
+    }
   }
 }
