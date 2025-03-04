@@ -19,6 +19,14 @@
       "subtitle": "Conecta con los mejores negocios locales y servicios en tu ciudad, agenda citas con solo unos pocos clicks.",
       "button1": "Encontrar negocios",
       "button2": "Registra tu negocio"
+    },
+    "search": {
+      "title": "Encuentra el negocio perfecto",
+      "description": "Busqueda por nombre, servicio or explora las categorías para encontrar lo que necesitas",
+      "search_placeholder": "Buscar negocios o servicios...",
+      "category_placeholder": "Categoría",
+      "location_placeholder": "Ubicación",
+      "button": "Buscar"
     }
   }
 }

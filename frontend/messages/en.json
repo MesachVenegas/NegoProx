@@ -19,6 +19,14 @@
       "subtitle": "Connect with the best local businesses and services in your city, schedule appointments with just a few clicks.",
       "button1": "Find businesses",
       "button2": "Register your business"
+    },
+    "search": {
+      "title": "Find the perfect business",
+      "description": "Search by business name, service, or browse through categories to find what you need",
+      "search_placeholder": "Search businesses or services...",
+      "category_placeholder": "Category",
+      "location_placeholder": "Location",
+      "button": "Search"
     }
   }
 }
