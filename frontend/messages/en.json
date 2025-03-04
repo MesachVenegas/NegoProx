@@ -1,4 +1,18 @@
 {
+  "Navbar": {
+    "home": "Home",
+    "business": "Business",
+    "categories": "Categories",
+    "howItWorks": "How it works",
+    "about": "About",
+    "login": "Login",
+    "callToAction": "Register my business",
+    "account": "Account",
+    "profile": "Profile",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
   "HomePage": {
     "title": "Welcome to Next.js! with Shadcn UI and Tailwindcss"
   }
