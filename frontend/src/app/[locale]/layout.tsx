@@ -1,12 +1,13 @@
+import "../../styles/globals.css";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-
-import "../../styles/globals.css";
-import { ThemeProvider } from "@/components/containers/ThemeProvider";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
-import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
+
+import Navbar from "@/components/Navbar";
+import { ThemeProvider } from "@/components/containers/ThemeProvider";
 
 const poppins = Poppins({
 	weight: ["400", "500", "600", "700"],
@@ -46,6 +47,7 @@ export default async function RootLayout({
 					disableTransitionOnChange>
 					<NextIntlClientProvider messages={messages}>
 						<div className="flex min-h-screen flex-col">
+							<Navbar />
 							<main className="flex-1">{children}</main>
 						</div>
 					</NextIntlClientProvider>
