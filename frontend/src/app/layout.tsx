@@ -6,8 +6,6 @@ import { NextIntlClientProvider } from "next-intl";
 import "../styles/globals.css";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/containers/ThemeProvider";
-import NotFound from "./not-found";
-import { routing } from "@/i18n/routing";
 
 const poppins = Poppins({
 	weight: ["400", "500", "600", "700"],
@@ -33,10 +31,7 @@ export default async function RootLayout({
 	children: React.ReactNode;
 	params: Promise<{ locale: "es" | "en" }>;
 }>) {
-	const locale = (await params).locale;
-	if (!locale || !routing.locales.includes(locale)) {
-		NotFound();
-	}
+	const locale = (await params).locale || "es";
 	const messages = await getMessages();
 
 	return (
