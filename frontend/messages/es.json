@@ -1,4 +1,11 @@
 {
+  "NotFound": {
+    "title": "Página no encontrada",
+    "description": "Oops! la página que buscas no existe o ha sido movida.",
+    "backhome": "Volver a la página principal",
+    "search": "Buscar negocios",
+    "goBack": "Volver"
+  },
   "Navbar": {
     "home": "Inicio",
     "business": "Negocios",
@@ -15,7 +22,7 @@
   },
   "HomePage": {
     "hero": {
-      "title": "Descubre negocios locales & servicios en tu ciudad",
+      "title": "Descubre negocios locales y servicios en tu ciudad",
       "subtitle": "Conecta con los mejores negocios locales y servicios en tu ciudad, agenda citas con solo unos pocos clicks.",
       "button1": "Encontrar negocios",
       "button2": "Registra tu negocio"
@@ -27,6 +34,48 @@
       "category_placeholder": "Categoría",
       "location_placeholder": "Ubicación",
       "button": "Buscar"
+    },
+    "featuredBusiness": {
+      "title": "Negocios destacados",
+      "description": "Descubre nuestros negocios destacados con excelentes recomendaciones de nuestros usuarios.",
+      "featured": "Destacado",
+      "availability": "Disponible ahora",
+      "appointment": "Agendar cita",
+      "seeMore": "Ver mas negocios"
+    },
+    "howItWorks": {
+      "title": "Como funciona?",
+      "description": "Paso a paso para conectarte con negocios y agendar citas",
+      "steps": {
+        "step1": {
+          "title": "Busqueda",
+          "description": "Encuentra el negocio por nombre, categoria o ubicación para descubrir los servicios que cumplan tus necesidades."
+        },
+        "step2": {
+          "title": "Compare",
+          "description": "Analice el perfil de los negocios, servicios, precios y calificaciones de otros usuarios."
+        },
+        "step3": {
+          "title": "Agende",
+          "description": "Agenda una cita directamente desde nuestra plataforma con disponibilidad en tiempo real."
+        }
+      }
+    },
+    "forBusiness": {
+      "title": "Para propietarios de negocios",
+      "description": "Únete a nuestra plataforma para alcanzar más clientes y facilitarte el manejo de citas, y gestion de cuentas.",
+      "list": [
+        "Incrementa tu presencia en línea y obtén más clientes.",
+        "Gestiona tus citas y cuentas en un solo lugar.",
+        "Genera reseñas y crear tu reputación en línea.",
+        "Accede a análisis y estadísticas de tus clientes"
+      ],
+      "register": "Registrar mi negocio",
+      "learnMore": "Saber mas"
+    },
+    "categories": {
+      "title": "Explorar categorías",
+      "description": "Descubre negocios y servicios en diferentes categorías para satisfacer tus necesidades."
     }
   }
 }

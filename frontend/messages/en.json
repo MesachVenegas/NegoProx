@@ -1,4 +1,11 @@
 {
+  "NotFound": {
+    "title": "Page not found",
+    "description": "Oops! the page you are looking for does not exist or has been moved.",
+    "backhome": "Back to home",
+    "search": "Search businesses",
+    "goBack": "Go back"
+  },
   "Navbar": {
     "home": "Home",
     "business": "Business",
@@ -27,6 +34,48 @@
       "category_placeholder": "Category",
       "location_placeholder": "Location",
       "button": "Search"
+    },
+    "featuredBusiness": {
+      "title": "Featured Businesses",
+      "description": "Discover our top-rated businesses with excellent customer reviews",
+      "featured": "Featured",
+      "availability": "Available today",
+      "appointment": "Appointment now",
+      "seeMore": "View all businesses"
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "description": "Simple step to connect with businesses and schedule appointments",
+      "steps": {
+        "step1": {
+          "title": "Search",
+          "description": "Find businesses by name, category, or location to discover services that meet your needs."
+        },
+        "step2": {
+          "title": "Compare",
+          "description": "View business profiles, services, prices, and ratings from other users."
+        },
+        "step3": {
+          "title": "Book",
+          "description": "Schedule appointments directly through our platform with real-time availability."
+        }
+      }
+    },
+    "forBusiness": {
+      "title": "For business owners",
+      "description": "Join our platform to increase your online presence and manage appointments in one place.",
+      "list": [
+        "Increase your online presence and get more clients.",
+        "Manage appointments and bookings in one place.",
+        "Showcase reviews and build your reputation online.",
+        "Access analytics and insights about your costumers."
+      ],
+      "register": "Register my business",
+      "learnMore": "Learn more"
+    },
+    "categories": {
+      "title": "Browse by category",
+      "description": "Explore business across various categories to find exactly what you need."
     }
   }
 }
