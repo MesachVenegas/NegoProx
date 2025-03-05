@@ -76,6 +76,10 @@
     "categories": {
       "title": "Explorar categorías",
       "description": "Descubre negocios y servicios en diferentes categorías para satisfacer tus necesidades."
+    },
+    "testimonials": {
+      "title": "Lo que dicen nuestros clientes",
+      "description": "Escucha de negocios y clientes que han utilizado nuestra plataforma"
     }
   }
 }

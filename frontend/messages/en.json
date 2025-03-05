@@ -76,6 +76,10 @@
     "categories": {
       "title": "Browse by category",
       "description": "Explore business across various categories to find exactly what you need."
+    },
+    "testimonials": {
+      "title": "What our customers say",
+      "description": "Hear from business and customers who have used our platform"
     }
   }
 }
