@@ -1,6 +1,6 @@
 "use client";
 import { Globe } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import {
@@ -16,18 +16,20 @@ export default function LanguageSelector() {
 	const pathname = usePathname();
 	const [language, setLanguage] = useState("en");
 
-	const languages = {
-		en: "English",
-		es: "Español",
-	};
+	const languages = useMemo(
+		() => ({
+			en: "English",
+			es: "Español",
+		}),
+		[]
+	);
 
 	useEffect(() => {
 		const currentLang = pathname.split("/")[1];
 		if (currentLang in languages) {
 			setLanguage(currentLang);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [pathname]);
+	}, [pathname, languages]);
 
 	const changeLanguage = (newLocale: string) => {
 		const currentLang = pathname.split("/")[1];
