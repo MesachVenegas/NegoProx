@@ -237,14 +237,14 @@ export default function Home() {
 
 			{/* How it works section */}
 			<FadeWhenVisible>
-				<section className="w-full py-12 md:py-16 lg:py-20 bg-gradient-to-tl from-background to-secondary/70 ">
+				<section className="w-full py-12 md:py-16 lg:py-20 bg-secondary dark:bg-secondary/50">
 					<div className="container mx-auto max-w-[1400px] px-4 md:px-6">
 						<div className="flex flex-col items-center justify-center space-y-4 text-center">
-							<div className="space-y-2">
+							<div className="space-y-2 text-white">
 								<h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
 									{t("howItWorks.title")}
 								</h2>
-								<p className="max-w-[700px] text-muted-foreground md:text-xl">
+								<p className="max-w-[700px] md:text-xl">
 									{t("howItWorks.description")}
 								</p>
 							</div>
@@ -269,7 +269,7 @@ export default function Home() {
 							].map((step, index) => (
 								<motion.div
 									key={step.title}
-									className="flex flex-col items-center text-center space-y-2"
+									className="flex flex-col items-center text-center space-y-2 text-white"
 									initial={{ opacity: 0, y: 20 }}
 									whileInView={{ opacity: 1, y: 0 }}
 									viewport={{ once: true }}
@@ -277,11 +277,11 @@ export default function Home() {
 										duration: 0.5,
 										delay: index * 0.2,
 									}}>
-									<div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
+									<div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-lg">
 										{step.icon}
 									</div>
 									<h3 className="text-xl font-bold">{step.title}</h3>
-									<p className="text-muted-foreground">{step.description}</p>
+									<p>{step.description}</p>
 								</motion.div>
 							))}
 						</div>
@@ -379,7 +379,7 @@ export default function Home() {
 									initial={{ opacity: 0, scale: 0.9 }}
 									whileInView={{ opacity: 1, scale: 1 }}
 									viewport={{ once: true }}
-									transition={{ duration: 0.3, delay: i * 0.3 }}>
+									transition={{ duration: 0.3, delay: i * 0.2 }}>
 									<Link
 										href={`/categories/`}
 										className="flex flex-col items-center justify-center p-4 rounded-lg border bg-background hover:bg-muted/50 transition-colors">
@@ -396,6 +396,25 @@ export default function Home() {
 			</FadeWhenVisible>
 
 			{/* Testimonials section */}
+			<FadeWhenVisible>
+				<section className="w-full py-12 md:py-16 lg:py-20 bg-muted/50">
+					<div className="container mx-auto max-w-[1400px] px-4 md:px-6">
+						<div className="flex flex-col items-center justify-center space-y-4 text-center">
+							<div className="space-y-2">
+								<h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
+									What our Users say
+								</h2>
+								<p className="max-w-[700px] text-muted-foreground md:text-xl">
+									Hear from businesses and customers who have used our platform
+								</p>
+							</div>
+						</div>
+						<div className="mt-8 relative">
+							<div className="flex justify-center items-center"></div>
+						</div>
+					</div>
+				</section>
+			</FadeWhenVisible>
 		</div>
 	);
 }
