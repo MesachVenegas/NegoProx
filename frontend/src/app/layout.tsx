@@ -4,9 +4,10 @@ import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 
 import "../styles/globals.css";
-import Navbar from "@/components/Navbar";
-import { ThemeProvider } from "@/components/containers/ThemeProvider";
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
+import ScrollRestoration from "@/components/ScrollRestoration";
+import { ThemeProvider } from "@/components/containers/ThemeProvider";
 
 const poppins = Poppins({
 	weight: ["400", "500", "600", "700"],
@@ -49,6 +50,7 @@ export default async function RootLayout({
 							<main className="flex-1">{children}</main>
 							<Footer />
 						</div>
+						<ScrollRestoration />
 					</ThemeProvider>
 				</NextIntlClientProvider>
 			</body>
