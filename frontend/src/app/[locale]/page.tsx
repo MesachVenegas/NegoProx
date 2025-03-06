@@ -113,7 +113,7 @@ export default function Home() {
 								size="lg"
 								variant="outline"
 								className="bg-white/10 hover:bg-white/20 border-white/50 text-white hover:text-white backdrop-blur supports-[backdrop-filter]:bg-white/5">
-								<Link href="/register/business">{t("hero.button2")}</Link>
+								<Link href="/business/register">{t("hero.button2")}</Link>
 							</Button>
 						</motion.div>
 					</div>
@@ -260,7 +260,9 @@ export default function Home() {
 													<Button
 														size="sm"
 														className="bg-primary/90 hover:bg-primary">
-														{t("featuredBusiness.appointment")}
+														<Link href={`/business/${item}`}>
+															{t("featuredBusiness.appointment")}
+														</Link>
 													</Button>
 												</div>
 											</div>
@@ -273,7 +275,7 @@ export default function Home() {
 							<Button
 								variant="outline"
 								className="border-primary/50 text-primary hover:bg-primary/10">
-								{t("featuredBusiness.seeMore")}
+								<Link href="/businesses">{t("featuredBusiness.seeMore")}</Link>
 							</Button>
 						</div>
 					</div>
@@ -388,13 +390,17 @@ export default function Home() {
 								</ul>
 								<div className="flex flex-col gap-2 min-[400px]:flex-row pt-4">
 									<Button size="lg" className="cursor-pointer">
-										{t("forBusiness.register")}
+										<Link href="/business/register">
+											{t("forBusiness.register")}
+										</Link>
 									</Button>
 									<Button
 										size="lg"
 										variant="outline"
 										className="hover:text-black transition-all duration-200 cursor-pointer">
-										{t("forBusiness.learnMore")}
+										<Link href="/how-it-works">
+											{t("forBusiness.learnMore")}
+										</Link>
 									</Button>
 								</div>
 							</motion.div>
@@ -539,13 +545,13 @@ export default function Home() {
 									size="lg"
 									variant="secondary"
 									className="px-8 shadow-lg hover:shadow-xl transition-all cursor-pointer">
-									Find Businesses
+									<Link href="/businesses">{t("hero.button1")}</Link>
 								</Button>
 								<Button
 									size="lg"
 									variant="outline"
 									className="px-8 bg-transparent border-black/80 text-black hover:text-black hover:bg-white/40 shadow-lg hover:shadow-xl transition-all cursor-pointer">
-									Register Your Business
+									<Link href="/business/register">{t("hero.button2")}</Link>
 								</Button>
 							</div>
 						</div>
