@@ -2,10 +2,6 @@
 import { useTranslations } from "next-intl";
 import { Briefcase, LogIn, LogOut, Menu, Settings, User } from "lucide-react";
 
-import { Button } from "./ui/button";
-import { Link } from "@/i18n/navigation";
-import { ThemeToggle } from "./ThemeToggle";
-import LanguageSelector from "./LanguageSelector";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -14,6 +10,10 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { Button } from "./ui/button";
+import { Link } from "@/i18n/navigation";
+import { ThemeToggle } from "./ThemeToggle";
+import LanguageSelector from "./LanguageSelector";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "./ui/sheet";
 
@@ -26,7 +26,10 @@ export default function Navbar() {
 				{/* Mobile menu */}
 				<Sheet>
 					<SheetTrigger asChild>
-						<Button variant="outline" size="icon" className="mr-4 xl:hidden">
+						<Button
+							variant="outline"
+							size="icon"
+							className="mr-4 xl:hidden hover:text-black cursor-pointer">
 							<Menu className="h-6 w-6" />
 							<span className="sr-only">Toggle menu</span>
 						</Button>
@@ -121,7 +124,9 @@ export default function Navbar() {
 									<ThemeToggle />
 									<LanguageSelector />
 								</div>
-								<Button className="w-full">{t("callToAction")}</Button>
+								<Button className="w-full">
+									<Link href="/business/register">{t("callToAction")}</Link>
+								</Button>
 							</div>
 						</div>
 					</SheetContent>
@@ -186,22 +191,24 @@ export default function Navbar() {
 						<LanguageSelector />
 						<ThemeToggle />
 					</div>
-					<Button>{t("callToAction")}</Button>
+					<Button className="dark:text-white hover:shadow-lg cursor-pointer">
+						{t("callToAction")}
+					</Button>
 					<Button
 						variant="outline"
 						size="sm"
-						className="hidden sm:flex items-center gap-2">
+						className="hidden sm:flex items-center gap-2 cursor-pointer hover:text-black">
 						<LogIn className="h-4 w-4" />
 						{t("login")}
 					</Button>
-					{/* TODO: make this work with a authenticate user */}
 					{/* User menu */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
+							{/* TODO: make this visible when user is logged in */}
 							<Button
 								variant="ghost"
 								size="icon"
-								className="relative h-8 w-8 rounded-full hidden">
+								className="relative h-8 w-8 rounded-full cursor-pointer hidden">
 								<Avatar className="h-8 w-8">
 									{/* TODO: Add user avatar */}
 									<AvatarImage src="" alt="User" />
@@ -213,26 +220,22 @@ export default function Navbar() {
 							<DropdownMenuLabel>{t("account")}</DropdownMenuLabel>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem className="group">
-								<User className="mr-2 h-4 w-4 dark:group-hover:text-teal-500" />
-								<Link
-									href="/profile"
-									className="dark:group-hover:text-teal-500">
+								<User className="mr-2 h-4 w-4 group-hover:text-black" />
+								<Link href="/profile" className="group-hover:text-black">
 									{t("profile")}
 								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuItem className="group">
-								<Briefcase className="mr-2 h-4 w-4 dark:group-hover:text-teal-500" />
-								<Link
-									href="/dashboard"
-									className="dark:group-hover:text-teal-500">
+								<Briefcase className="mr-2 h-4 w-4 dark:group-hover:text-black" />
+								<Link href="/dashboard" className="dark:group-hover:text-black">
 									{t("dashboard")}
 								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuItem className="group">
-								<Settings className="mr-2 h-4 w-4 dark:group-hover:text-teal-500" />
+								<Settings className="mr-2 h-4 w-4 dark:group-hover:text-black" />
 								<Link
 									href="/profile/settings"
-									className="dark:group-hover:text-teal-500">
+									className="dark:group-hover:text-black">
 									{t("settings")}
 								</Link>
 							</DropdownMenuItem>

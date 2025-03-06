@@ -54,7 +54,7 @@ export default function LanguageSelector() {
 				<Button
 					variant="outline"
 					size="sm"
-					className="w=[120px] justify-start gap-2">
+					className="w=[120px] justify-start gap-2 hover:text-black">
 					<Globe className="h-4 w-4" />
 					{languages[language as keyof typeof languages]}
 				</Button>
