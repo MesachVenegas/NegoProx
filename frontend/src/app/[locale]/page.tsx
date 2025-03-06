@@ -275,7 +275,7 @@ export default function Home() {
 							<Button
 								variant="outline"
 								className="border-primary/50 text-primary hover:bg-primary/10">
-								<Link href="/businesses">{t("featuredBusiness.seeMore")}</Link>
+								<Link href="/business">{t("featuredBusiness.seeMore")}</Link>
 							</Button>
 						</div>
 					</div>
@@ -545,7 +545,7 @@ export default function Home() {
 									size="lg"
 									variant="secondary"
 									className="px-8 shadow-lg hover:shadow-xl transition-all cursor-pointer">
-									<Link href="/businesses">{t("hero.button1")}</Link>
+									<Link href="/business">{t("hero.button1")}</Link>
 								</Button>
 								<Button
 									size="lg"
