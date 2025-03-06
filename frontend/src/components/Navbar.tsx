@@ -11,18 +11,28 @@ import {
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { Link } from "@/i18n/navigation";
+import { motion } from "framer-motion";
 import { ThemeToggle } from "./ThemeToggle";
 import LanguageSelector from "./LanguageSelector";
+import { Link, usePathname } from "@/i18n/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "./ui/sheet";
 
 export default function Navbar() {
 	const t = useTranslations("Navbar");
+	const pathname = usePathname();
+
+	const menu = [
+		{ label: t("home"), href: "/" },
+		{ label: t("business"), href: "/business" },
+		{ label: t("categories"), href: "/categories" },
+		{ label: t("howItWorks"), href: "/how-it-works" },
+		{ label: t("about"), href: "/about" },
+	];
 
 	return (
 		<header className="sticky top-0 z-50 w-fill bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-			<div className="container flex h-16 items-center mx-auto max-w-[1400px] px-2.5">
+			<div className="container flex h-16 items-center mx-auto max-w-[1400px] md:px-4">
 				{/* Mobile menu */}
 				<Sheet>
 					<SheetTrigger asChild>
@@ -74,21 +84,21 @@ export default function Navbar() {
 									</svg>
 								</SheetTitle>
 								<div className="flex flex-col gap-6 py-6">
-									<Link href="/" className="nav-link">
-										{t("home")}
-									</Link>
-									<Link href="/business" className="nav-link">
-										{t("business")}
-									</Link>
-									<Link href="/categories" className="nav-link">
-										{t("categories")}
-									</Link>
-									<Link href="/how-it-works" className="nav-link">
-										{t("howItWorks")}
-									</Link>
-									<Link href="/about" className="nav-link">
-										{t("about")}
-									</Link>
+									{menu.map((item) => {
+										const isActive = item.href === pathname;
+
+										return (
+											<Link
+												key={item.label}
+												href={item.href}
+												className={`nav-link ${
+													isActive ? "text-teal-500 dark:text-teal-300" : ""
+												}`}>
+												{item.label}
+											</Link>
+										);
+									})}
+									{/* Account menu */}
 									<div className="space-y-3 pt-4 border-t">
 										<div>{t("account")}</div>
 										<Link
@@ -169,21 +179,38 @@ export default function Navbar() {
 				</Link>
 				{/* Navigation */}
 				<nav className="hidden xl:flex gap-6 mx-6">
-					<Link href="/" className="nav-link text-sm">
-						{t("home")}
-					</Link>
-					<Link href="/business" className="nav-link text-sm">
-						{t("business")}
-					</Link>
-					<Link href="/categories" className="nav-link text-sm">
-						{t("categories")}
-					</Link>
-					<Link href="/how-it-works" className="nav-link text-sm">
-						{t("howItWorks")}
-					</Link>
-					<Link href="/about" className="nav-link text-sm">
-						{t("about")}
-					</Link>
+					{menu.map((item) => {
+						const isActive = item.href === pathname;
+
+						return (
+							<Link
+								key={item.label}
+								href={item.href}
+								className="relative py-2 text-sm font-medium transition-colors hover:text-primary">
+								<span
+									className={
+										isActive ? "text-teal-500 dark:text-teal-300" : ""
+									}>
+									{item.label}
+								</span>
+								<motion.div
+									className="absolute bottom-0 left-0 h-[2px] bg-primary"
+									initial={false}
+									animate={{
+										width: isActive ? "100%" : "0%",
+									}}
+									transition={{
+										type: "spring",
+										stiffness: 400,
+										damping: 30,
+									}}
+									whileHover={{
+										width: "100%",
+									}}
+								/>
+							</Link>
+						);
+					})}
 				</nav>
 				{/* Actions */}
 				<div className="flex items-center gap-4 ml-auto">
@@ -192,14 +219,16 @@ export default function Navbar() {
 						<ThemeToggle />
 					</div>
 					<Button className="dark:text-white hover:shadow-lg cursor-pointer">
-						{t("callToAction")}
+						<Link href="/business/register">{t("callToAction")}</Link>
 					</Button>
 					<Button
 						variant="outline"
 						size="sm"
-						className="hidden sm:flex items-center gap-2 cursor-pointer hover:text-black">
-						<LogIn className="h-4 w-4" />
-						{t("login")}
+						className="hidden md:flex items-center cursor-pointer hover:text-black">
+						<Link href="/login" className="flex items-center gap-2">
+							<LogIn className="h-4 w-4" />
+							{t("login")}
+						</Link>
 					</Button>
 					{/* User menu */}
 					<DropdownMenu>
