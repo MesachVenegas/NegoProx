@@ -1,7 +1,6 @@
 "use client";
 import { Globe } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
 
 import {
 	DropdownMenu,
@@ -10,11 +9,14 @@ import {
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
+import { useLocale } from "next-intl";
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 export default function LanguageSelector() {
 	const router = useRouter();
 	const pathname = usePathname();
-	const [language, setLanguage] = useState("en");
+	const currentLang = useLocale();
+	const [language, setLanguage] = useState(currentLang);
 
 	const languages = useMemo(
 		() => ({
@@ -25,26 +27,17 @@ export default function LanguageSelector() {
 	);
 
 	useEffect(() => {
-		const currentLang = pathname.split("/")[1];
 		if (currentLang in languages) {
 			setLanguage(currentLang);
 		}
-	}, [pathname, languages]);
+	}, [currentLang, languages]);
 
 	const changeLanguage = (newLocale: string) => {
 		const scrollPosition = window.scrollY;
 		localStorage.setItem("scrollPosition", scrollPosition.toString());
 
-		const currentLang = pathname.split("/")[1];
-		let newPath;
-		if (currentLang in languages) {
-			newPath = pathname.replace(`/${currentLang}`, `/${newLocale}`);
-		} else {
-			newPath = `/${newLocale}${pathname}`;
-		}
-
+		router.replace(pathname, { locale: newLocale });
 		setLanguage(newLocale);
-		router.push(newPath);
 		router.refresh();
 	};
 

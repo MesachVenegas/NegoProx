@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import ScrollRestoration from "@/components/ScrollRestoration";
 import { ThemeProvider } from "@/components/containers/ThemeProvider";
+import { routing } from "@/i18n/routing";
 
 const poppins = Poppins({
 	weight: ["400", "500", "600", "700"],
@@ -26,14 +27,18 @@ export const metadata: Metadata = {
 	},
 };
 
+export function generateStaticParams() {
+	return routing.locales.map((locale) => ({ locale }));
+}
+
 export default async function RootLayout({
 	children,
-	params,
+	params: { locale },
 }: Readonly<{
 	children: React.ReactNode;
-	params: Promise<{ locale: "es" | "en" }>;
+	params: { locale: "es" | "en" };
 }>) {
-	const locale = (await params).locale || "es";
+	// const { locale } = await params;
 	const messages = await getMessages();
 
 	return (
