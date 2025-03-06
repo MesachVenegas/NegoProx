@@ -42,6 +42,7 @@ export default function LanguageSelector() {
 
 		setLanguage(newLocale);
 		router.push(newPath);
+		router.refresh();
 	};
 
 	return (
