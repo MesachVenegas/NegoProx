@@ -1,7 +1,4 @@
 "use client";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
 import {
 	CalendarDays,
 	CheckCircle,
@@ -11,6 +8,10 @@ import {
 	Search,
 	Users,
 } from "lucide-react";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { useTranslations,  } from "next-intl";
+import { useEffect, useRef, useState } from "react";
 
 import {
 	Select,
@@ -23,11 +24,10 @@ import { Link } from "@/i18n/navigation";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import FadeWhenVisible from "@/components/containers/FadeWhenVisible";
 import { categories } from "@/lib/constants/categories";
-import { useEffect, useRef, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { testimonials } from "@/lib/constants/testimonials";
+import FadeWhenVisible from "@/components/containers/FadeWhenVisible";
 
 export default function Home() {
 	const testimonialRef = useRef<HTMLDivElement>(null);
@@ -426,7 +426,7 @@ export default function Home() {
 									viewport={{ once: true }}
 									transition={{ duration: 0.3, delay: i * 0.2 }}>
 									<Link
-										href={`/categories/`}
+										href={`/categories/${category.name}`}
 										className="flex flex-col items-center justify-center p-4 rounded-lg border bg-background hover:bg-muted/50 transition-colors">
 										<div className="mb-2 text-primary">{category.icon}</div>
 										<span className="text-sm font-medium text-center">
@@ -513,6 +513,39 @@ export default function Home() {
 									onClick={nextTestimonial}
 									className="ml-4 hover:text-black transition-all duration-200">
 									<ChevronRight className="h-4 w-4" />
+								</Button>
+							</div>
+						</div>
+					</div>
+				</section>
+			</FadeWhenVisible>
+
+			{/* Call to action section */}
+			<FadeWhenVisible>
+				<section className="w-full py-12 md:py-24 lg:py-32 bg-primary text-primary-foreground">
+					<div className="container mx-auto px-4 md:px-6 max-w-[1400px]">
+						<div className="flex flex-col items-center justify-center space-y-4 text-center">
+							<div className="space-y-2 text-black">
+								<h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
+									Ready to Get Started?
+								</h2>
+								<p className="max-w-[700px] md:text-xl opacity-90">
+									Join thousands of businesses and customers on our platform
+									today.
+								</p>
+							</div>
+							<div className="flex flex-col gap-2 min-[400px]:flex-row mt-4">
+								<Button
+									size="lg"
+									variant="secondary"
+									className="px-8 shadow-lg hover:shadow-xl transition-all cursor-pointer">
+									Find Businesses
+								</Button>
+								<Button
+									size="lg"
+									variant="outline"
+									className="px-8 bg-transparent border-black/80 text-black hover:text-black hover:bg-white/40 shadow-lg hover:shadow-xl transition-all cursor-pointer">
+									Register Your Business
 								</Button>
 							</div>
 						</div>
