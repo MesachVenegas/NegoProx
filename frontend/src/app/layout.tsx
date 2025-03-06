@@ -37,18 +37,18 @@ export default async function RootLayout({
 	return (
 		<html lang={locale} suppressHydrationWarning>
 			<body className={`${poppins.variable} antialiased`}>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange>
-					<NextIntlClientProvider messages={messages}>
+				<NextIntlClientProvider messages={messages}>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange>
 						<div className="flex min-h-screen flex-col">
 							<Navbar />
 							<main className="flex-1">{children}</main>
 						</div>
-					</NextIntlClientProvider>
-				</ThemeProvider>
+					</ThemeProvider>
+				</NextIntlClientProvider>
 			</body>
 		</html>
 	);
