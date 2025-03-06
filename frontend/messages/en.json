@@ -87,5 +87,14 @@
       "title": "What our customers say",
       "description": "Hear from business and customers who have used our platform"
     }
+  },
+  "Login": {
+    "title": "Login",
+    "description": "Enter your credentials to access your account",
+    "email": "Email",
+    "password": "Password",
+    "forgot": "Forgot your password?",
+    "loginButton": "Login",
+    "loginInButton": "Logging in..."
   }
 }
