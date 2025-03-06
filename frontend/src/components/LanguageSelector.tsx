@@ -32,6 +32,9 @@ export default function LanguageSelector() {
 	}, [pathname, languages]);
 
 	const changeLanguage = (newLocale: string) => {
+		const scrollPosition = window.scrollY;
+		localStorage.setItem("scrollPosition", scrollPosition.toString());
+
 		const currentLang = pathname.split("/")[1];
 		let newPath;
 		if (currentLang in languages) {
