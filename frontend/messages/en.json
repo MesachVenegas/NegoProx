@@ -20,6 +20,12 @@
     "settings": "Settings",
     "logout": "Logout"
   },
+  "Footer": {
+    "label": "©2025 NegoProx. All rights reserved",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "contact": "Contact"
+  },
   "HomePage": {
     "hero": {
       "title": "Discover local businesses & services in your city",

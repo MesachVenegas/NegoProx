@@ -6,6 +6,7 @@ import { NextIntlClientProvider } from "next-intl";
 import "../styles/globals.css";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/containers/ThemeProvider";
+import Footer from "@/components/Footer";
 
 const poppins = Poppins({
 	weight: ["400", "500", "600", "700"],
@@ -46,6 +47,7 @@ export default async function RootLayout({
 						<div className="flex min-h-screen flex-col">
 							<Navbar />
 							<main className="flex-1">{children}</main>
+							<Footer />
 						</div>
 					</ThemeProvider>
 				</NextIntlClientProvider>
