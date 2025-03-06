@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { useTranslations,  } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import {
