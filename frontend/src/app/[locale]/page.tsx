@@ -70,11 +70,7 @@ export default function Home() {
 	return (
 		<div className="flex-1 flex flex-col items-center">
 			{/* Hero sections */}
-			<motion.section
-				className="w-full min-h-[750px] relative"
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				transition={{ duration: 1 }}>
+			<section className="relative min-h-[650px] flex items-center w-full">
 				<div className="absolute inset-0 z-0">
 					<Image
 						src="https://picsum.photos/1000/800"
@@ -118,7 +114,7 @@ export default function Home() {
 						</motion.div>
 					</div>
 				</div>
-			</motion.section>
+			</section>
 
 			{/* Search section */}
 			<FadeWhenVisible>
@@ -369,7 +365,7 @@ export default function Home() {
 										{t("forBusiness.description")}
 									</p>
 								</div>
-								<ul className="grid gap-2">
+								<motion.ul className="grid gap-2">
 									{[
 										`${t("forBusiness.list.0")}`,
 										`${t("forBusiness.list.1")}`,
@@ -387,7 +383,7 @@ export default function Home() {
 											<span>{item}</span>
 										</motion.li>
 									))}
-								</ul>
+								</motion.ul>
 								<div className="flex flex-col gap-2 min-[400px]:flex-row pt-4">
 									<Button size="lg" className="cursor-pointer">
 										<Link href="/business/register">
