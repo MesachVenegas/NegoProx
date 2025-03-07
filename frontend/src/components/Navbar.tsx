@@ -25,7 +25,8 @@ export default function Navbar() {
 	const { scrollY } = useScroll();
 	const [isVisible, setIsVisible] = useState<boolean>(true);
 	const [isScrolled, setIsScrolled] = useState<boolean>(false);
-	const isAbsolute = ["/", "/login", "/register"].includes(pathname);
+	const isAbsolute = pathname === "/";
+	// ["/", "/login", "/register"].includes(pathname);
 	// Transalate function
 	const t = useTranslations("Navbar");
 
@@ -241,16 +242,13 @@ export default function Navbar() {
 								className={`relative py-2 text-sm font-medium transition-colors ${
 									isAbsolute && !isScrolled
 										? "text-white hover:text-primary/80"
-										: "text-foreground hover:text-teal-300"
+										: isActive
+										? "text-teal-300"
+										: "text-black dark:text-white hover:text-primary"
 								}`}>
-								<span
-									className={
-										isActive ? "text-teal-300 dark:text-teal-400" : ""
-									}>
-									{item.label}
-								</span>
+								<span>{item.label}</span>
 								<motion.div
-									className="absolute bottom-0 left-0 h-[2px] bg-primary"
+									className="absolute bottom-0 left-0 h-[2px] bg-teal-300"
 									initial={false}
 									animate={{
 										width: isActive ? "100%" : "0%",
