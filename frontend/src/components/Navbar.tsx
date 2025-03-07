@@ -50,7 +50,7 @@ export default function Navbar() {
 	useMotionValueEvent(scrollY, "change", (latest) => {
 		const prev = scrollY.getPrevious() || 0;
 
-		if (latest > prev && latest > 150) {
+		if (latest > prev && latest > 250) {
 			setIsVisible(false);
 		} else {
 			setIsVisible(true);
@@ -76,17 +76,17 @@ export default function Navbar() {
 					? "fixed top-0 left-0 z-50 border-transparent"
 					: `sticky top-0 z-50 border-border`
 			} ${navBackground}`}>
-			<div className="container flex h-16 items-center mx-auto max-w-[1400px] md:px-4">
+			<div className="container flex h-16 items-center mx-auto max-w-[1400px] md:px-4 px-2">
 				{/* Mobile menu */}
 				<Sheet>
 					<SheetTrigger asChild>
 						<Button
 							variant="outline"
 							size="icon"
-							className={`mr-4 lg:hidden ${
+							className={`mr-2 lg:hidden ${
 								isAbsolute && !isScrolled
-									? "dark:text-white hover:text-primary hover:bg-white/20 border-white"
-									: ""
+									? "text-white hover:bg-white/20 border-muted-foreground/30 bg-transparent hover:text-teal-300"
+									: " bg-transparent border-muted hover:bg-teal-300/50"
 							}`}>
 							<Menu className="h-6 w-6" />
 							<span className="sr-only">Toggle menu</span>
