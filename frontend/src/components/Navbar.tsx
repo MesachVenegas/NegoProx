@@ -31,7 +31,7 @@ export default function Navbar() {
 	];
 
 	return (
-		<header className="sticky top-0 z-50 w-fill bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+		<header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
 			<div className="container flex h-16 items-center mx-auto max-w-[1400px] md:px-4">
 				{/* Mobile menu */}
 				<Sheet>
