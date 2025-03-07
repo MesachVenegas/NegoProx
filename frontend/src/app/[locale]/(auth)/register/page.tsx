@@ -67,7 +67,7 @@ export default function RegisterPage() {
 
 	return (
 		<div className="flex min-h-screen bg-gradient-to-br from-primary/20 via-background to-secondary/20">
-			<div className="flex flex-col justify-center items-center w-full lg:w-1.2 p-8">
+			<div className="flex flex-col justify-center items-center w-full lg:w-1/2 p-8">
 				<motion.div
 					initial={{ y: -20, opacity: 0 }}
 					animate={{ opacity: 1, y: 0 }}
