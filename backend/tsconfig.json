@@ -20,9 +20,12 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["./src/*"],
-      "@modules/*": ["./src/modules/*"],
+      "@domain/*": ["./src/domain/*"],
       "@shared/*": ["./src/shared/*"],
-      "@prisma/*": ["./src/prisma/*"]
+      "@application/*": ["./src/application/*"],
+      "@infrastructure/*": ["./src/infrastructure/*"],
+      "@modules/*": ["./src/infrastructure/modules/*"],
+      "@repositories/*": ["./src/infrastructure/repositories/*"]
     }
   }
 }

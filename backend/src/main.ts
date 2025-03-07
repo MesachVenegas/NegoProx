@@ -3,39 +3,83 @@ import {
   Logger,
   ValidationPipe,
 } from '@nestjs/common';
+import helmet from 'helmet';
 import compression from 'compression';
-// import { doubleCsrf } from 'csrf-csrf';
 import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 import { VersioningType } from '@nestjs/common';
-import { HttpExceptionFilter } from '@shared/exceptions/http-exceptions.filter';
+import { HttpExceptionFilter } from '@/shared/filters/http-exceptions.filter';
 import { ResponseInterceptor } from '@shared/interceptors/response.interceptor';
-import { PrismaKnownExceptionFilter } from '@/shared/exceptions/prisma-know-exceptions.filter';
-import { PrismaUnknownExceptionFilter } from './shared/exceptions/prisma-unknown-exceptions.filter';
+import { PrismaKnownExceptionFilter } from '@/shared/filters/prisma-know-exceptions.filter';
+import { PrismaUnknownExceptionFilter } from './shared/filters/prisma-unknown-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const envs = app.get(ConfigService);
+  const isProduction = envs.get<string>('app.environment') === 'production';
 
-  // CORS
+  // Security
+  app.use(cookieParser());
   app.enableCors({
-    origin: process.env.APP_ORIGIN ?? '*',
+    origin: envs.get<string>('security.originUrl') ?? '*',
     methods: 'GET,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'"],
+          connectSrc: [
+            "'self'",
+            'https://accounts.google.com',
+            'https://*.googleapis.com',
+            // frontend url
+            // payment provider url
+          ],
+          objectSrc: ["'none'"],
+          baseUri: ["'none'"],
+          formAction: ["'self'"],
+          upgradeInsecureRequests: isProduction ? [] : null,
+        },
+      },
+      xContentTypeOptions: true,
+      xFrameOptions: { action: 'deny' },
+      strictTransportSecurity: isProduction
+        ? {
+            maxAge: 31536000,
+            includeSubDomains: true,
+            preload: true,
+          }
+        : false,
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    }),
+  );
+
   // Global Filters
   app.useGlobalFilters(
     new HttpExceptionFilter(),
     new PrismaKnownExceptionFilter(),
     new PrismaUnknownExceptionFilter(),
   );
-  // Global Interceptors
+  // Global Interceptors amd Serializers
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector)),
     new ResponseInterceptor(),
+  );
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidUnknownValues: true,
+      validationError: { target: false, value: false },
+    }),
   );
   // Enable Compression Response
   app.use(
@@ -46,35 +90,11 @@ async function bootstrap() {
     }),
   );
 
-  // CSRF Protection
-  // const csrfOptions = {
-  //   getSecret: () => process.env.CSRF_SECRET || '',
-  //   cookieName: 'ngx.tk',
-  //   cookieOptions: {
-  //     httpOnly: true,
-  //     secure: process.env.NODE_ENV === 'production',
-  //   },
-  //   size: 64,
-  //   ignoreMethods: ['GET', 'HEAD', 'OPTIONS'],
-  // };
-  // const { doubleCsrfProtection } = doubleCsrf(csrfOptions);
-  // app.use(doubleCsrfProtection);
-  app.use(cookieParser());
-
-  // Global Pipes
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      validationError: { target: false, value: false },
-    }),
-  );
-
   // APi Prefix and Versioning
   app.setGlobalPrefix('api');
   app.enableVersioning({
     type: VersioningType.URI,
-    defaultVersion: process.env.APP_VERSION ?? '1',
+    defaultVersion: envs.get<string>('app.version') ?? '1',
   });
 
   // Compression filter
@@ -87,20 +107,27 @@ async function bootstrap() {
 
   // Swagger Configuration
   const config = new DocumentBuilder()
-    .setTitle(process.env.APP_NAME ?? 'NegoProx API')
+    .setTitle(envs.get<string>('app.name') ?? 'NegoProx API')
     .setDescription(
-      process.env.APP_DESCRIPTION ?? 'The NegoProx API description',
+      envs.get<string>('app.description') ?? 'The NegoProx API description',
     )
-    .setVersion(process.env.APP_VERSION ?? '1')
+    .setVersion(envs.get<string>('app.version') ?? '1')
     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup(`api/v${process.env.APP_VERSION}`, app, document);
+  SwaggerModule.setup(
+    `api/v${envs.get<string>('app.version')}/docs`,
+    app,
+    document,
+  );
 
-  await app.listen(process.env.APP_PORT ?? 3000, () => {
+  await app.listen(envs.get<string>('app.port') || 3000, () => {
     Logger.log(
-      `🚀 Application is running on: http://localhost:${process.env.APP_PORT ?? 8000}/api/v${process.env.APP_VERSION}`,
+      `🚀 Application is running on: http://localhost:${envs.get<string>('app.port') ?? 3000}`,
+    );
+    Logger.log(
+      `📄 Read Documentation: http://localhost:${envs.get<string>('app.port') ?? 3000}/api/v${envs.get<string>('app.version')}/docs`,
     );
   });
 }

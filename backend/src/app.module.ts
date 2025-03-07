@@ -1,17 +1,26 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
-import { envSchema } from './config/config.schema';
-import configuration from './config/configuration';
-import { PrismaModule } from './prisma/prisma.module';
-import { UserModule } from './modules/user/user.module';
+import { UserModule } from '@modules/user.module';
+import { AuthModule } from '@modules/auth.module';
+import { CsrfGuard } from '@/shared/guards/csrf.guard';
+import { BusinessModule } from '@modules/business.module';
+import { envSchema } from '@/infrastructure/config/config.schema';
+import configuration from '@/infrastructure/config/configuration';
+import { PrismaModule } from '@/infrastructure/orm/prisma.module';
+import { SecurityModule } from '@/infrastructure/modules/csrf.module';
+import { BusinessServicesModule } from '@modules/business-services.module';
+import { HttpLoggerMiddleware } from '@/shared/middlewares/http-logger.middleware';
 
 @Module({
   imports: [
-    PrismaModule,
-    UserModule,
     ThrottlerModule.forRoot([
       {
         ttl: 60,
@@ -20,10 +29,16 @@ import { UserModule } from './modules/user/user.module';
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.env.development.local', '.env.test.local'],
+      envFilePath: `.env.${process.env.NODE_ENV}.local`,
       validationSchema: envSchema,
       load: [configuration],
     }),
+    AuthModule,
+    PrismaModule,
+    UserModule,
+    BusinessModule,
+    BusinessServicesModule,
+    SecurityModule.forRoot(),
   ],
   controllers: [],
   providers: [
@@ -31,6 +46,16 @@ import { UserModule } from './modules/user/user.module';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    {
+      provide: APP_GUARD,
+      useClass: CsrfGuard,
+    },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(HttpLoggerMiddleware)
+      .forRoutes({ path: '/*path', method: RequestMethod.ALL });
+  }
+}

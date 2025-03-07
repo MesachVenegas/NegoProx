@@ -3,9 +3,11 @@
   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"],
   "paths": {
     "@/*": ["./src/*"],
-    "@modules/*": ["./src/modules/*"],
+    "@domain/*": ["./src/domain/*"],
     "@shared/*": ["./src/shared/*"],
-    "@prisma/*": ["./src/prisma/*"],
-    "@config/*": ["./src/config/*"]
+    "@application/*": ["./src/application/*"],
+    "@infrastructure/*": ["./src/infrastructure/*"],
+    "@modules/*": ["./src/infrastructure/modules/*"],
+    "@repositories/*": ["./src/infrastructure/repositories/*"]
   }
 }
