@@ -89,12 +89,28 @@
     }
   },
   "Login": {
-    "title": "Iniciar sesión",
+    "title": "Accede a tu cuenta",
+    "or": "O",
     "description": "Ingresa tus credenciales para acceder a tu cuenta",
     "email": "Correo electrónico",
     "password": "Contraseña",
     "forgot": "Olvidaste tu contraseña?",
     "loginButton": "Iniciar sesión",
-    "loginInButton": "Iniciando sesión..."
+    "loginInButton": "Iniciando sesión...",
+    "googleBtn": "Iniciar sesión con Google",
+    "subtitle": "O continua con",
+    "register": {
+      "title": "No tienes una cuenta?",
+      "link": "Crea una cuenta"
+    },
+    "placeHolders": {
+      "email": "Ingresa tu correo electrónico",
+      "password": "Ingresa tu contraseña"
+    },
+    "errors": {
+      "email": "Correo electrónico inválido",
+      "password": "Contraseña inválida",
+      "general": "Correo electrónico o contraseña incorrectos"
+    }
   }
 }

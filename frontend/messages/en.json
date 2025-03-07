@@ -89,12 +89,28 @@
     }
   },
   "Login": {
-    "title": "Login",
+    "title": "Login to your account",
     "description": "Enter your credentials to access your account",
+    "or": "Or",
     "email": "Email",
     "password": "Password",
     "forgot": "Forgot your password?",
     "loginButton": "Login",
-    "loginInButton": "Logging in..."
+    "loginInButton": "Logging in...",
+    "googleBtn": "Login with Google",
+    "subtitle": "Or continue with",
+    "register": {
+      "title": "Don't have an account?",
+      "link": "Create new account"
+    },
+    "placeHolders": {
+      "email": "Enter your email",
+      "password": "Enter your password"
+    },
+    "errors": {
+      "email": "Invalid email",
+      "password": "Invalid password",
+      "general": "Invalid credentials"
+    }
   }
 }
