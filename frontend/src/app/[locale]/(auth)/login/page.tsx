@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function LoginPage() {
 	const [error, setError] = useState<string | null>(null);
@@ -174,10 +175,14 @@ export default function LoginPage() {
 					</div>
 				</motion.div>
 			</div>
-			<div
-				className="hidden lg:block w-1/2 bg-cover bg-center"
-				style={{ backgroundImage: "url('https://picsum.photos/1820/1980')" }}
-			/>
+			<div className="hidden lg:block relative w-1/2">
+				<Image
+					src="https://picsum.photos/1820/1980"
+					alt="Login background"
+					fill
+					className="absolute inset-0 w-full h-full object-cover"
+				/>
+			</div>
 		</div>
 	);
 }
