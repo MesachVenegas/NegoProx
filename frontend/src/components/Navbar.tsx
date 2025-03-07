@@ -1,5 +1,7 @@
 "use client";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Briefcase, LogIn, LogOut, Menu, Settings, User } from "lucide-react";
 
 import {
@@ -11,7 +13,6 @@ import {
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { motion } from "framer-motion";
 import { ThemeToggle } from "./ThemeToggle";
 import LanguageSelector from "./LanguageSelector";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -19,8 +20,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "./ui/sheet";
 
 export default function Navbar() {
-	const t = useTranslations("Navbar");
+	// Scroll effect for navbar
 	const pathname = usePathname();
+	const { scrollY } = useScroll();
+	const [isVisible, setIsVisible] = useState<boolean>(true);
+	const [isScrolled, setIsScrolled] = useState<boolean>(false);
+	const isAbsolute = ["/", "/login", "/register"].includes(pathname);
+	// Transalate function
+	const t = useTranslations("Navbar");
 
 	const menu = [
 		{ label: t("home"), href: "/" },
@@ -30,8 +37,43 @@ export default function Navbar() {
 		{ label: t("about"), href: "/about" },
 	];
 
+	// Navbar styles variants
+	const navVariants = {
+		initial: { opacity: 1, y: 0 },
+		visible: { opacity: 1, y: 0 },
+		hidden: { opacity: 0, y: -25 },
+	};
+
+	// scroll effect detection
+	useMotionValueEvent(scrollY, "change", (latest) => {
+		const prev = scrollY.getPrevious() || 0;
+
+		if (latest > prev && latest > 150) {
+			setIsVisible(false);
+		} else {
+			setIsVisible(true);
+		}
+		setIsScrolled(latest > 50);
+	});
+
+	// navbar background to change based on scrolling
+	const navBackground = isAbsolute
+		? isScrolled
+			? "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+			: "bg-transparent"
+		: "bg-background";
+
 	return (
-		<header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+		<motion.header
+			variants={navVariants}
+			initial="initial"
+			animate={isVisible ? "visible" : "hidden"}
+			transition={{ ease: "easeInOut", duration: 0.3 }}
+			className={`w-full border-b ${
+				isAbsolute
+					? "fixed top-0 left-0 z-50 border-transparent"
+					: `sticky top-0 z-50 border-border`
+			} ${navBackground}`}>
 			<div className="container flex h-16 items-center mx-auto max-w-[1400px] md:px-4">
 				{/* Mobile menu */}
 				<Sheet>
@@ -39,7 +81,11 @@ export default function Navbar() {
 						<Button
 							variant="outline"
 							size="icon"
-							className="mr-4 xl:hidden hover:text-black cursor-pointer">
+							className={`mr-4 lg:hidden ${
+								isAbsolute && !isScrolled
+									? "text-white hover:text-primary hover:bg-white/20 border-white"
+									: ""
+							}`}>
 							<Menu className="h-6 w-6" />
 							<span className="sr-only">Toggle menu</span>
 						</Button>
@@ -171,7 +217,13 @@ export default function Navbar() {
 							<tspan fontWeight="bold" fill="#66CC99">
 								Nego
 							</tspan>
-							<tspan fontWeight="normal" className="dark:fill-white">
+							<tspan
+								fontWeight="normal"
+								className={
+									isAbsolute && !isScrolled
+										? "fill-white dark:fill-white"
+										: "dark:fill-white"
+								}>
 								Prox
 							</tspan>
 						</text>
@@ -186,10 +238,14 @@ export default function Navbar() {
 							<Link
 								key={item.label}
 								href={item.href}
-								className="relative py-2 text-sm font-medium transition-colors hover:text-primary">
+								className={`relative py-2 text-sm font-medium transition-colors ${
+									isAbsolute && !isScrolled
+										? "text-white hover:text-primary/80"
+										: "text-foreground hover:text-teal-300"
+								}`}>
 								<span
 									className={
-										isActive ? "text-teal-500 dark:text-teal-300" : ""
+										isActive ? "text-teal-300 dark:text-teal-400" : ""
 									}>
 									{item.label}
 								</span>
@@ -218,7 +274,12 @@ export default function Navbar() {
 						<LanguageSelector />
 						<ThemeToggle />
 					</div>
-					<Button className="dark:text-white hover:shadow-lg cursor-pointer">
+					<Button
+						className={`hidden md:inline-flex ${
+							isAbsolute && !isScrolled
+								? "text-white hover:text-primary/80"
+								: "text-foreground hover:text-teal-300"
+						}`}>
 						<Link href="/business/register">{t("callToAction")}</Link>
 					</Button>
 					<Button
@@ -235,9 +296,13 @@ export default function Navbar() {
 						<DropdownMenuTrigger asChild>
 							{/* TODO: make this visible when user is logged in */}
 							<Button
-								variant="ghost"
+								variant={isAbsolute && !isScrolled ? "outline" : "ghost"}
 								size="icon"
-								className="relative h-8 w-8 rounded-full cursor-pointer hidden">
+								className={`relative h-8 w-8 rounded-full hidden ${
+									isAbsolute && !isScrolled
+										? "text-white hover:text-primary hover:bg-white/20 border-white"
+										: "text-foreground hover:text-teal-300"
+								} `}>
 								<Avatar className="h-8 w-8">
 									{/* TODO: Add user avatar */}
 									<AvatarImage src="" alt="User" />
@@ -277,6 +342,6 @@ export default function Navbar() {
 					</DropdownMenu>
 				</div>
 			</div>
-		</header>
+		</motion.header>
 	);
 }
