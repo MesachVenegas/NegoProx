@@ -112,5 +112,37 @@
       "password": "Invalid password",
       "general": "Invalid credentials"
     }
+  },
+  "Register": {
+    "title": "Create your account",
+    "subtitle": "Already have an account?",
+    "login": "Sing in",
+    "subtitle2": "Or continue with",
+    "googleBtn": "Sign in with Google",
+    "form": {
+      "name": {
+        "value": "First Name",
+        "placeholder": "First Name (optional)"
+      },
+      "lastName": {
+        "value": "Last Name",
+        "placeholder": "Last Name (optional)"
+      },
+      "email": {
+        "value": "Email",
+        "placeholder": "Enter your email",
+        "validation": "Invalid email"
+      },
+      "password": {
+        "value": "Password",
+        "placeholder": "Enter your password",
+        "min": "Password must be at least 8 characters",
+        "validation": "Password must contain at least one uppercase letter, and one number or special character"
+      },
+      "registerBtn": {
+        "default": "Register",
+        "loading": "Registering..."
+      }
+    }
   }
 }

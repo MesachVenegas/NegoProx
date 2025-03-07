@@ -112,5 +112,37 @@
       "password": "Contraseña inválida",
       "general": "Correo electrónico o contraseña incorrectos"
     }
+  },
+  "Register": {
+    "title": "Crear una cuenta",
+    "subtitle": "Ya tienes una cuenta?",
+    "login": "Iniciar sesión",
+    "subtitle2": "O continua con",
+    "googleBtn": "Iniciar sesión con Google",
+    "form": {
+      "name": {
+        "value": "Nombre",
+        "placeholder": "Ingresa tu nombre (opcional)"
+      },
+      "lastName": {
+        "value": "Apellido",
+        "placeholder": "Ingresa tu apellido (opcional)"
+      },
+      "email": {
+        "value": "Correo electrónico",
+        "placeholder": "Ingresa tu correo electrónico",
+        "validation": "Correo electrónico inválido"
+      },
+      "password": {
+        "value": "Contraseña",
+        "placeholder": "Ingresa tu contraseña",
+        "min": "La contraseña debe tener al menos 6 caracteres",
+        "validation": "La contraseña debe incluir al menos una mayúscula y un numero o carácter especial"
+      },
+      "registerBtn": {
+        "default": "Crear cuenta",
+        "loading": "Creando cuenta..."
+      }
+    }
   }
 }
