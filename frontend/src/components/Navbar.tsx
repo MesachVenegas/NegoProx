@@ -83,7 +83,7 @@ export default function Navbar() {
 							size="icon"
 							className={`mr-4 lg:hidden ${
 								isAbsolute && !isScrolled
-									? "text-white hover:text-primary hover:bg-white/20 border-white"
+									? "dark:text-white hover:text-primary hover:bg-white/20 border-white"
 									: ""
 							}`}>
 							<Menu className="h-6 w-6" />
@@ -276,9 +276,7 @@ export default function Navbar() {
 					</div>
 					<Button
 						className={`hidden md:inline-flex ${
-							isAbsolute && !isScrolled
-								? "text-white hover:text-primary/80"
-								: "text-foreground hover:text-teal-300"
+							isAbsolute && !isScrolled ? "text-white hover:text-white/80" : ""
 						}`}>
 						<Link href="/business/register">{t("callToAction")}</Link>
 					</Button>
