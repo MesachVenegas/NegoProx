@@ -83,7 +83,7 @@ export default function Navbar() {
 						<Button
 							variant="outline"
 							size="icon"
-							className={`mr-2 lg:hidden ${
+							className={`mr-2 xl:hidden ${
 								isAbsolute && !isScrolled
 									? "text-white hover:bg-white/20 border-muted-foreground/30 bg-transparent hover:text-teal-300"
 									: " bg-transparent border-muted hover:bg-teal-300/50"
