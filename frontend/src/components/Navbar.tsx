@@ -26,6 +26,7 @@ export default function Navbar() {
 	const [isVisible, setIsVisible] = useState<boolean>(true);
 	const [isScrolled, setIsScrolled] = useState<boolean>(false);
 	const isAbsolute = pathname === "/";
+	// TODO: Fix to work on paths white handle correct colors to pages
 	// ["/", "/login", "/register"].includes(pathname);
 	// Transalate function
 	const t = useTranslations("Navbar");
