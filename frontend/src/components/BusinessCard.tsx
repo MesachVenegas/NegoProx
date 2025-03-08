@@ -34,6 +34,9 @@ export default function BusinessCard({
 						width={400}
 						height={200}
 						className="object-cover w-full h-48"
+						loading="lazy"
+						sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+						quality={85}
 					/>
 				</div>
 				<CardContent className="p-4">
