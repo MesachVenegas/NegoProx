@@ -156,6 +156,8 @@ export default function Business() {
 									className="flex items-center gap-1">
 									{category}
 									<button
+										type="button"
+										title="clear categories"
 										onClick={() =>
 											setSelectedCategory((prev) =>
 												prev.filter((cat) => cat !== category)
@@ -177,7 +179,7 @@ export default function Business() {
 					)}
 
 					{/* Business grid */}
-					<div className="grid gap-6 mdL:grid-cols-2 lg:grid-cols-3">
+					<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 						{currentBusiness.map((business) => (
 							<BusinessCard key={business.id} business={business} />
 						))}
