@@ -178,7 +178,7 @@ export default function Navbar() {
 								</div>
 							</div>
 							<div className="border-t pt-4">
-								<div className="flex items-center justify-between mb-4">
+								<div className="flex md:hidden items-center justify-between mb-4">
 									<ThemeToggle />
 									<LanguageSelector />
 								</div>
@@ -269,7 +269,7 @@ export default function Navbar() {
 				</nav>
 				{/* Actions */}
 				<div className="flex items-center gap-4 ml-auto">
-					<div className="hidden xl:flex items-center gap-4">
+					<div className="hidden md:flex items-center gap-4">
 						<LanguageSelector />
 						<ThemeToggle />
 					</div>
