@@ -86,6 +86,12 @@
     "testimonials": {
       "title": "What our customers say",
       "description": "Hear from business and customers who have used our platform"
+    },
+    "cta": {
+      "title": "Ready to Get started?",
+      "description": "Join thousands of businesses and customers on our platform today.",
+      "button": "Find business",
+      "register": "Register my business"
     }
   },
   "Login": {

@@ -86,6 +86,12 @@
     "testimonials": {
       "title": "Lo que dicen nuestros clientes",
       "description": "Escucha de negocios y clientes que han utilizado nuestra plataforma"
+    },
+    "cta": {
+      "title": "Listo para empezar?",
+      "description": "Únete a miles de negocios y clientes en nuestra plataforma hoy.",
+      "button": "Explorar negocios",
+      "register": "Registrar mi negocio"
     }
   },
   "Login": {
