@@ -1,18 +1,15 @@
 "use client";
-import {
-	CalendarDays,
-	CheckCircle,
-	ChevronLeft,
-	ChevronRight,
-	MapPin,
-	Search,
-	Users,
-} from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
-
+import { CalendarDays, CheckCircle, MapPin, Search, Users } from "lucide-react";
+import dynamic from "next/dynamic";
+import { categories } from "@/lib/constants/categories";
+import { Card, CardContent } from "@/components/ui/card";
+import { testimonials } from "@/lib/constants/testimonials";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
+import { Input } from "@/components/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -20,52 +17,19 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Link } from "@/i18n/navigation";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { categories } from "@/lib/constants/categories";
-import { Card, CardContent } from "@/components/ui/card";
-import { testimonials } from "@/lib/constants/testimonials";
-import FadeWhenVisible from "@/components/containers/FadeWhenVisible";
 
+const Testimonials = dynamic(() => import("@/components/Testimonials"), {
+	loading: () => <div className="min-h-[400px] animate-pulse bg-muted/50" />,
+});
+const FadeWhenVisible = dynamic(
+	() => import("@/components/containers/FadeWhenVisible"),
+	{
+		loading: () => <div className="min-h-[200px] animate-pulse bg-muted/50" />,
+	}
+);
 export default function Home() {
-	const testimonialRef = useRef<HTMLDivElement>(null);
-	const [currentTestimonial, setCurrentTestimonial] = useState(0);
-
 	const t = useTranslations("HomePage");
-
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-		}, 5000);
-
-		return () => clearInterval(interval);
-	}, []);
-
-	useEffect(() => {
-		if (testimonialRef.current) {
-			testimonialRef.current.style.transition = "opacity 0.5s ease-in-out";
-			testimonialRef.current.style.opacity = "0";
-			const timer = setTimeout(() => {
-				if (testimonialRef.current) {
-					testimonialRef.current.style.opacity = "1";
-				}
-			}, 500);
-
-			return () => clearTimeout(timer);
-		}
-	}, []);
-
-	const nextTestimonial = () => {
-		setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-	};
-
-	const prevTestimonial = () => {
-		setCurrentTestimonial(
-			(prev) => (prev - 1 + testimonials.length) % testimonials.length
-		);
-	};
 
 	return (
 		<div className="flex-1 flex flex-col items-center">
@@ -78,6 +42,10 @@ export default function Home() {
 						fill
 						className="object-cover"
 						priority
+						sizes="100vw"
+						quality={85}
+						placeholder="blur"
+						blurDataURL="https://picsum.photos/1000/800"
 					/>
 					<div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/70 to-transparent" />
 				</div>
@@ -444,110 +412,37 @@ export default function Home() {
 
 			{/* Testimonials section */}
 			<FadeWhenVisible>
-				<section className="w-full py-12 md:py-16 lg:py-20 bg-muted/50">
-					<div className="container mx-auto max-w-[1400px] px-4 md:px-6">
-						<div className="flex flex-col items-center justify-center space-y-4 text-center">
-							<div className="space-y-2">
-								<h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
-									{t("testimonials.title")}
-								</h2>
-								<p className="max-w-[700px] text-muted-foreground md:text-xl">
-									{t("testimonials.description")}
-								</p>
-							</div>
-						</div>
-						<div className="mt-8 relative">
-							<div className="flex justify-center items-center">
-								<Button
-									variant="outline"
-									size="icon"
-									onClick={prevTestimonial}
-									className="mr-4 hover:text-black transition-all duration-200">
-									<ChevronLeft className="h-4 w-4" />
-								</Button>
-								<Card className="w-full max-w-2xl" ref={testimonialRef}>
-									<CardContent className="p-6">
-										<div className="flex items-center gap-4 mb-4">
-											<div className="rounded-full bg-muted h-12 w-12 overflow-hidden">
-												<Image
-													src="https://picsum.photos/50/50"
-													alt="user"
-													width={48}
-													height={48}
-													className="object-cover"
-												/>
-											</div>
-											<div>
-												<h4 className="font-semibold">
-													{testimonials[currentTestimonial].name}
-												</h4>
-												<p className="text-sm text-muted-foreground">
-													{testimonials[currentTestimonial].role}
-												</p>
-											</div>
-										</div>
-										<p className="text-muted-foreground">
-											{testimonials[currentTestimonial].text}
-										</p>
-										<div className="flex items-center mt-4">
-											{Array(5)
-												.fill(0)
-												.map((_, i) => (
-													<svg
-														key={i}
-														xmlns="http://www.w3.org/2000/svg"
-														viewBox="0 0 24 24"
-														fill="currentColor"
-														className="w-4 h-4 text-yellow-500">
-														<path
-															fillRule="evenodd"
-															d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-															clipRule="evenodd"
-														/>
-													</svg>
-												))}
-										</div>
-									</CardContent>
-								</Card>
-								<Button
-									variant="outline"
-									size="icon"
-									onClick={nextTestimonial}
-									className="ml-4 hover:text-black transition-all duration-200">
-									<ChevronRight className="h-4 w-4" />
-								</Button>
-							</div>
-						</div>
-					</div>
-				</section>
+				<Testimonials
+					testimonials={testimonials}
+					title={t("testimonials.title")}
+					description={t("testimonials.description")}
+				/>
 			</FadeWhenVisible>
 
 			{/* Call to action section */}
 			<FadeWhenVisible>
-				<section className="w-full py-12 md:py-24 lg:py-32 bg-primary text-primary-foreground">
+				<section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-br from-teal-300 via-blue-500 to-black dark:from-teal-400 dark:via-blue-600 dark:to-black text-white dark:text-white">
 					<div className="container mx-auto px-4 md:px-6 max-w-[1400px]">
 						<div className="flex flex-col items-center justify-center space-y-4 text-center">
-							<div className="space-y-2 text-black">
+							<div className="space-y-2">
 								<h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
-									Ready to Get Started?
+									{t("cta.title")}
 								</h2>
 								<p className="max-w-[700px] md:text-xl opacity-90">
-									Join thousands of businesses and customers on our platform
-									today.
+									{t("cta.description")}
 								</p>
 							</div>
 							<div className="flex flex-col gap-2 min-[400px]:flex-row mt-4">
 								<Button
 									size="lg"
-									variant="secondary"
 									className="px-8 shadow-lg hover:shadow-xl transition-all cursor-pointer">
-									<Link href="/business">{t("hero.button1")}</Link>
+									<Link href="/business">{t("cta.button")}</Link>
 								</Button>
 								<Button
 									size="lg"
 									variant="outline"
-									className="px-8 bg-transparent border-black/80 text-black hover:text-black hover:bg-white/40 shadow-lg hover:shadow-xl transition-all cursor-pointer">
-									<Link href="/business/register">{t("hero.button2")}</Link>
+									className="px-8 bg-transparent border-white/50 hover:text-black hover:bg-white/40 shadow-lg hover:shadow-xl transition-all cursor-pointer">
+									<Link href="/business/register">{t("cta.register")}</Link>
 								</Button>
 							</div>
 						</div>
