@@ -19,7 +19,10 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-	title: "NegoProx - Conectando negocios",
+	title: {
+		template: "%s | NegoProx",
+		default: "NegoProx - Conectando negocios",
+	},
 	description:
 		"Conectando negocios, desde la comodidad de tu hogar y facilitando la comunicación con tus clientes.",
 	icons: {
