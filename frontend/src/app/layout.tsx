@@ -1,22 +1,27 @@
 import "../styles/globals.css";
-import { Poppins } from "next/font/google";
+import type { Metadata } from "next";
+import { fontClass } from "./[locale]/layout";
 
-const poppins = Poppins({
-	weight: ["400", "500", "600", "700"],
-	subsets: ["latin", "latin-ext"],
-	variable: "--font-poppins",
-	display: "swap",
-	preload: true,
-});
+export const metadata: Metadata = {
+	title: {
+		template: "%s | NegoProx",
+		default: "NegoProx - Conectando negocios",
+	},
+	description:
+		"Conectando negocios, desde la comodidad de tu hogar y facilitando la comunicación con tus clientes.",
+	icons: {
+		icon: "/favicon.ico",
+	},
+};
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
 	return (
-		<html suppressHydrationWarning>
-			<body className={`${poppins.variable} antialiased`}>{children}</body>
+		<html suppressHydrationWarning className={`${fontClass} antialiased`}>
+			<body>{children}</body>
 		</html>
 	);
 }

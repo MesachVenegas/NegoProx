@@ -1,30 +1,29 @@
-import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
 import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 
 import GoToTop from "@/components/GoToTop";
 import { ThemeProvider } from "@/components/containers/ThemeProvider";
 
-export const metadata: Metadata = {
-	title: {
-		template: "%s | NegoProx",
-		default: "NegoProx - Conectando negocios",
-	},
-	description:
-		"Conectando negocios, desde la comodidad de tu hogar y facilitando la comunicación con tus clientes.",
-	icons: {
-		icon: "/favicon.ico",
-	},
-};
+const poppins = Poppins({
+	weight: ["400", "500", "600", "700"],
+	subsets: ["latin", "latin-ext"],
+	variable: "--font-poppins",
+	display: "swap",
+	preload: true,
+});
+
+// Apply the font to the html element in the root layout
+export const fontClass = poppins.variable;
 
 export default async function LanguageLayout({
 	children,
 	params,
 }: Readonly<{
 	children: React.ReactNode;
-	params: Promise<{ locale: "es" | "en" }>;
+	params: { locale: "es" | "en" };
 }>) {
-	const { locale } = await params;
+	const { locale } = params;
 	const messages = await getMessages();
 
 	return (
