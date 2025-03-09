@@ -3,8 +3,6 @@ import { Poppins } from "next/font/google";
 import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 
-import "../../styles/globals.css";
-
 import GoToTop from "@/components/GoToTop";
 import { ThemeProvider } from "@/components/containers/ThemeProvider";
 
@@ -28,7 +26,7 @@ export const metadata: Metadata = {
 	},
 };
 
-export default async function RootLayout({
+export default async function LanguageLayout({
 	children,
 	params,
 }: Readonly<{
@@ -39,7 +37,7 @@ export default async function RootLayout({
 	const messages = await getMessages();
 
 	return (
-		<html lang={locale} suppressHydrationWarning>
+		<html lang={locale}>
 			<body className={`${poppins.variable} antialiased`}>
 				<NextIntlClientProvider messages={messages}>
 					<ThemeProvider
