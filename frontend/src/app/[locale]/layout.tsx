@@ -1,18 +1,9 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
 import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 
 import GoToTop from "@/components/GoToTop";
 import { ThemeProvider } from "@/components/containers/ThemeProvider";
-
-const poppins = Poppins({
-	weight: ["400", "500", "600", "700"],
-	subsets: ["latin", "latin-ext"],
-	variable: "--font-poppins",
-	display: "swap",
-	preload: true,
-});
 
 export const metadata: Metadata = {
 	title: {
@@ -37,8 +28,8 @@ export default async function LanguageLayout({
 	const messages = await getMessages();
 
 	return (
-		<html lang={locale}>
-			<body className={`${poppins.variable} antialiased`}>
+		<html lang={locale} suppressHydrationWarning>
+			<body>
 				<NextIntlClientProvider messages={messages}>
 					<ThemeProvider
 						attribute="class"
