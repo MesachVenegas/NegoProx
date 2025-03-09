@@ -242,14 +242,14 @@ export default function Navbar() {
 									isAbsolute && !isScrolled
 										? `${
 												pathname !== "/" ? "" : "text-white"
-										  } hover:text-primary/80`
+										  } hover:text-primary`
 										: isActive
-										? "text-teal-300"
+										? "text-teal-500"
 										: "text-black dark:text-white hover:text-primary"
 								}`}>
 								<span>{item.label}</span>
 								<motion.div
-									className="absolute bottom-0 left-0 h-[2px] bg-teal-300"
+									className="absolute bottom-0 left-0 h-[2px] bg-teal-400"
 									initial={false}
 									animate={{
 										width: isActive ? "100%" : "0%",
@@ -274,8 +274,11 @@ export default function Navbar() {
 						<ThemeToggle />
 					</div>
 					<Button
-						className={`hidden md:inline-flex ${
-							isAbsolute && !isScrolled ? "text-white hover:text-white/80" : ""
+						variant={isAbsolute && !isScrolled ? "outline" : "default"}
+						className={`hidden md:inline-flex bg-transparent border-teal-300 text-teal-300 dark:border-t-emerald-400 dark:text-teal-400 transition-colors duration-150 ${
+							isAbsolute && !isScrolled
+								? "dark:hover:text-black"
+								: "bg-primary text-current dark:text-black  hover:bg-teal-300/70 hover:dark:bg-teal-200"
 						}`}>
 						<Link href="/business/register">{t("callToAction")}</Link>
 					</Button>
