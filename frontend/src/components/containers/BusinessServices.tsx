@@ -46,7 +46,7 @@ export default function BusinessServices({
 		<>
 			<div className="flex justify-between items-center">
 				<h2 className="text-2xl font-semibold">Services</h2>
-				<Select>
+				<Select value={sortBy} onChange={setSortBy}>
 					<SelectTrigger className="w-[180px]">
 						<SelectValue placeholder="Sort by" />
 					</SelectTrigger>
