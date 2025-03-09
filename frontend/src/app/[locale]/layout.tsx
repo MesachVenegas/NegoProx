@@ -3,9 +3,8 @@ import { Poppins } from "next/font/google";
 import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 
-import "../styles/globals.css";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
+import "../../styles/globals.css";
+
 import GoToTop from "@/components/GoToTop";
 import { ThemeProvider } from "@/components/containers/ThemeProvider";
 
@@ -49,9 +48,7 @@ export default async function RootLayout({
 						enableSystem
 						disableTransitionOnChange>
 						<div className="flex min-h-screen flex-col">
-							<Navbar />
 							<main className="flex-1">{children}</main>
-							<Footer />
 						</div>
 						<GoToTop />
 					</ThemeProvider>
