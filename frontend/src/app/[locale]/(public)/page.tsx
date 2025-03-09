@@ -45,7 +45,7 @@ export default function Home() {
 						sizes="100vw"
 						quality={85}
 						placeholder="blur"
-						blurDataURL="https://picsum.photos/1000/800"
+						blurDataURL="L]J[FpM{a}ay_NRjofayWZofofay"
 					/>
 					<div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/70 to-transparent" />
 				</div>
