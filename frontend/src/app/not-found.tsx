@@ -8,7 +8,7 @@ export default async function NotFound() {
 	const t = await getTranslations();
 
 	return (
-		<div className="flex flex-col items-center justify-center min-h-[calc(100vh-65px)] bg-gradient-to-b from-background to-secondary/20 text-foreground px-4 overflow-hidden">
+		<div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-background to-secondary/20 text-foreground px-4 overflow-hidden">
 			<div className="max-w-md text-center relative z-10">
 				<h1 className="text-9xl font-extrabold mb-4 text-primary animate-in">
 					404
