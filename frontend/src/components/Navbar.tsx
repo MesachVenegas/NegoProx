@@ -25,9 +25,7 @@ export default function Navbar() {
 	const { scrollY } = useScroll();
 	const [isVisible, setIsVisible] = useState<boolean>(true);
 	const [isScrolled, setIsScrolled] = useState<boolean>(false);
-	const isAbsolute = pathname === "/";
-	// TODO: Fix to work on paths white handle correct colors to pages
-	// ["/", "/login", "/register"].includes(pathname);
+	const isAbsolute = ["/", "/login", "/register"].includes(pathname);
 	// Transalate function
 	const t = useTranslations("Navbar");
 
@@ -63,7 +61,7 @@ export default function Navbar() {
 		? isScrolled
 			? "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 			: "bg-transparent"
-		: "bg-background";
+		: "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60";
 
 	return (
 		<motion.header
@@ -223,7 +221,7 @@ export default function Navbar() {
 								fontWeight="normal"
 								className={
 									isAbsolute && !isScrolled
-										? "fill-white dark:fill-white"
+										? `${pathname === "/" ? "fill-white" : ""} dark:fill-white`
 										: "dark:fill-white"
 								}>
 								Prox
@@ -242,7 +240,9 @@ export default function Navbar() {
 								href={item.href}
 								className={`relative py-2 text-sm font-medium transition-colors ${
 									isAbsolute && !isScrolled
-										? "text-white hover:text-primary/80"
+										? `${
+												pathname !== "/" ? "" : "text-white"
+										  } hover:text-primary/80`
 										: isActive
 										? "text-teal-300"
 										: "text-black dark:text-white hover:text-primary"
