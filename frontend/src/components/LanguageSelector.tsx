@@ -33,9 +33,6 @@ export default function LanguageSelector() {
 	}, [currentLang, languages]);
 
 	const changeLanguage = (newLocale: string) => {
-		const scrollPosition = window.scrollY;
-		localStorage.setItem("scrollPosition", scrollPosition.toString());
-
 		router.replace(pathname, { locale: newLocale });
 		setLanguage(newLocale);
 		router.refresh();
