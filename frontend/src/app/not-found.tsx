@@ -4,6 +4,11 @@ import { ArrowLeft, Home, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getTranslations } from "next-intl/server";
 
+export const metadata = {
+	title: "404 Not Found",
+	description: "Not found page",
+};
+
 export default async function NotFound() {
 	const t = await getTranslations();
 
