@@ -9,7 +9,7 @@ const poppins = Poppins({
 	weight: ["400", "500", "600", "700"],
 	subsets: ["latin", "latin-ext"],
 	variable: "--font-poppins",
-	display: "swap",
+	display: "auto",
 	preload: true,
 });
 
@@ -21,26 +21,26 @@ export default async function LanguageLayout({
 	params,
 }: Readonly<{
 	children: React.ReactNode;
-	params: { locale: "es" | "en" };
+	params: Promise<{ locale: "es" | "en" }>;
 }>) {
-	const { locale } = params;
+	const { locale } = await params;
 	const messages = await getMessages();
 
 	return (
 		<html lang={locale} suppressHydrationWarning>
 			<body>
-				<NextIntlClientProvider messages={messages}>
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="system"
-						enableSystem
-						disableTransitionOnChange>
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					enableSystem
+					disableTransitionOnChange>
+					<NextIntlClientProvider messages={messages}>
 						<div className="flex min-h-screen flex-col">
 							<main className="flex-1">{children}</main>
 						</div>
 						<GoToTop />
-					</ThemeProvider>
-				</NextIntlClientProvider>
+					</NextIntlClientProvider>
+				</ThemeProvider>
 			</body>
 		</html>
 	);
