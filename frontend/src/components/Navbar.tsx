@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Briefcase, LogIn, LogOut, Menu, Settings, User } from "lucide-react";
 
@@ -17,9 +18,16 @@ import { ThemeToggle } from "./ThemeToggle";
 import LanguageSelector from "./LanguageSelector";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "./ui/sheet";
+import {
+	Sheet,
+	SheetContent,
+	SheetTrigger,
+	SheetTitle,
+	SheetClose,
+} from "./ui/sheet";
 
 export default function Navbar() {
+	const router = useRouter();
 	// Scroll effect for navbar
 	const pathname = usePathname();
 	const { scrollY } = useScroll();
@@ -48,7 +56,7 @@ export default function Navbar() {
 	useMotionValueEvent(scrollY, "change", (latest) => {
 		const prev = scrollY.getPrevious() || 0;
 
-		if (latest > prev && latest > 250) {
+		if (latest > prev && latest > 300) {
 			setIsVisible(false);
 		} else {
 			setIsVisible(true);
@@ -134,14 +142,15 @@ export default function Navbar() {
 										const isActive = item.href === pathname;
 
 										return (
-											<Link
-												key={item.label}
-												href={item.href}
-												className={`nav-link ${
-													isActive ? "text-teal-500 dark:text-teal-300" : ""
-												}`}>
-												{item.label}
-											</Link>
+											<SheetClose key={item.label} asChild>
+												<Link
+													href={item.href}
+													className={`nav-link ${
+														isActive ? "text-teal-500 dark:text-teal-300" : ""
+													}`}>
+													{item.label}
+												</Link>
+											</SheetClose>
 										);
 									})}
 									{/* Account menu */}
@@ -158,7 +167,7 @@ export default function Navbar() {
 											{t("dashboard")}
 										</Link>
 										<Link
-											href="/settings"
+											href={`/userId/profile/settings`}
 											className="nav-link flex items-center gap-2">
 											{t("settings")}
 										</Link>
@@ -180,8 +189,10 @@ export default function Navbar() {
 									<ThemeToggle />
 									<LanguageSelector />
 								</div>
-								<Button className="w-full">
-									<Link href="/business/register">{t("callToAction")}</Link>
+								<Button
+									className="w-full dark:hover:bg-teal-300"
+									onClick={() => router.push("/register/business")}>
+									{t("callToAction")}
 								</Button>
 							</div>
 						</div>
@@ -193,7 +204,13 @@ export default function Navbar() {
 						xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 0 300 100"
 						className="h-12 w-auto">
-						<g fill="#003366">
+						<g
+							fill="#003366"
+							className={
+								isAbsolute && !isScrolled
+									? "fill-blue-500/80"
+									: "dark:fill-blue-500/80"
+							}>
 							<rect x="10" y="40" width="40" height="30" />
 							<polygon points="10,40 30,20 50,40" />
 							<circle cx="90" cy="30" r="10" />
@@ -274,22 +291,22 @@ export default function Navbar() {
 						<ThemeToggle />
 					</div>
 					<Button
+						onClick={() => router.push("/register/business")}
 						variant={isAbsolute && !isScrolled ? "outline" : "default"}
-						className={`hidden md:inline-flex bg-transparent border-teal-300 text-teal-300 dark:border-t-emerald-400 dark:text-teal-400 transition-colors duration-150 ${
+						className={`hidden md:inline-flex bg-black border-teal-300 text-teal-300 dark:border-t-emerald-400 dark:text-teal-400 transition-colors duration-150 ${
 							isAbsolute && !isScrolled
 								? "dark:hover:text-black"
 								: "bg-primary text-current dark:text-black  hover:bg-teal-300/70 hover:dark:bg-teal-200"
 						}`}>
-						<Link href="/business/register">{t("callToAction")}</Link>
+						{t("callToAction")}
 					</Button>
 					<Button
+						onClick={() => router.push("/login")}
 						variant="outline"
 						size="sm"
-						className="hidden md:flex items-center cursor-pointer hover:text-black">
-						<Link href="/login" className="flex items-center gap-2">
-							<LogIn className="h-4 w-4" />
-							{t("login")}
-						</Link>
+						className="hidden md:flex items-center cursor-pointer hover:text-black gap-2">
+						<LogIn className="h-4 w-4" />
+						{t("login")}
 					</Button>
 					{/* User menu */}
 					<DropdownMenu>
