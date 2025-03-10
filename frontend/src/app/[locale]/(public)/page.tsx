@@ -165,7 +165,7 @@ export default function Home() {
 										<Link key={item} href={`/business/${item}`}>
 											<div className="relative">
 												<Image
-													src="https://picsum.photos/400/200"
+													src="https://picsum.photos/400/200?random=2"
 													alt={`Business ${item}`}
 													width={400}
 													height={200}
