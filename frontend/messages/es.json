@@ -150,5 +150,29 @@
         "loading": "Creando cuenta..."
       }
     }
+  },
+  "BusinessDashboard": {
+    "menu": {
+      "dashboard": "Panel de control",
+      "profile": "Perfil de negocio",
+      "appointments": "Citas",
+      "jobs": "Trabajos",
+      "services": "Servicios",
+      "settings": "Configuración",
+      "logout": "Cerrar sesión"
+    },
+    "header": {
+      "search": "Buscar clientes...",
+      "notifications": "Notificaciones",
+      "markAllRead": "Marcar como leídos",
+      "minutesAgo": "hace unos minutos",
+      "noNotifications": "No tienes notificaciones",
+      "newAppointment": "Nueva cita",
+      "messages": "Mensajes",
+      "noMessages": "No tienes mensajes",
+      "profile": "Perfil",
+      "settings": "Configuración",
+      "logout": "Cerrar sesión"
+    }
   }
 }

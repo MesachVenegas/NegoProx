@@ -150,5 +150,29 @@
         "loading": "Registering..."
       }
     }
+  },
+  "BusinessDashboard": {
+    "menu": {
+      "dashboard": "Dashboard",
+      "profile": "Business Profile",
+      "appointments": "Appointments",
+      "jobs": "Works",
+      "services": "Services",
+      "settings": "Settings",
+      "logout": "Logout"
+    },
+    "header": {
+      "search": "Search costumers...",
+      "notifications": "Notifications",
+      "markAllRead": "Mark all as read",
+      "minutesAgo": "minutes ago",
+      "noNotifications": "No notifications",
+      "newAppointment": "New appointment",
+      "messages": "Messages",
+      "noMessages": "No messages",
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Logout"
+    }
   }
 }
