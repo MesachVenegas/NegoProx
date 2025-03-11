@@ -1,5 +1,6 @@
 "use client";
 import { Globe } from "lucide-react";
+import { useLocale } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 
 import {
@@ -9,10 +10,15 @@ import {
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-export default function LanguageSelector() {
+interface LanguageSelectorProps {
+	variant?: "default" | "minimal";
+}
+
+export default function LanguageSelector({
+	variant = "default",
+}: LanguageSelectorProps) {
 	const router = useRouter();
 	const pathname = usePathname();
 	const currentLang = useLocale();
@@ -21,7 +27,7 @@ export default function LanguageSelector() {
 	const languages = useMemo(
 		() => ({
 			en: "English",
-			es: "Español",
+			es: "Español",
 		}),
 		[]
 	);
@@ -35,8 +41,19 @@ export default function LanguageSelector() {
 	const changeLanguage = (newLocale: string) => {
 		router.replace(pathname, { locale: newLocale });
 		setLanguage(newLocale);
-		router.refresh();
 	};
+
+	if (variant === "minimal") {
+		return (
+			<Button
+				variant="outline"
+				size="sm"
+				className="w-[40px] px-0"
+				onClick={() => changeLanguage(language === "en" ? "es" : "en")}>
+				{language.toUpperCase()}
+			</Button>
+		);
+	}
 
 	return (
 		<DropdownMenu>
@@ -44,7 +61,7 @@ export default function LanguageSelector() {
 				<Button
 					variant="outline"
 					size="sm"
-					className="w=[120px] justify-start gap-2 hover:text-black">
+					className="w-[100px] justify-start gap-2 hover:text-black">
 					<Globe className="h-4 w-4" />
 					{languages[language as keyof typeof languages]}
 				</Button>
@@ -54,7 +71,7 @@ export default function LanguageSelector() {
 					English
 				</DropdownMenuItem>
 				<DropdownMenuItem onClick={() => changeLanguage("es")}>
-					Español
+					Español
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
