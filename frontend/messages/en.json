@@ -6,6 +6,12 @@
     "search": "Search businesses",
     "goBack": "Go back"
   },
+  "ErrorPage": {
+    "title": "Something went wrong",
+    "description": "Sorry, something went wrong. Try again later. If the problem persists, contact us.",
+    "backhome": "Back to home",
+    "tryAgain": "Try again"
+  },
   "Navbar": {
     "home": "Home",
     "business": "Business",
