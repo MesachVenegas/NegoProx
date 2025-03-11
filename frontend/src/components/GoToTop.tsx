@@ -2,8 +2,10 @@
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import { Button } from "./ui/button";
+import { usePathname } from "@/i18n/navigation";
 
 export default function GoToTop() {
+	const pathname = usePathname();
 	const [showButton, setShowButton] = useState(false);
 
 	useEffect(() => {
@@ -11,7 +13,7 @@ export default function GoToTop() {
 			const scrollPosition = window.scrollY;
 			const windowHeight = window.innerHeight;
 			const documentHeight = document.documentElement.scrollHeight;
-			const halfwayPoint = documentHeight / 2;
+			const halfwayPoint = documentHeight / 3;
 
 			setShowButton(scrollPosition > halfwayPoint - windowHeight);
 		};
@@ -27,13 +29,12 @@ export default function GoToTop() {
 		});
 	};
 
-	return showButton ? (
+	return showButton && ["not-found", "error"].includes(pathname) ? (
 		<Button
 			onClick={scrollToTop}
-			className="fixed bottom-8 right-8 z-50 rounded-full p-3 shadow-lg hover:bg-primary/90 transition-all duration-300 ease-in-out"
-			size="icon"
+			className="fixed bottom-12 right-16 z-50 rounded-full p-2 shadow-lg hover:bg-primary/90 transition-all duration-300 ease-in-out h-10 w-10"
 			variant="default">
-			<ArrowUp className="h-5 w-5" />
+			<ArrowUp className="h-8 w-8" />
 			<span className="sr-only">Go to top</span>
 		</Button>
 	) : null;
