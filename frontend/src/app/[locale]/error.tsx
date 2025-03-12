@@ -17,6 +17,8 @@ export default function ErrorBoundary({ error, reset }: Props) {
 	const router = useRouter();
 	const txt = useTranslations("ErrorPage");
 
+	console.error(error.message);
+
 	function reload() {
 		startTransition(() => {
 			router.refresh();
