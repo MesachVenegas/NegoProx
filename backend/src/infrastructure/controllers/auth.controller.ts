@@ -38,6 +38,7 @@ import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { RegisterLocalUserDto } from '../dto/user/register-local-user.dto';
 import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
 import { TokenVersionPrismaRepository } from '../repositories/token-version.repository';
+import { VerifyUserUseCase } from '@/application/auth/use-cases/verify-user';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -147,6 +148,15 @@ export class AuthController {
     return {
       message: 'Logout successful',
     };
+  }
+
+  @Get('verify')
+  @UseGuards(JwtGuard)
+  async verifyUser(@CurrentUser() user: UserProfileAccDto) {
+    const Verify = new VerifyUserUseCase(this.userPrismaRepository);
+    const result = await Verify.execute(user.id);
+
+    return result;
   }
 
   // TODO: Implement email validation by token
