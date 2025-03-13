@@ -81,6 +81,13 @@ export class AuthController {
     this.securityService.generateCsrfToken(req, res);
     const authenticate = await Authenticate.execute(user);
 
+    res.cookie('_ngx_session_', authenticate.access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 12 * 60 * 60 * 1000, // 12 hours
+    });
+
     res.json(plainToInstance(AuthResponseDto, authenticate));
   }
 
