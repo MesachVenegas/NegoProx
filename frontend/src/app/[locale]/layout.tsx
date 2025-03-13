@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import { getMessages, setRequestLocale } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import "../../styles/globals.css";
 
-import GoToTop from "@/components/GoToTop";
-import { ThemeProvider } from "@/components/containers/ThemeProvider";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
+import GoToTop from "@/components/GoToTop";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { ReactQueryProvider } from "@/components/providers/ReactQueryProvider";
 
 export const metadata: Metadata = {
 	title: {
@@ -56,9 +57,11 @@ export default async function LanguageLayout({
 					enableSystem
 					disableTransitionOnChange>
 					<NextIntlClientProvider messages={messages}>
-						<div className="flex min-h-screen flex-col">
-							<main className="flex-1">{children}</main>
-						</div>
+						<ReactQueryProvider>
+							<div className="flex min-h-screen flex-col">
+								<main className="flex-1">{children}</main>
+							</div>
+						</ReactQueryProvider>
 						<GoToTop />
 					</NextIntlClientProvider>
 				</ThemeProvider>
