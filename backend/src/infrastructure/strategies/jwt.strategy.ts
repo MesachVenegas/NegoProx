@@ -10,6 +10,7 @@ import { plainToInstance } from 'class-transformer';
 
 import { PrismaService } from '@/infrastructure/orm/prisma.service';
 import { UserTokenVersionDto } from '@/infrastructure/dto/user/user-token.dto';
+import { Request } from 'express';
 
 interface Payload {
   sub: string;
@@ -25,7 +26,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly config: ConfigService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: Request) =>
+          (req.cookies?.['_ngx_access_token'] as string) ?? null,
+      ]),
       ignoreExpiration: false,
       secretOrKey: config.get<string>('security.jwrSecret') as string,
     });

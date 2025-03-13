@@ -20,6 +20,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
 
 import {
@@ -48,6 +49,7 @@ export class AuthController {
     private readonly securityService: CsrfService,
     private readonly userPrismaRepository: UserPrismaRepository,
     private readonly tokenVersionPrismaRepository: TokenVersionPrismaRepository,
+    private readonly config: ConfigService,
   ) {}
 
   @Public()
@@ -81,6 +83,12 @@ export class AuthController {
 
     this.securityService.generateCsrfToken(req, res);
     const authenticate = await Authenticate.execute(user);
+
+    res.cookie('_ngx_access_token', authenticate.access_token, {
+      httpOnly: true,
+      secure: this.config.get<string>('app.environment') === 'production',
+      sameSite: 'strict' as const,
+    });
 
     res.json(plainToInstance(AuthResponseDto, authenticate));
   }
