@@ -44,4 +44,34 @@ apiRequest.interceptors.response.use(
 	}
 );
 
+apiRequest.interceptors.request.use((config) => {
+	if (
+		["GET", "HEAD", "OPTIONS"].includes(config.method?.toUpperCase() as string)
+	) {
+		return config;
+	}
+	const csrfToken = getCsrfToken();
+
+	if (csrfToken) {
+		config.headers["X-CSRF-TOKEN"] = csrfToken;
+	}
+
+	return config;
+});
+
+function getCsrfToken() {
+	const name = "__ngx_csrf__";
+	const value = `; ${document.cookie}`;
+	const parts = value.split(`; ${name}=`);
+
+	if (parts.length === 2) {
+		const token = parts.pop()?.split(";").shift();
+		// debug logs
+		console.log(`CSRF Token: ${token}`);
+		console.log("Longitud del token: ", token?.length);
+		return token;
+	}
+	return null;
+}
+
 export default apiRequest;
