@@ -11,3 +11,22 @@ export interface UserProps {
 	avatar: string;
 	registerAt: Date;
 }
+
+export interface UserJWTProps {
+	sub: string;
+	email: string;
+	picture?: string;
+	role: "USER" | "BUSINESS" | "ADMIN";
+	tokenVersion: number;
+}
+
+export interface UserLoginProps {
+	user: {
+		id: string;
+		email: string;
+		name: string;
+		picture: string;
+		role: "USER" | "BUSINESS" | "ADMIN";
+	};
+	access_token: string;
+}
