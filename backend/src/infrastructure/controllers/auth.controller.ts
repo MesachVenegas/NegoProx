@@ -150,6 +150,7 @@ export class AuthController {
     };
   }
 
+
   @Get('verify')
   @UseGuards(JwtGuard)
   async verifyUser(@CurrentUser() user: UserProfileAccDto) {

@@ -20,6 +20,7 @@ import { BusinessServicesModule } from '@modules/business-services.module';
 import { HttpLoggerMiddleware } from '@/shared/middlewares/http-logger.middleware';
 import { AvailabilityModule } from './infrastructure/modules/availability.module';
 
+
 @Module({
   imports: [
     ThrottlerModule.forRoot([

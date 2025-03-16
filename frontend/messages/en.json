@@ -1,0 +1,148 @@
+{
+  "NotFound": {
+    "title": "Page not found",
+    "description": "Oops! the page you are looking for does not exist or has been moved.",
+    "backhome": "Back to home",
+    "search": "Search businesses",
+    "goBack": "Go back"
+  },
+  "Navbar": {
+    "home": "Home",
+    "business": "Business",
+    "categories": "Categories",
+    "howItWorks": "How it works",
+    "about": "About",
+    "login": "Login",
+    "callToAction": "Register my business",
+    "account": "Account",
+    "profile": "Profile",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "Footer": {
+    "label": "©2025 NegoProx. All rights reserved",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "contact": "Contact"
+  },
+  "HomePage": {
+    "hero": {
+      "title": "Discover local businesses & services in your city",
+      "subtitle": "Connect with the best local businesses and services in your city, schedule appointments with just a few clicks.",
+      "button1": "Find businesses",
+      "button2": "Register your business"
+    },
+    "search": {
+      "title": "Find the perfect business",
+      "description": "Search by business name, service, or browse through categories to find what you need",
+      "search_placeholder": "Search businesses or services...",
+      "category_placeholder": "Category",
+      "location_placeholder": "Location",
+      "button": "Search"
+    },
+    "featuredBusiness": {
+      "title": "Featured Businesses",
+      "description": "Discover our top-rated businesses with excellent customer reviews",
+      "featured": "Featured",
+      "availability": "Available today",
+      "appointment": "Appointment now",
+      "seeMore": "View all businesses"
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "description": "Simple step to connect with businesses and schedule appointments",
+      "steps": {
+        "step1": {
+          "title": "Search",
+          "description": "Find businesses by name, category, or location to discover services that meet your needs."
+        },
+        "step2": {
+          "title": "Compare",
+          "description": "View business profiles, services, prices, and ratings from other users."
+        },
+        "step3": {
+          "title": "Book",
+          "description": "Schedule appointments directly through our platform with real-time availability."
+        }
+      }
+    },
+    "forBusiness": {
+      "title": "For business owners",
+      "description": "Join our platform to increase your online presence and manage appointments in one place.",
+      "list": [
+        "Increase your online presence and get more clients.",
+        "Manage appointments and bookings in one place.",
+        "Showcase reviews and build your reputation online.",
+        "Access analytics and insights about your costumers."
+      ],
+      "register": "Register my business",
+      "learnMore": "Learn more"
+    },
+    "categories": {
+      "title": "Browse by category",
+      "description": "Explore business across various categories to find exactly what you need."
+    },
+    "testimonials": {
+      "title": "What our customers say",
+      "description": "Hear from business and customers who have used our platform"
+    }
+  },
+  "Login": {
+    "title": "Login to your account",
+    "description": "Enter your credentials to access your account",
+    "or": "Or",
+    "email": "Email",
+    "password": "Password",
+    "forgot": "Forgot your password?",
+    "loginButton": "Login",
+    "loginInButton": "Logging in...",
+    "googleBtn": "Login with Google",
+    "subtitle": "Or continue with",
+    "register": {
+      "title": "Don't have an account?",
+      "link": "Create new account"
+    },
+    "placeHolders": {
+      "email": "Enter your email",
+      "password": "Enter your password"
+    },
+    "errors": {
+      "email": "Invalid email",
+      "password": "Invalid password",
+      "general": "Invalid credentials"
+    }
+  },
+  "Register": {
+    "title": "Create your account",
+    "subtitle": "Already have an account?",
+    "login": "Sing in",
+    "subtitle2": "Or continue with",
+    "googleBtn": "Sign in with Google",
+    "form": {
+      "name": {
+        "value": "First Name",
+        "placeholder": "First Name (optional)"
+      },
+      "lastName": {
+        "value": "Last Name",
+        "placeholder": "Last Name (optional)"
+      },
+      "email": {
+        "value": "Email",
+        "placeholder": "Enter your email",
+        "validation": "Invalid email"
+      },
+      "password": {
+        "value": "Password",
+        "placeholder": "Enter your password",
+        "min": "Password must be at least 8 characters",
+        "validation": "Password must contain at least one uppercase letter, and one number or special character"
+      },
+      "registerBtn": {
+        "default": "Register",
+        "loading": "Registering..."
+      }
+    }
+  }
+}

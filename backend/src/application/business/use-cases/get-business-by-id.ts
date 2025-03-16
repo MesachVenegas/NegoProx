@@ -1,5 +1,4 @@
 import { NotFoundException } from '@nestjs/common';
-
 import { BusinessRepository } from '@/domain/interfaces/business-repository';
 
 export class GetBusinessByIdUseCase {

@@ -1,35 +1,35 @@
 import { User } from './user/user';
-import { Status } from '@/domain/constants/status.enum';
-import { Business, BusinessService, Work } from './business';
+import { Work } from './work';
+import { Business } from './business/business';
 
-
-export class Appointment {
+export class Payment {
   public id: string;
-  public datetime: Date;
-  public state: Status;
+  public amount: number;
+  public status: string;
+  public paymentMethod: string;
+  public transactionId?: string;
+  public timestamp: Date;
+  public workId: string;
+  public work?: Work;
   public clientId: string;
   public client?: User;
-  public serviceId: string;
-  public service?: BusinessService;
   public businessId: string;
   public business?: Business;
-  public work?: Work;
-  public messages?: any[];
 
   /**
-   * Updates the appointment with the provided data.
+   * Updates the payment with the provided data.
    *
    * @param partial - A partial object containing the updated data. The following
    *                  properties are not allowed and will be deleted if present:
    *                    - id
+   *                    - workId
    *                    - clientId
-   *                    - serviceId
    *                    - businessId
    */
-  update(partial: Partial<Appointment>) {
+  update(partial: Partial<Payment>) {
     delete partial.id;
+    delete partial.workId;
     delete partial.clientId;
-    delete partial.serviceId;
     delete partial.businessId;
 
     Object.assign(this, partial);

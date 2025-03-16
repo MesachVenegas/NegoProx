@@ -4,6 +4,7 @@ import { Exclude, Expose, Type } from 'class-transformer';
 import { IsBoolean, IsDate, IsEnum, IsString } from 'class-validator';
 import { BusinessResponseDto } from '../business';
 
+
 @Exclude()
 export class ResponseUserDto {
   @ApiProperty({ example: '1' })

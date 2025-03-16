@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
   const hashedPassword = await hashPassword('Password123!');
   const adminHashed = await hashPassword('Admin123!');
+
   // Crear categorías primero
   await prisma.category.upsert({
     where: { name: 'Peluquería' },
@@ -59,6 +60,7 @@ async function main() {
       },
     },
   });
+
 
   // Crear usuario administrador
   await prisma.user.upsert({

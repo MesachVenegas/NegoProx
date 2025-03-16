@@ -11,6 +11,7 @@ import { LoginDto } from '@/infrastructure/dto/auth/login.dto';
 export class LoginLocalUseCase {
   constructor(private readonly authRepository: AuthRepository) {}
 
+
   /**
    * Executes the process of local login.
    *

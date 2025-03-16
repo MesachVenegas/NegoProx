@@ -1,0 +1,148 @@
+{
+  "NotFound": {
+    "title": "Página no encontrada",
+    "description": "Oops! la página que buscas no existe o ha sido movida.",
+    "backhome": "Volver a la página principal",
+    "search": "Buscar negocios",
+    "goBack": "Volver"
+  },
+  "Navbar": {
+    "home": "Inicio",
+    "business": "Negocios",
+    "categories": "Categorías",
+    "howItWorks": "Cómo funciona?",
+    "about": "Sobre nosotros",
+    "login": "Iniciar sesión",
+    "callToAction": "Registrar mi negocio ",
+    "account": "Mi Cuenta",
+    "profile": "Perfil",
+    "dashboard": "Panel de control",
+    "settings": "Configuración",
+    "logout": "Cerrar sesión"
+  },
+  "Footer": {
+    "label": "©2025 NegoProx. Todos los derechos reservados",
+    "terms": "Términos y condiciones",
+    "privacy": "Política de privacidad",
+    "contact": "Contacto"
+  },
+  "HomePage": {
+    "hero": {
+      "title": "Descubre negocios locales y servicios en tu ciudad",
+      "subtitle": "Conecta con los mejores negocios locales y servicios en tu ciudad, agenda citas con solo unos pocos clicks.",
+      "button1": "Explorar negocios",
+      "button2": "Registrar mi negocio"
+    },
+    "search": {
+      "title": "Encuentra el negocio perfecto",
+      "description": "Busqueda por nombre, servicio or explora las categorías para encontrar lo que necesitas",
+      "search_placeholder": "Buscar negocios o servicios...",
+      "category_placeholder": "Categoría",
+      "location_placeholder": "Ubicación",
+      "button": "Buscar"
+    },
+    "featuredBusiness": {
+      "title": "Negocios destacados",
+      "description": "Descubre nuestros negocios destacados con excelentes recomendaciones de nuestros usuarios.",
+      "featured": "Destacado",
+      "availability": "Disponible ahora",
+      "appointment": "Agendar cita",
+      "seeMore": "Ver mas negocios"
+    },
+    "howItWorks": {
+      "title": "Como funciona?",
+      "description": "Paso a paso para conectarte con negocios y agendar citas",
+      "steps": {
+        "step1": {
+          "title": "Busqueda",
+          "description": "Encuentra el negocio por nombre, categoria o ubicación para descubrir los servicios que cumplan tus necesidades."
+        },
+        "step2": {
+          "title": "Compare",
+          "description": "Analice el perfil de los negocios, servicios, precios y calificaciones de otros usuarios."
+        },
+        "step3": {
+          "title": "Agende",
+          "description": "Agenda una cita directamente desde nuestra plataforma con disponibilidad en tiempo real."
+        }
+      }
+    },
+    "forBusiness": {
+      "title": "Para propietarios de negocios",
+      "description": "Únete a nuestra plataforma para alcanzar más clientes y facilitarte el manejo de citas, y gestion de cuentas.",
+      "list": [
+        "Incrementa tu presencia en línea y obtén más clientes.",
+        "Gestiona tus citas y cuentas en un solo lugar.",
+        "Genera reseñas y crear tu reputación en línea.",
+        "Accede a análisis y estadísticas de tus clientes"
+      ],
+      "register": "Registrar mi negocio",
+      "learnMore": "Saber mas"
+    },
+    "categories": {
+      "title": "Explorar categorías",
+      "description": "Descubre negocios y servicios en diferentes categorías para satisfacer tus necesidades."
+    },
+    "testimonials": {
+      "title": "Lo que dicen nuestros clientes",
+      "description": "Escucha de negocios y clientes que han utilizado nuestra plataforma"
+    }
+  },
+  "Login": {
+    "title": "Accede a tu cuenta",
+    "or": "O",
+    "description": "Ingresa tus credenciales para acceder a tu cuenta",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "forgot": "Olvidaste tu contraseña?",
+    "loginButton": "Iniciar sesión",
+    "loginInButton": "Iniciando sesión...",
+    "googleBtn": "Iniciar sesión con Google",
+    "subtitle": "O continua con",
+    "register": {
+      "title": "No tienes una cuenta?",
+      "link": "Crea una cuenta"
+    },
+    "placeHolders": {
+      "email": "Ingresa tu correo electrónico",
+      "password": "Ingresa tu contraseña"
+    },
+    "errors": {
+      "email": "Correo electrónico inválido",
+      "password": "Contraseña inválida",
+      "general": "Correo electrónico o contraseña incorrectos"
+    }
+  },
+  "Register": {
+    "title": "Crear una cuenta",
+    "subtitle": "Ya tienes una cuenta?",
+    "login": "Iniciar sesión",
+    "subtitle2": "O continua con",
+    "googleBtn": "Iniciar sesión con Google",
+    "form": {
+      "name": {
+        "value": "Nombre",
+        "placeholder": "Ingresa tu nombre (opcional)"
+      },
+      "lastName": {
+        "value": "Apellido",
+        "placeholder": "Ingresa tu apellido (opcional)"
+      },
+      "email": {
+        "value": "Correo electrónico",
+        "placeholder": "Ingresa tu correo electrónico",
+        "validation": "Correo electrónico inválido"
+      },
+      "password": {
+        "value": "Contraseña",
+        "placeholder": "Ingresa tu contraseña",
+        "min": "La contraseña debe tener al menos 6 caracteres",
+        "validation": "La contraseña debe incluir al menos una mayúscula y un numero o carácter especial"
+      },
+      "registerBtn": {
+        "default": "Crear cuenta",
+        "loading": "Creando cuenta..."
+      }
+    }
+  }
+}
