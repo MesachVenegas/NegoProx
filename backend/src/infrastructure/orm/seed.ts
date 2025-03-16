@@ -5,6 +5,8 @@ const prisma = new PrismaClient();
 
 async function main() {
   const hashedPassword = await hashPassword('Password123!');
+  const adminHashed = await hashPassword('Admin123!');
+
   // Crear categorías primero
   await prisma.category.upsert({
     where: { name: 'Peluquería' },
@@ -55,6 +57,34 @@ async function main() {
           token: 'verification_token',
           tokenExp: new Date(Date.now() + 3600000),
         },
+      },
+    },
+  });
+
+
+  // Crear usuario administrador
+  await prisma.user.upsert({
+    where: { email: 'mesach.venegas@hotmail.com' },
+    update: {},
+    create: {
+      name: 'Mesach',
+      lastName: 'Venegas',
+      email: 'mesach.venegas@hotmail.com',
+      password: adminHashed,
+      phone: '(+52)663-166-2698',
+      userType: 'ADMIN',
+      emailVerified: true,
+      accounts: {
+        create: {
+          provider: 'local',
+          providerId: 'mesach.venegas@hotmail.com',
+        },
+      },
+      userProfile: {
+        create: {},
+      },
+      tokenVersion: {
+        create: {},
       },
     },
   });
@@ -149,7 +179,7 @@ async function main() {
       Availability: {
         create: [
           {
-            dayOfWeek: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'],
+            dayOfWeek: 5,
             startTime: new Date('1970-01-01T09:00:00Z'),
             endTime: new Date('1970-01-01T18:00:00Z'),
             businessId: business.id,

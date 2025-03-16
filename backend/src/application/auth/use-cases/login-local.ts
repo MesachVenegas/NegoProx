@@ -6,11 +6,31 @@ import {
 
 import { comparePassword } from '@/shared/utils/hash.util';
 import { AuthRepository } from '@/domain/interfaces/auth-repository';
+import { LoginDto } from '@/infrastructure/dto/auth/login.dto';
 
 export class LoginLocalUseCase {
   constructor(private readonly authRepository: AuthRepository) {}
 
-  async execute(email: string, password: string) {
+
+  /**
+   * Executes the process of local login.
+   *
+   * This method performs the following operations:
+   * - Checks if the user exists and is not disabled.
+   * - Checks if the user signed with a local provider.
+   * - Checks if the password is correct.
+   * - Checks if the user account is not disabled or deleted.
+   *
+   * @param email - The email of the user to be logged in.
+   * @param password - The password of the user to be logged in.
+   * @returns A promise that resolves with the user entity.
+   * @throws NotFoundException if the user is not found.
+   * @throws NotFoundException if the user signed with external provider.
+   * @throws ConflictException if the user account has no password.
+   * @throws UnauthorizedException if the password is incorrect.
+   * @throws UnauthorizedException if the user account is disabled or deleted.
+   */
+  async execute(email: LoginDto['email'], password: LoginDto['password']) {
     const user = await this.authRepository.findLocalUser(email);
     if (!user) throw new NotFoundException('User account not found');
     if (user.accounts?.[0].provider !== 'local')

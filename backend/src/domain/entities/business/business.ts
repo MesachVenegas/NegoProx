@@ -1,13 +1,13 @@
-import { Work } from '../work';
+import { Work } from './work';
 import { User } from '../user/user';
-import { Review } from '../review';
-import { Payment } from '../payment';
+import { Review } from './review';
+import { Payment } from './payment';
 import { Appointment } from '../appointment';
 
-import { Availability } from '../availability';
 import { BusinessImage } from './business-image';
 import { BusinessProfile } from './business-profile';
 import { BusinessService } from './business-service';
+import { Availability } from './business-availability';
 import { BusinessCategory } from './business-category';
 
 export class Business {

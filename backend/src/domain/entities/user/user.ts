@@ -1,13 +1,13 @@
-import { Work } from '../work';
-import { Review } from '../review';
-import { Payment } from '../payment';
 import { Account } from '../account';
-import { Business } from '../business/business';
-import { Role } from '../../constants/role.enum';
+import { Work } from '../business/work';
+import { Review } from '../business/review';
 import { Appointment } from '../appointment';
 import { UserProfile } from './user-profile';
+import { Payment } from '../business/payment';
 import { Verification } from '../verification';
 import { TokenVersion } from '../token-version';
+import { Business } from '../business/business';
+import { Role } from '../../constants/role.enum';
 
 export class User {
   public id: string | undefined;

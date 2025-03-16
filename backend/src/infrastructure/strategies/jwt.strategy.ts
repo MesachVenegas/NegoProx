@@ -10,6 +10,7 @@ import { plainToInstance } from 'class-transformer';
 
 import { PrismaService } from '@/infrastructure/orm/prisma.service';
 import { UserTokenVersionDto } from '@/infrastructure/dto/user/user-token.dto';
+import { Request } from 'express';
 
 interface Payload {
   sub: string;
@@ -25,7 +26,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly config: ConfigService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: Request) =>
+          (req.cookies?.['_ngx_access_token'] as string) ?? null,
+      ]),
       ignoreExpiration: false,
       secretOrKey: config.get<string>('security.jwrSecret') as string,
     });
@@ -34,7 +38,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: Payload) {
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
-      include: { tokenVersion: true, userProfile: true },
+      include: {
+        tokenVersion: true,
+        userProfile: true,
+        businesses: { select: { id: true } },
+      },
     });
 
     if (!user) throw new ForbiddenException('User session invalid');
@@ -45,6 +53,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('User account disabled');
     if (user.isDeleted) throw new UnauthorizedException('User account deleted');
 
-    return plainToInstance(UserTokenVersionDto, user);
+    const result = plainToInstance(UserTokenVersionDto, user);
+
+    return result;
   }
 }
