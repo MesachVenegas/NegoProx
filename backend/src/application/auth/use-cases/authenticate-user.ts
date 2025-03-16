@@ -1,20 +1,16 @@
 import { Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-
 
 import { UserProfileAccDto } from '@/infrastructure/dto/user/user-profile-acc.dto';
 import { TokenVersionRepository } from '@/domain/interfaces/token-version-repository';
 
 export class AuthenticateUserUseCase {
   config = new ConfigService();
-  
   constructor(
     private readonly jwtService: JwtService,
     private readonly tokenVersionRepository: TokenVersionRepository,
   ) {}
-
 
   async execute(user: UserProfileAccDto, res: Response) {
     const version = await this.tokenVersionRepository.getVersion(user.id);
@@ -27,7 +23,6 @@ export class AuthenticateUserUseCase {
     };
 
     const token = this.jwtService.sign(payload);
-
 
     res.cookie('_ngx_access_token', token, {
       httpOnly: true,

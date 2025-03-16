@@ -139,9 +139,9 @@ export class AuthController {
       },
     },
   })
-  async logout(@CurrentUser() user: UserProfileAccDto) {
+  async logout(@CurrentUser() user: UserProfileAccDto, @Res() res: Response) {
     const Logout = new LogOutUserUseCase(this.tokenVersionPrismaRepository);
-    const result = await Logout.execute(user.id);
+    const result = await Logout.execute(user.id, res);
 
     if (!result) throw new UnauthorizedException('User not found or not exist');
 
@@ -149,7 +149,6 @@ export class AuthController {
       message: 'Logout successful',
     };
   }
-
 
   @Get('verify')
   @UseGuards(JwtGuard)
