@@ -22,7 +22,7 @@ async function verifyToken() {
 	try {
 		const { data } = await apiRequest.get("/auth/verify");
 
-		return data;
+		return data.data;
 	} catch (error) {
 		console.error(`Verify session error: ${error}`);
 		return null;
@@ -113,6 +113,7 @@ export default async function middleware(req: NextRequest) {
 			};
 		} else {
 			const result = (await verifyToken()) as UserLoginProps;
+			console.log(result);
 			if (!result) {
 				return NextResponse.redirect(new URL(loginRoute, req.url));
 			}
