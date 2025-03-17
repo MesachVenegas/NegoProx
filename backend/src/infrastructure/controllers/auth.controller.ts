@@ -156,6 +156,7 @@ export class AuthController {
     const Verify = new VerifyUserUseCase(this.userPrismaRepository);
     const result = await Verify.execute(user.id);
 
+    if (!result) throw new UnauthorizedException('User not found or not exist');
     return result;
   }
 
