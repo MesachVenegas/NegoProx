@@ -17,8 +17,6 @@ export default function ErrorBoundary({ error, reset }: Props) {
 	const router = useRouter();
 	const txt = useTranslations("ErrorPage");
 
-	console.error(error.message);
-
 	function reload() {
 		startTransition(() => {
 			router.refresh();
@@ -70,18 +68,18 @@ export default function ErrorBoundary({ error, reset }: Props) {
 					<path
 						d="M320 250 L260 250 L220 180"
 						stroke="#adb5bd"
-						stroke-width="4"
-						stroke-linecap="round"
-						stroke-dasharray="7 7"
+						strokeWidth="4"
+						strokeLinecap="round"
+						strokeDasharray="7 7"
 						fill="none"
 						className="stroke-primary"
 					/>
 					<path
 						d="M480 250 L540 250 L580 180"
 						stroke="#adb5bd"
-						stroke-width="4"
-						stroke-linecap="round"
-						stroke-dasharray="7 7"
+						strokeWidth="4"
+						strokeLinecap="round"
+						strokeDasharray="7 7"
 						fill="none"
 						className="stroke-secondary"
 					/>
@@ -89,14 +87,14 @@ export default function ErrorBoundary({ error, reset }: Props) {
 					<path
 						d="M150 100 L250 100 L250 150 L200 150 L200 200 L150 200 Z"
 						stroke="#ced4da"
-						stroke-width="2"
+						strokeWidth="2"
 						fill="none"
 						className="stroke-primary"
 					/>
 					<path
 						d="M550 350 L650 350 L650 300 L600 300 L600 250 L550 250 Z"
 						stroke="#ced4da"
-						stroke-width="2"
+						strokeWidth="2"
 						fill="none"
 						className="stroke-secondary"
 					/>
@@ -110,48 +108,48 @@ export default function ErrorBoundary({ error, reset }: Props) {
 					<text
 						x="120"
 						y="330"
-						font-family="monospace"
-						font-size="14"
+						fontFamily="monospace"
+						fontSize="14"
 						fill="#868e96">
 						10011101
 					</text>
 					<text
 						x="120"
 						y="350"
-						font-family="monospace"
-						font-size="14"
+						fontFamily="monospace"
+						fontSize="14"
 						fill="#868e96">
 						01100110
 					</text>
 					<text
 						x="120"
 						y="370"
-						font-family="monospace"
-						font-size="14"
+						fontFamily="monospace"
+						fontSize="14"
 						fill="#868e96">
 						11001010
 					</text>
 					<text
 						x="650"
 						y="130"
-						font-family="monospace"
-						font-size="14"
+						fontFamily="monospace"
+						fontSize="14"
 						fill="#868e96">
 						00110101
 					</text>
 					<text
 						x="650"
 						y="150"
-						font-family="monospace"
-						font-size="14"
+						fontFamily="monospace"
+						fontSize="14"
 						fill="#868e96">
 						11010011
 					</text>
 					<text
 						x="650"
 						y="170"
-						font-family="monospace"
-						font-size="14"
+						fontFamily="monospace"
+						fontSize="14"
 						fill="#868e96">
 						01001110
 					</text>
@@ -170,7 +168,7 @@ export default function ErrorBoundary({ error, reset }: Props) {
 				<div className="w-full max-w-5xl overflow-hidden mt-6">
 					{process.env.NODE_ENV === "development" && (
 						<pre className="overflow-scroll text-xs">
-							<code>{error.stack}</code>
+							<code>{JSON.stringify(error)}</code>
 						</pre>
 					)}
 				</div>
