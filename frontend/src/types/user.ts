@@ -6,13 +6,12 @@ export interface UserProps {
 	emailVerified: boolean;
 	phone: number | string;
 	isDisabled: boolean;
-	_password?: string;
 	userType: "USER" | "BUSINESS" | "ADMIN";
 	avatar: string;
 	registerAt: Date;
 }
 
-export interface UserJWTProps {
+export interface JWTProps {
 	sub: string;
 	email: string;
 	picture?: string;
@@ -20,7 +19,7 @@ export interface UserJWTProps {
 	tokenVersion: number;
 }
 
-export interface UserLoginProps {
+export type UserLoginResponse = {
 	user: {
 		id: string;
 		email: string;
@@ -29,4 +28,4 @@ export interface UserLoginProps {
 		role: "USER" | "BUSINESS" | "ADMIN";
 	};
 	access_token: string;
-}
+};

@@ -12,7 +12,7 @@ const apiRequest = axios.create({
 
 // Response interceptor
 apiRequest.interceptors.response.use(
-	(response) => response,
+	(response) => response.data,
 	(error) => {
 		if (error.response) {
 			const { status, data } = error.response;
