@@ -9,7 +9,9 @@ export default function PublicLayout({
 	return (
 		<>
 			<Navbar />
-			{children}
+			<div className="min-h-screen">
+				<main className="flex-1">{children}</main>
+			</div>
 			<Footer />
 		</>
 	);
