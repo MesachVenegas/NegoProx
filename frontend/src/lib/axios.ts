@@ -5,7 +5,6 @@ const apiRequest = axios.create({
 	headers: {
 		"Content-Type": "application/json",
 		Accept: "application/json",
-		"Content-Encoding": "gzip deflate br",
 	},
 	withCredentials: true,
 	timeout: 10000, // 10 seconds
@@ -47,17 +46,16 @@ apiRequest.interceptors.response.use(
 
 // Request interceptor
 apiRequest.interceptors.request.use((config) => {
+	const csrfToken = getCsrfToken();
+
 	if (
 		["GET", "HEAD", "OPTIONS"].includes(config.method?.toUpperCase() as string)
 	) {
 		return config;
 	}
-	const csrfToken = getCsrfToken();
 
 	if (csrfToken) {
 		config.headers["X-CSRF-TOKEN"] = csrfToken;
-	} else {
-		console.warn("CSRF token not found");
 	}
 
 	return config;
