@@ -7,11 +7,13 @@ import {
   BusinessImage,
   BusinessProfile,
   BusinessService,
+  Review,
 } from '@/domain/entities/business';
 import { Role } from '@/domain/constants/role.enum';
 import { PrismaService } from '@/infrastructure/orm/prisma.service';
 import { IPagination } from '@/shared/interfaces/pagination.interface';
 import { BusinessRepository } from '@/domain/interfaces/business-repository';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class BusinessPrismaRepository implements BusinessRepository {
@@ -60,6 +62,7 @@ export class BusinessPrismaRepository implements BusinessRepository {
         isDeleted: false,
         ...(filters.length > 0 ? { OR: filters } : {}),
       },
+      include: { reviews: true },
       skip,
       take: limit,
       orderBy: { name: order },
@@ -71,6 +74,7 @@ export class BusinessPrismaRepository implements BusinessRepository {
       (item) =>
         new Business({
           ...item,
+          reviews: plainToInstance(Review, item.reviews),
           latitude: item.latitude?.toNumber() ?? 0,
           longitude: item.longitude?.toNumber() ?? 0,
         }),

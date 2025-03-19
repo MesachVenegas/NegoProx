@@ -52,7 +52,6 @@ import { BusinessResponseDto } from '../dto/business/business-response.dto';
 import { BusinessPrismaRepository } from '../repositories/business.repository';
 import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
 
-
 @ApiTags('Business')
 @Controller('business')
 @UseGuards(JwtGuard, RoleGuard)
