@@ -296,9 +296,10 @@ model TokenVersion {
 }
 
 model Category {
-  id      String @id @default(cuid())
-  name    String @unique
-  en_name String
+  id       String @id @default(cuid())
+  name     String @unique
+  en_name  String
+  svg_icon String
 
   businessesCategories BusinessCategory[]
 
