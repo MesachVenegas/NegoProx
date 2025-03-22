@@ -3,6 +3,7 @@ import { BusinessCategory } from './business';
 export class Category {
   public id: string;
   public name: string;
+  public en_name: string;
   public businessCategories?: BusinessCategory[];
 
   /**

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 
 import {
   Availability,
@@ -10,14 +11,17 @@ import {
   Review,
 } from '@/domain/entities/business';
 import { Role } from '@/domain/constants/role.enum';
+import { UtilsService } from '../services/utils.service';
 import { PrismaService } from '@/infrastructure/orm/prisma.service';
 import { IPagination } from '@/shared/interfaces/pagination.interface';
 import { BusinessRepository } from '@/domain/interfaces/business-repository';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class BusinessPrismaRepository implements BusinessRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly utils: UtilsService,
+  ) {}
 
   /**
    * Retrieves the total count of businesses in the database.
@@ -214,10 +218,14 @@ export class BusinessPrismaRepository implements BusinessRepository {
    */
   async saveLocalBusiness(entity: Business) {
     const { name, description, address, phone, user } = entity;
+    const userSlug = this.utils.camelCaseToSlug(
+      `${user?.name} ${user?.lastName}`,
+    );
 
     const business = await this.prisma.business.create({
       data: {
         name,
+        slug: this.utils.camelCaseToSlug(name),
         description,
         address,
         phone,
@@ -231,7 +239,9 @@ export class BusinessPrismaRepository implements BusinessRepository {
             accounts: {
               create: { provider: 'local', providerId: user?.email },
             },
-            userProfile: { create: {} },
+            userProfile: {
+              create: { slug: userSlug },
+            },
             tokenVersion: { create: {} },
           },
         },
@@ -279,6 +289,7 @@ export class BusinessPrismaRepository implements BusinessRepository {
       const business = await tx.business.create({
         data: {
           name,
+          slug: this.utils.camelCaseToSlug(name),
           description,
           address,
           phone,

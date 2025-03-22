@@ -3,6 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 
+import { AccountModule } from './account.module';
 import { TokenVersionModule } from './token-version.module';
 import { AuthController } from '../controllers/auth.controller';
 import { UserPrismaRepository } from '../repositories/user.repository';
@@ -12,7 +13,7 @@ import { LocalStrategy } from '@/infrastructure/strategies/local.strategy';
 import { GoogleStrategy } from '@/infrastructure/strategies/google.strategy';
 import { AccountPrismaRepository } from '../repositories/account.repository';
 import { TokenVersionPrismaRepository } from '../repositories/token-version.repository';
-import { AccountModule } from './account.module';
+import { UtilsService } from '../services/utils.service';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { AccountModule } from './account.module';
     JwtStrategy,
     LocalStrategy,
     GoogleStrategy,
+    UtilsService,
     UserPrismaRepository,
     AuthPrismaRepository,
     AccountPrismaRepository,
