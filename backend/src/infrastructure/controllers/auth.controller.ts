@@ -39,7 +39,6 @@ import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { RegisterLocalUserDto } from '../dto/user/register-local-user.dto';
 import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
 import { TokenVersionPrismaRepository } from '../repositories/token-version.repository';
-import { VerifyUserUseCase } from '@/application/auth/use-cases/verify-user';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -151,14 +150,16 @@ export class AuthController {
     };
   }
 
-  @Get('verify')
+  @Get('/verify')
   @UseGuards(JwtGuard)
-  async verifyUser(@CurrentUser() user: UserProfileAccDto) {
-    const Verify = new VerifyUserUseCase(this.userPrismaRepository);
-    const result = await Verify.execute(user.id);
+  verifyUser(@Req() req: Request, @Res() res: Response) {
+    const token = req.cookies['_ngx_access_token'] as string;
+    if (!token) throw new UnauthorizedException('Token not found');
 
-    if (!result) throw new UnauthorizedException('User not found or not exist');
-    return result;
+    const decoded = this.jwtService.decode<UserSigned>(token);
+    if (!decoded) throw new UnauthorizedException('Token not valid');
+
+    res.status(200).json(decoded);
   }
 
   // TODO: Implement email validation by token
