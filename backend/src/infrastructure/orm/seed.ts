@@ -807,7 +807,7 @@ async function main(): Promise<void> {
     },
   });
 
-  // Crear trabajo relacionado
+  // Crear trabajos y reviews
   await prisma.work.create({
     data: {
       status: 'Progress',
@@ -830,6 +830,88 @@ async function main(): Promise<void> {
           comment: 'Excelente servicio!',
           clientId: clientUser.id,
           businessId: business1.id,
+        },
+      },
+    },
+  });
+
+  // Más trabajos y reviews para otros negocios
+  await prisma.work.create({
+    data: {
+      status: 'Finish',
+      initDate: new Date('2024-03-20T14:00:00Z'),
+      clientId: clientUser.id,
+      businessId: business2.id,
+      payment: {
+        create: {
+          amount: 800.0,
+          status: 'COMPLETED',
+          paymentMethod: 'Efectivo',
+          clientId: clientUser.id,
+          businessId: business2.id,
+        },
+      },
+      review: {
+        create: {
+          rate: 4,
+          comment:
+            'Buen servicio médico, aunque el tiempo de espera fue un poco largo.',
+          clientId: clientUser.id,
+          businessId: business2.id,
+        },
+      },
+    },
+  });
+
+  await prisma.work.create({
+    data: {
+      status: 'Finish',
+      initDate: new Date('2024-03-18T19:30:00Z'),
+      clientId: clientUser.id,
+      businessId: business3.id,
+      payment: {
+        create: {
+          amount: 1200.0,
+          status: 'COMPLETED',
+          paymentMethod: 'Tarjeta de Débito',
+          clientId: clientUser.id,
+          businessId: business3.id,
+        },
+      },
+      review: {
+        create: {
+          rate: 5,
+          comment:
+            '¡La comida estuvo deliciosa! El ambiente y el servicio fueron excelentes.',
+          clientId: clientUser.id,
+          businessId: business3.id,
+        },
+      },
+    },
+  });
+
+  await prisma.work.create({
+    data: {
+      status: 'Finish',
+      initDate: new Date('2024-03-15T10:00:00Z'),
+      clientId: clientUser.id,
+      businessId: business5.id,
+      payment: {
+        create: {
+          amount: 600.0,
+          status: 'COMPLETED',
+          paymentMethod: 'Transferencia',
+          clientId: clientUser.id,
+          businessId: business5.id,
+        },
+      },
+      review: {
+        create: {
+          rate: 3,
+          comment:
+            'El servicio fue aceptable, pero podrían mejorar en la atención al detalle.',
+          clientId: clientUser.id,
+          businessId: business5.id,
         },
       },
     },
