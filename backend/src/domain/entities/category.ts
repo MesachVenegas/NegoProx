@@ -4,6 +4,7 @@ export class Category {
   public id: string;
   public name: string;
   public en_name: string;
+  public svg_icon: string;
   public businessCategories?: BusinessCategory[];
 
   /**
