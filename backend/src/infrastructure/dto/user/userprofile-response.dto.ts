@@ -6,6 +6,10 @@ export class UserProfileResponseDto {
   @IsString()
   id: string;
 
+  @ApiProperty({ example: 'JohnDoe' })
+  @IsString()
+  slug: string;
+
   @ApiProperty({ example: 'https://example.com/profile.jpg' })
   @IsString()
   profilePicture: string | null;
