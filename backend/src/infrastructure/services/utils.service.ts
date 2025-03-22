@@ -13,17 +13,12 @@ export class UtilsService {
   }
 
   camelCaseToSlug(text: string): string {
-    const normalizedText = slugify(text, {
-      strict: true,
-      locale: 'es',
-      trim: true,
-    });
-
+    const normalizedText = text.trim();
     return normalizedText
-      .split('_')
+      .split(/[\s-_]+/)
       .map((word) => {
-        return word.charAt(0).toUpperCase() + word.slice(1);
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
       })
-      .join(' ');
+      .join('');
   }
 }

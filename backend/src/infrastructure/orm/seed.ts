@@ -45,9 +45,9 @@ async function main(): Promise<void> {
       },
       userProfile: {
         create: {
-          slug: 'cliente-ejemplo',
+          slug: 'ClienteEjemplo',
           profilePicture:
-            'https://th.bing.com/th/id/OIP.tvaMwK3QuFxhTYg4PSNNVAHaHa?rs=1&pid=ImgDetMain',
+            'https://img.freepik.com/free-photo/portrait-smiling-young-man-formal-wear_23-2148362335.jpg',
           address: 'Calle Principal 123',
         },
       },
@@ -83,7 +83,7 @@ async function main(): Promise<void> {
       },
       userProfile: {
         create: {
-          slug: 'mesach-venegas',
+          slug: 'MesachVenegas',
         },
       },
       tokenVersion: {
@@ -112,8 +112,9 @@ async function main(): Promise<void> {
       },
       userProfile: {
         create: {
-          slug: 'ana-martinez',
-          profilePicture: 'https://example.com/ana.jpg',
+          slug: 'AnaMartinez',
+          profilePicture:
+            'https://img.freepik.com/free-photo/portrait-happy-young-woman-looking-camera_23-2147892777.jpg',
           bio: 'Estilista profesional con más de 10 años de experiencia',
         },
       },
@@ -140,8 +141,9 @@ async function main(): Promise<void> {
       },
       userProfile: {
         create: {
-          slug: 'carlos-ramirez',
-          profilePicture: 'https://example.com/carlos.jpg',
+          slug: 'CarlosRamirez',
+          profilePicture:
+            'https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg',
           bio: 'Médico general especializado en medicina preventiva',
         },
       },
@@ -168,8 +170,9 @@ async function main(): Promise<void> {
       },
       userProfile: {
         create: {
-          slug: 'maria-gonzalez',
-          profilePicture: 'https://example.com/maria.jpg',
+          slug: 'MariaGonzalez',
+          profilePicture:
+            'https://img.freepik.com/free-photo/young-woman-chef-posing-restaurant-kitchen_23-2149263781.jpg',
           bio: 'Chef ejecutiva y propietaria de restaurante',
         },
       },
@@ -196,8 +199,9 @@ async function main(): Promise<void> {
       },
       userProfile: {
         create: {
-          slug: 'roberto-sanchez',
-          profilePicture: 'https://example.com/roberto.jpg',
+          slug: 'RobertoSanchez',
+          profilePicture:
+            'https://img.freepik.com/free-photo/young-lawyer-office_144627-12230.jpg',
           bio: 'Abogado especialista en derecho corporativo',
         },
       },
@@ -224,8 +228,9 @@ async function main(): Promise<void> {
       },
       userProfile: {
         create: {
-          slug: 'laura-torres',
-          profilePicture: 'https://example.com/laura.jpg',
+          slug: 'LauraTorres',
+          profilePicture:
+            'https://img.freepik.com/free-photo/cleaning-lady-with-cleaning-products-showing-thumb-up_23-2148213921.jpg',
           bio: 'Especialista en servicios de limpieza profesional',
         },
       },
@@ -252,8 +257,9 @@ async function main(): Promise<void> {
       },
       userProfile: {
         create: {
-          slug: 'pedro-vargas',
-          profilePicture: 'https://example.com/pedro.jpg',
+          slug: 'PedroVargas',
+          profilePicture:
+            'https://img.freepik.com/free-photo/teacher-with-students-classroom_23-2148892590.jpg',
           bio: 'Director de academia cultural y artística',
         },
       },
@@ -280,8 +286,9 @@ async function main(): Promise<void> {
       },
       userProfile: {
         create: {
-          slug: 'isabel-diaz',
-          profilePicture: 'https://example.com/isabel.jpg',
+          slug: 'IsabelDiaz',
+          profilePicture:
+            'https://img.freepik.com/free-photo/travel-guide-with-group-tourists_23-2147928015.jpg',
           bio: 'Experta en turismo de aventura',
         },
       },
@@ -295,7 +302,7 @@ async function main(): Promise<void> {
     where: { name: 'Peluquería Glamour' },
     update: {},
     create: {
-      slug: 'peluqueria-glamour',
+      slug: 'PeluqueriaGlamour',
       name: 'Peluquería Glamour',
       description: 'Servicios de peluquería y estilismo profesional',
       address: 'Avenida Comercial 456',
@@ -305,7 +312,8 @@ async function main(): Promise<void> {
       userId: businessOwner1.id,
       businessProfile: {
         create: {
-          bannerImage: 'https://example.com/peluqueria-banner.jpg',
+          bannerImage:
+            'https://img.freepik.com/free-vector/hair-salon-banner-template_23-2148953337.jpg',
           website: 'https://peluqueria-glamour.com',
           socialMedia: {
             facebook: 'peluqueriaglamour',
@@ -325,11 +333,13 @@ async function main(): Promise<void> {
       images: {
         create: [
           {
-            imageUrl: 'https://example.com/peluqueria1.jpg',
+            imageUrl:
+              'https://img.freepik.com/free-photo/hairdresser-making-hairstyle-client_23-2148088721.jpg',
             order: 1,
           },
           {
-            imageUrl: 'https://example.com/peluqueria2.jpg',
+            imageUrl:
+              'https://img.freepik.com/free-photo/hairdresser-making-haircut-beauty-salon_23-2148088719.jpg',
             order: 2,
           },
         ],
@@ -342,7 +352,7 @@ async function main(): Promise<void> {
     where: { name: 'Centro Médico Bienestar' },
     update: {},
     create: {
-      slug: 'centro-medico-bienestar',
+      slug: 'CentroMedicoBienestar',
       name: 'Centro Médico Bienestar',
       description:
         'Centro médico especializado en medicina preventiva y bienestar integral',
@@ -353,7 +363,8 @@ async function main(): Promise<void> {
       userId: businessOwner2.id,
       businessProfile: {
         create: {
-          bannerImage: 'https://example.com/centro-medico-banner.jpg',
+          bannerImage:
+            'https://img.freepik.com/free-vector/medical-healthcare-banner-template_23-2148935371.jpg',
           website: 'https://centromedicobienestar.com',
           socialMedia: {
             facebook: 'centromedicobienestar',
@@ -373,11 +384,13 @@ async function main(): Promise<void> {
       images: {
         create: [
           {
-            imageUrl: 'https://example.com/centro-medico1.jpg',
+            imageUrl:
+              'https://img.freepik.com/free-photo/doctor-nurses-special-equipment_23-2148980721.jpg',
             order: 1,
           },
           {
-            imageUrl: 'https://example.com/centro-medico2.jpg',
+            imageUrl:
+              'https://img.freepik.com/free-photo/medical-workers-covid-19-vaccination-concept-confident-professional-doctor-female-nurse-working-hospital-clinic-healthcare-workers-showing-thumbs-up-assure-guarantee-best-medical-service_1258-57360.jpg',
             order: 2,
           },
         ],
@@ -390,7 +403,7 @@ async function main(): Promise<void> {
     where: { name: 'Restaurante El Sabor' },
     update: {},
     create: {
-      slug: 'restaurante-el-sabor',
+      slug: 'RestauranteElSabor',
       name: 'Restaurante El Sabor',
       description:
         'Restaurante de comida tradicional con los mejores sabores locales',
@@ -441,7 +454,7 @@ async function main(): Promise<void> {
     where: { name: 'Consultoría Legal Experta' },
     update: {},
     create: {
-      slug: 'consultoria-legal-experta',
+      slug: 'ConsultoriaLegalExperta',
       name: 'Consultoría Legal Experta',
       description:
         'Servicios legales profesionales para empresas y particulares',
@@ -492,7 +505,7 @@ async function main(): Promise<void> {
     where: { name: 'Servicios de Limpieza Hogar' },
     update: {},
     create: {
-      slug: 'servicios-limpieza-hogar',
+      slug: 'ServiciosLimpiezaHogar',
       name: 'Servicios de Limpieza Hogar',
       description:
         'Servicios profesionales de limpieza para hogares y oficinas',
@@ -543,7 +556,7 @@ async function main(): Promise<void> {
     where: { name: 'Academia Cultural Artes' },
     update: {},
     create: {
-      slug: 'academia-cultural-artes',
+      slug: 'AcademiaCulturalArtes',
       name: 'Academia Cultural Artes',
       description: 'Academia de artes y cultura para todas las edades',
       address: 'Avenida Cultural 789',
