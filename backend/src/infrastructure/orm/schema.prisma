@@ -77,6 +77,7 @@ model Account {
 
 model UserProfile {
   id             String   @id @default(cuid())
+  slug           String   @unique
   profilePicture String?  @map("profile_picture")
   bio            String?
   address        String?
@@ -92,6 +93,7 @@ model UserProfile {
 
 model Business {
   id          String   @id @default(cuid())
+  slug        String   @unique
   name        String   @unique
   description String?
   address     String?
@@ -294,8 +296,9 @@ model TokenVersion {
 }
 
 model Category {
-  id   String @id @default(cuid())
-  name String @unique
+  id      String @id @default(cuid())
+  name    String @unique
+  en_name String
 
   businessesCategories BusinessCategory[]
 
