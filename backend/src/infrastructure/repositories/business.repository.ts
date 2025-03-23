@@ -183,17 +183,15 @@ export class BusinessPrismaRepository implements BusinessRepository {
   async getAllBusiness({
     skip,
     limit,
-    order,
   }: Partial<IPagination>): Promise<Business[] | null> {
     const business = await this.prisma.business.findMany({
       where: { isDeleted: false },
       skip,
       take: limit,
-      orderBy: { createdAt: order },
       include: {
         categories: {
           include: { category: true },
-          omit: { businessId: true, categoryId: true },
+          omit: { businessId: true },
         },
       },
     });
