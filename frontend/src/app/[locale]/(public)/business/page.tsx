@@ -25,7 +25,8 @@ import { useBusiness } from "@/hooks/useBusiness";
 import Loading from "@/app/loading";
 
 export default function Business() {
-	const [itemsPerPage, setItemsPerPage] = useState(9);
+	const [itemsPerPage, setItemsPerPage] = useState(6);
+	setItemsPerPage(9);
 	const { business, status } = useBusiness(1, itemsPerPage);
 
 	const [sortBy, setSortBy] = useState<string>("name");
