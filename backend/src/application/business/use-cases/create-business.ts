@@ -3,10 +3,12 @@ import { NotAcceptableException } from '@nestjs/common';
 import { Business } from '@/domain/entities';
 import { User } from '@/domain/entities/user';
 import { hashPassword } from '@/shared/utils/hash.util';
+import { UtilsService } from '@/infrastructure/services/utils.service';
 import { RegisterLocalBusinessDto } from '@/infrastructure/dto/business';
 import { BusinessRepository } from '@/domain/interfaces/business-repository';
 
 export class CreateBusinessUseCase {
+  utils = new UtilsService();
   constructor(private readonly businessRepository: BusinessRepository) {}
 
   /**
@@ -27,7 +29,10 @@ export class CreateBusinessUseCase {
     const newUser = new User(user);
     newUser.updatePassword(await hashPassword(user.password));
 
-    const newBusiness = new Business(business);
+    const newBusiness = new Business({
+      ...business,
+      slug: this.utils.camelCaseToSlug(business.name),
+    });
 
     newBusiness.update({
       user: newUser,

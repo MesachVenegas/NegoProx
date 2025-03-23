@@ -3,8 +3,10 @@ import { PromoteUserParamsDto } from '../dto/promote-user';
 import { ConflictException, NotAcceptableException } from '@nestjs/common';
 import { Business } from '@/domain/entities';
 import { Role } from '@/domain/constants/role.enum';
+import { UtilsService } from '@/infrastructure/services/utils.service';
 
 export class PromoteUserToBusinessUseCase {
+  utils = new UtilsService();
   constructor(private readonly businessRepository: BusinessRepository) {}
 
   /**
@@ -34,7 +36,10 @@ export class PromoteUserToBusinessUseCase {
     if (exist)
       throw new ConflictException('User already has a business with this name');
 
-    const newBusiness = new Business(dto);
+    const newBusiness = new Business({
+      ...dto,
+      slug: this.utils.camelCaseToSlug(dto.name),
+    });
 
     const business = await this.businessRepository.promoteBusinessOwner(
       newBusiness,

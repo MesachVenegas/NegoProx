@@ -12,6 +12,7 @@ import { BusinessCategory } from './business-category';
 
 export class Business {
   public id: string | undefined;
+  public slug: string;
   public name: string;
   public description?: string;
   public address?: string;
@@ -39,6 +40,7 @@ export class Business {
   constructor(init: {
     id?: string;
     name: string;
+    slug: string;
     description?: string | null;
     address?: string | null;
     latitude?: number | null;
@@ -63,6 +65,7 @@ export class Business {
     reviews?: Review[];
   }) {
     this.id = init.id;
+    this.slug = init.slug;
     this.name = init.name;
     this.description = init.description ?? undefined;
     this.address = init.address ?? undefined;
