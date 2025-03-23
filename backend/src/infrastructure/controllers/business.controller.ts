@@ -47,10 +47,14 @@ import { UserPrismaRepository } from '../repositories/user.repository';
 import { UpdateBusinessDto } from '../dto/business/update-business.dto';
 import { SearchBusinessDto } from '../dto/business/search-business.dto';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
-import { PaginationResponseDto } from '@/infrastructure/dto/pagination.dto';
+import {
+  PaginationDto,
+  PaginationResponseDto,
+} from '@/infrastructure/dto/pagination.dto';
 import { BusinessResponseDto } from '../dto/business/business-response.dto';
 import { BusinessPrismaRepository } from '../repositories/business.repository';
 import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
+import { GetAllBusinessUseCase } from '@/application/business/use-cases/getAllBusiness';
 
 @ApiTags('Business')
 @Controller('business')
@@ -75,7 +79,7 @@ export class BusinessController {
   ) {}
 
   // -- Search business by name or category, if params are empty returns all
-  @Get()
+  @Get('/search')
   @Public()
   @ApiOperation({
     description:
@@ -107,7 +111,6 @@ export class BusinessController {
   }
 
   // -- Get business by id
-
   @Get('profile/:id')
   @Public()
   @ApiOperation({ description: 'Retrieve business by id' })
@@ -126,6 +129,17 @@ export class BusinessController {
     business.rating_average = result.rate;
 
     return business;
+  }
+
+  //  -- Get all businesses
+  @Get()
+  @Public()
+  @ApiOperation({ description: 'Retrieve all businesses available' })
+  async getAllBusiness(@Query() query: PaginationDto) {
+    const getAllBusiness = new GetAllBusinessUseCase(this.BusinessRepository);
+    const result = await getAllBusiness.execute(query);
+
+    return result;
   }
 
   // -- Create a new business

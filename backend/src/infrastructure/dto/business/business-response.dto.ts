@@ -61,3 +61,9 @@ export class BusinessResponseDto {
   @Expose()
   reviews?: Review[];
 }
+
+export class BusinessWhitAverageDto extends BusinessResponseDto {
+  @ApiProperty({ example: 4.5 })
+  @Expose()
+  rateAvg?: number;
+}
