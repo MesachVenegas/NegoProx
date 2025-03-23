@@ -156,6 +156,7 @@ export default function ErrorBoundary({ error, reset }: Props) {
 				</svg>
 				<h1 className="text-3xl font-bold">{txt("title")}</h1>
 				<p className="text-muted-foreground">{txt("description")}</p>
+				<p className="text-2xl text-muted-foreground">{error.message}</p>
 				<div className="flex gap-4 items-center justify-center">
 					<Button onClick={() => reload()}>{txt("tryAgain")}</Button>
 					<Link
@@ -164,13 +165,6 @@ export default function ErrorBoundary({ error, reset }: Props) {
 						<ArrowLeft className="h-5 w-5" />
 						{txt("backhome")}
 					</Link>
-				</div>
-				<div className="w-full max-w-5xl overflow-hidden mt-6">
-					{process.env.NODE_ENV === "development" && (
-						<pre className="overflow-scroll text-xs">
-							<code>{JSON.stringify(error)}</code>
-						</pre>
-					)}
 				</div>
 			</div>
 			<div className="absolute inset-0 overflow-hidden pointer-events-none">
