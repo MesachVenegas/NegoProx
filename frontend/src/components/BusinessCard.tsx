@@ -2,34 +2,23 @@
 import Image from "next/image";
 import { CalendarDays, MapPin, Star } from "lucide-react";
 
-import { Badge } from "./ui/badge";
+// import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Link } from "@/i18n/navigation";
 import { Card, CardContent } from "./ui/card";
-
-interface BusinessCardProps {
-	id: number;
-	name: string;
-	rating: string;
-	image: string;
-	description: string;
-	category: string;
-	location: string;
-	availability: boolean;
-	createdAt: string;
-}
+import { BusinessCard as BusinessProps } from "@/types/business";
 
 export default function BusinessCard({
 	business,
 }: {
-	business: BusinessCardProps;
+	business: BusinessProps;
 }) {
 	return (
 		<Card key={business.id} className="overflow-hidden">
-			<Link href={`/business/${business.id}`}>
+			<Link href={`/business/${business.slug}`}>
 				<div className="relative">
 					<Image
-						src={business.image}
+						src={business.businessProfile.bannerImage}
 						alt={business.name}
 						width={400}
 						height={200}
@@ -45,7 +34,7 @@ export default function BusinessCard({
 							<h3 className="font-bold">{business.name}</h3>
 							<div className="flex items-center">
 								<Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-								<span className="ml-1 text-sm">{business.rating}</span>
+								<span className="ml-1 text-sm">{business.rateAvg}</span>
 							</div>
 						</div>
 						<p className="text-sm text-muted-foreground line-clamp-3">
@@ -53,10 +42,10 @@ export default function BusinessCard({
 						</p>
 						<div className="flex items-center text-sm text-muted-foreground">
 							<MapPin className="w-3 h-3 mr-1" />
-							<span>{business.location}</span>
+							<span>{business.address}</span>
 						</div>
-						<div className="flex items-center justify-between pt-2">
-							<Badge
+						<div className="flex items-center justify-end pt-2">
+							{/* <Badge
 								variant="outline"
 								className={`flex items-center ${
 									business.availability
@@ -65,7 +54,7 @@ export default function BusinessCard({
 								}`}>
 								<CalendarDays className="w-3 h-3 mr-1" />
 								{business.availability ? "Available today" : "Closed"}
-							</Badge>
+							</Badge> */}
 							<Button size="sm" className="hover:text-black">
 								Book Now
 							</Button>
