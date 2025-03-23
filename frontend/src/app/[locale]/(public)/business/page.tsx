@@ -21,43 +21,30 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import BusinessCard from "@/components/BusinessCard";
 import FilterSidebar from "@/components/FilterSidebar";
+import { useBusiness } from "@/hooks/useBusiness";
+import Loading from "@/app/loading";
 
 export default function Business() {
+	const [itemsPerPage, setItemsPerPage] = useState(9);
+	const { business, status } = useBusiness(1, itemsPerPage);
+
 	const [sortBy, setSortBy] = useState<string>("name");
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
-	const itemsPerPage = 9;
-
-	// example data
-	const business = Array.from({ length: 20 }, (_, i) => ({
-		id: i + 1,
-		name: `Business ${i + 1}`,
-		rating: (4 + Math.random()).toFixed(1),
-		image: `https://picsum.photos/400/200?random=${i + 1}`,
-		description:
-			"lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-		category: ["Health & Wellness", "Food & Dining", "Retail", "Travel"][
-			Math.floor(Math.random() * 5)
-		],
-		location: ["Tijuana", "Tecate", "San Diego", "Mexicali", "Ensenada"][
-			Math.floor(Math.random() * 5)
-		],
-		availability: [true, false][Math.floor(Math.random() * 2)],
-		createdAt: new Date(2024, 0, i + 1).toISOString(),
-	}));
 
 	// filter and sort business
 	const filteredBusiness = business
-		.filter(
+		?.filter(
 			(b) =>
-				selectedCategory.length === 0 || selectedCategory.includes(b.category)
+				selectedCategory.length === 0 ||
+				selectedCategory.includes(b.categories[0].category.en_name)
 		)
 		.sort((a, b) => {
 			switch (sortBy) {
 				case "name":
 					return a.name.localeCompare(b.name);
 				case "rating":
-					return Number.parseFloat(b.rating) - Number.parseFloat(a.rating);
+					return b.rateAvg - a.rateAvg;
 				case "newest":
 					return (
 						new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -68,8 +55,8 @@ export default function Business() {
 		});
 
 	// pagination
-	const totalPages = Math.ceil(filteredBusiness.length / itemsPerPage);
-	const currentBusiness = filteredBusiness.slice(
+	const totalPages = Math.ceil(filteredBusiness?.length || 0 / itemsPerPage);
+	const currentBusiness = filteredBusiness?.slice(
 		(currentPage - 1) * itemsPerPage,
 		currentPage * itemsPerPage
 	);
@@ -179,39 +166,52 @@ export default function Business() {
 					)}
 
 					{/* Business grid */}
-					<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-						{currentBusiness.map((business) => (
-							<BusinessCard key={business.id} business={business} />
-						))}
-					</div>
-
-					{/* Pagination */}
-					<div className="flex justify-center items-center gap-2 mt-8">
-						<Button
-							variant="outline"
-							size="icon"
-							onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
-							<ChevronLeft className="h-4 w-4" />
-						</Button>
-						{Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-							<Button
-								key={page}
-								variant={currentPage === page ? "default" : "outline"}
-								size="icon"
-								onClick={() => setCurrentPage(page)}>
-								{page}
-							</Button>
-						))}
-						<Button
-							variant="outline"
-							size="icon"
-							onClick={() =>
-								setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-							}
-							disabled={currentPage === totalPages}>
-							<ChevronRight className="h-4 w-4" />
-						</Button>
-					</div>
+					{status === "pending" ? (
+						<Loading />
+					) : status === "error" ? (
+						<div>Error</div>
+					) : (
+						business && (
+							<>
+								<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+									{currentBusiness?.map((business) => (
+										<BusinessCard key={business.id} business={business} />
+									))}
+								</div>
+								{/* Pagination */}
+								<div className="flex justify-center items-center gap-2 mt-8">
+									<Button
+										variant="outline"
+										size="icon"
+										onClick={() =>
+											setCurrentPage((prev) => Math.max(prev - 1, 1))
+										}>
+										<ChevronLeft className="h-4 w-4" />
+									</Button>
+									{Array.from({ length: totalPages }, (_, i) => i + 1).map(
+										(page) => (
+											<Button
+												key={page}
+												variant={currentPage === page ? "default" : "outline"}
+												size="icon"
+												onClick={() => setCurrentPage(page)}>
+												{page}
+											</Button>
+										)
+									)}
+									<Button
+										variant="outline"
+										size="icon"
+										onClick={() =>
+											setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+										}
+										disabled={currentPage === totalPages}>
+										<ChevronRight className="h-4 w-4" />
+									</Button>
+								</div>
+							</>
+						)
+					)}
 				</div>
 			</div>
 		</div>
