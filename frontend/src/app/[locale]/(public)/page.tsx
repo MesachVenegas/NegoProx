@@ -31,6 +31,7 @@ const FadeWhenVisible = dynamic(
 export default function Home() {
 	const t = useTranslations("HomePage");
 
+
 	return (
 		<div className="flex-1 flex flex-col items-center">
 			{/* Hero sections */}
@@ -394,7 +395,7 @@ export default function Home() {
 									initial={{ opacity: 0, scale: 0.9 }}
 									whileInView={{ opacity: 1, scale: 1 }}
 									viewport={{ once: true }}
-									transition={{ duration: 0.3, delay: i * 0.2 }}>
+									transition={{ duration: 0.3, delay: i * 0.1 }}>
 									<Link
 										href={`/categories/${category.name}`}
 										className="flex flex-col items-center justify-center p-4 rounded-lg border bg-background hover:bg-muted/50 transition-colors">
