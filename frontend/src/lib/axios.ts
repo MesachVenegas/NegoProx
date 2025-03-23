@@ -67,7 +67,18 @@ function getCsrfToken() {
 	const parts = value.split(`; ${name}=`);
 
 	if (parts.length === 2) {
-		const token = parts.pop()?.split(";").shift();
+		let token = parts.pop()?.split(";").shift();
+		if (token?.includes("%7C")) {
+			token = token.split("%7C")[0];
+		}
+		if (token) {
+			try {
+				token = decodeURIComponent(token);
+			} catch (error) {
+				console.error("Error decodificando el token CSRF:", error);
+				return null;
+			}
+		}
 		// debug logs
 		console.log(`CSRF Token: ${token}`);
 		console.log("Longitud del token: ", token?.length);
