@@ -10,6 +10,11 @@ export class BusinessResponseDto {
   @Expose()
   id: string;
 
+  @ApiProperty({ example: 'PizzaHut' })
+  @IsString()
+  @Expose()
+  slug: string;
+
   @ApiProperty({ example: 'Pizza Hut' })
   @IsString()
   @Expose()

@@ -14,11 +14,12 @@ export class UtilsService {
 
   camelCaseToSlug(text: string): string {
     const normalizedText = text.trim();
-    return normalizedText
+    const formattedText = normalizedText
       .split(/[\s-_]+/)
       .map((word) => {
         return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
       })
       .join('');
+    return `@${formattedText}`;
   }
 }
