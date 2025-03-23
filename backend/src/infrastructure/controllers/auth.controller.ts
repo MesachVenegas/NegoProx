@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiConflictResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -29,7 +30,7 @@ import {
 import { LoginDto } from '../dto/auth/login.dto';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { Public } from '@/shared/decorators/public.decorator';
-import { AuthResponseDto } from '../dto/auth/auth-response.dto';
+import { UserSigned } from '../dto/auth/auth-response.dto';
 import { CsrfService } from '@/infrastructure/services/csrf.service';
 import { UserProfileAccDto } from '../dto/user/user-profile-acc.dto';
 import { CreateLocalUserUseCase } from '@/application/user/use-cases';
@@ -38,7 +39,6 @@ import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { RegisterLocalUserDto } from '../dto/user/register-local-user.dto';
 import { HttpErrorResponseDto } from '@/infrastructure/dto/http-error-response.dto';
 import { TokenVersionPrismaRepository } from '../repositories/token-version.repository';
-import { VerifyUserUseCase } from '@/application/auth/use-cases/verify-user';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -53,8 +53,9 @@ export class AuthController {
   @Public()
   @UseGuards(AuthGuard('local'))
   @Post('login')
+  @ApiBody({ type: LoginDto })
   @ApiOperation({ description: 'Login with email and password' })
-  @ApiOkResponse({ type: AuthResponseDto })
+  @ApiOkResponse({ type: UserSigned })
   @ApiUnauthorizedResponse({
     description: 'Credentials are not valid, user disabled',
     type: HttpErrorResponseDto,
@@ -68,10 +69,9 @@ export class AuthController {
     type: HttpErrorResponseDto,
   })
   async login(
-    @Body() dto: LoginDto,
     @Req() req: Request,
     @Res() res: Response,
-  ): Promise<AuthResponseDto | void> {
+  ): Promise<UserSigned | void> {
     if (!req.user) return;
     const user = plainToInstance(UserProfileAccDto, req.user);
     const Authenticate = new AuthenticateUserUseCase(
@@ -82,7 +82,7 @@ export class AuthController {
     this.securityService.generateCsrfToken(req, res);
     const authenticate = await Authenticate.execute(user, res);
 
-    res.json(plainToInstance(AuthResponseDto, authenticate));
+    res.json(plainToInstance(UserSigned, authenticate));
   }
 
   @Public()
@@ -97,7 +97,7 @@ export class AuthController {
   @ApiOperation({
     description: 'Callback for google login, and return session token',
   })
-  @ApiOkResponse({ type: AuthResponseDto })
+  @ApiOkResponse({ type: UserSigned })
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
     if (!req.user)
       throw new UnauthorizedException(
@@ -112,7 +112,7 @@ export class AuthController {
     this.securityService.generateCsrfToken(req, res);
     const authenticate = await Authenticate.execute(user, res);
 
-    res.json(plainToInstance(AuthResponseDto, authenticate));
+    res.json(plainToInstance(UserSigned, authenticate));
   }
 
   @Public()
@@ -150,14 +150,16 @@ export class AuthController {
     };
   }
 
-  @Get('verify')
+  @Get('/verify')
   @UseGuards(JwtGuard)
-  async verifyUser(@CurrentUser() user: UserProfileAccDto) {
-    const Verify = new VerifyUserUseCase(this.userPrismaRepository);
-    const result = await Verify.execute(user.id);
+  verifyUser(@Req() req: Request, @Res() res: Response) {
+    const token = req.cookies['_ngx_access_token'] as string;
+    if (!token) throw new UnauthorizedException('Token not found');
 
-    if (!result) throw new UnauthorizedException('User not found or not exist');
-    return result;
+    const decoded = this.jwtService.decode<UserSigned>(token);
+    if (!decoded) throw new UnauthorizedException('Token not valid');
+
+    res.status(200).json(decoded);
   }
 
   // TODO: Implement email validation by token

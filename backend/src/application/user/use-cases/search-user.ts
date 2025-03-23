@@ -1,4 +1,5 @@
 import { UserRepository } from '@/domain/interfaces/user-repository';
+import { NotFoundException } from '@nestjs/common';
 
 export class SearchUserUseCase {
   constructor(private readonly userRepository: UserRepository) {}
@@ -13,7 +14,7 @@ export class SearchUserUseCase {
    */
   async execute(id?: string, email?: string, phone?: string) {
     const user = await this.userRepository.searchUserByQuery(id, email, phone);
-
+    if (!user) throw new NotFoundException('User not found');
     return user;
   }
 }

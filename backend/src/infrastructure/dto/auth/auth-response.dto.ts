@@ -1,19 +1,12 @@
-import { Role } from '@/domain/constants/role.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import {
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-  IsUrl,
-  ValidateNested,
-} from 'class-validator';
+import { IsEmail, IsEnum, IsNumber, IsString, IsUrl } from 'class-validator';
 
-class UserSigned {
+import { Role } from '@/domain/constants/role.enum';
+
+export class UserSigned {
   @ApiProperty({ example: '1123210934802932' })
   @IsString()
-  id: string;
+  sub: string;
 
   @ApiProperty({ example: 'johndoe@example.com' })
   @IsEmail()
@@ -25,21 +18,33 @@ class UserSigned {
 
   @ApiProperty({ example: 'https://example.com/profile.jpg' })
   @IsUrl()
-  picture: string;
+  avatar: string;
 
   @ApiProperty({ example: Role.USER })
   @IsEnum(Role)
   role: Role;
-}
-export class AuthResponseDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => UserSigned)
-  user: UserSigned;
 
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  access_token: string;
+  @ApiProperty({ example: 1 })
+  @IsNumber()
+  tokenVersion: number;
+
+  @ApiProperty({ example: 1742677912 })
+  @IsNumber()
+  iat: number;
+
+  @ApiProperty({ example: 1742764312 })
+  @IsNumber()
+  exp: number;
 }
+// export class AuthResponseDto {
+//   @ApiProperty()
+//   @IsNotEmpty()
+//   @ValidateNested({ each: true })
+//   @Type(() => UserSigned)
+//   user: UserSigned;
+
+//   @ApiProperty()
+//   @IsString()
+//   @IsNotEmpty()
+//   access_token: string;
+// }

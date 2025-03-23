@@ -15,7 +15,9 @@ export interface BusinessRepository {
     id: string,
   ): Promise<{ business: Business; rate: number } | null>;
   findBusinessByOwnerId(id: string): Promise<Business | null>;
-  getAllBusiness(data: Partial<IPagination>): Promise<Business[] | null>;
+  getAllBusiness(
+    data: Partial<IPagination>,
+  ): Promise<(Business & { rateAvg: number })[] | null>;
   saveLocalBusiness(entity: Business): Promise<Business>;
   promoteBusinessOwner(
     entity: Business,

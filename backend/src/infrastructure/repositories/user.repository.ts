@@ -5,10 +5,14 @@ import { Role } from '@/domain/constants/role.enum';
 import { User, UserProfile } from '@/domain/entities/user';
 import { PrismaService } from '@/infrastructure/orm/prisma.service';
 import { UserRepository } from '@/domain/interfaces/user-repository';
+import { UtilsService } from '../services/utils.service';
 
 @Injectable()
 export class UserPrismaRepository implements UserRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly utils: UtilsService,
+  ) {}
 
   /**
    * Retrieves a list of users from the database with optional pagination and sorting.
@@ -89,7 +93,11 @@ export class UserPrismaRepository implements UserRepository {
         email: data.email,
         password: data.getPassword(),
         accounts: { create: { provider: 'local', providerId: data.email } },
-        userProfile: { create: {} },
+        userProfile: {
+          create: {
+            slug: this.utils.camelCaseToSlug(`${data.name} ${data.lastName}`),
+          },
+        },
         tokenVersion: { create: {} },
       },
     });

@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { UserProfileAccDto } from '@/infrastructure/dto/user/user-profile-acc.dto';
 import { TokenVersionRepository } from '@/domain/interfaces/token-version-repository';
+import { UserSigned } from '@/infrastructure/dto/auth/auth-response.dto';
 
 export class AuthenticateUserUseCase {
   config = new ConfigService();
@@ -12,12 +13,14 @@ export class AuthenticateUserUseCase {
     private readonly tokenVersionRepository: TokenVersionRepository,
   ) {}
 
-  async execute(user: UserProfileAccDto, res: Response) {
+  async execute(user: UserProfileAccDto, res: Response): Promise<UserSigned> {
     const version = await this.tokenVersionRepository.getVersion(user.id);
     const payload = {
       sub: user.id,
+      slug: user.userProfile?.slug,
+      name: `${user.name} ${user.lastName}`,
       email: user.email,
-      picture: user.userProfile?.profilePicture || null,
+      avatar: user.userProfile?.profilePicture || null,
       role: user.userType,
       tokenVersion: version,
     };
@@ -27,18 +30,9 @@ export class AuthenticateUserUseCase {
     res.cookie('_ngx_access_token', token, {
       httpOnly: true,
       secure: this.config.get<string>('app.environment') === 'production',
-      sameSite: 'strict' as const,
+      sameSite: 'lax',
     });
 
-    return {
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        picture: user.userProfile?.profilePicture || null,
-        role: user.userType,
-      },
-      access_token: token,
-    };
+    return this.jwtService.decode<UserSigned>(token);
   }
 }

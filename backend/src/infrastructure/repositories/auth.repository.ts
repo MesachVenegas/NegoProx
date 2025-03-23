@@ -6,10 +6,14 @@ import { Account, Business, TokenVersion } from '@/domain/entities';
 import { User, UserProfile } from '@/domain/entities/user';
 import { PrismaService } from '@/infrastructure/orm/prisma.service';
 import { AuthRepository } from '@/domain/interfaces/auth-repository';
+import { UtilsService } from '../services/utils.service';
 
 @Injectable()
 export class AuthPrismaRepository implements AuthRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly utils: UtilsService,
+  ) {}
 
   /**
    * Retrieves a user by their email address if the user is a local user.
@@ -48,9 +52,11 @@ export class AuthPrismaRepository implements AuthRepository {
   }
 
   async registerGoogleAccount(profile: Profile) {
-    const { id, emails, name, photos, provider } = profile;
+    const { id, emails, name, photos, provider, displayName } = profile;
     const email = emails?.[0].value as string;
     const verified = emails?.[0].verified;
+
+    const slug = this.utils.camelCaseToSlug(displayName);
 
     const user = await this.prisma.user.create({
       data: {
@@ -66,6 +72,7 @@ export class AuthPrismaRepository implements AuthRepository {
         },
         userProfile: {
           create: {
+            slug: slug,
             profilePicture: photos?.[0].value,
           },
         },

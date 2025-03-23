@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 
 import {
   Availability,
@@ -10,14 +11,17 @@ import {
   Review,
 } from '@/domain/entities/business';
 import { Role } from '@/domain/constants/role.enum';
+import { UtilsService } from '../services/utils.service';
 import { PrismaService } from '@/infrastructure/orm/prisma.service';
 import { IPagination } from '@/shared/interfaces/pagination.interface';
 import { BusinessRepository } from '@/domain/interfaces/business-repository';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class BusinessPrismaRepository implements BusinessRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly utils: UtilsService,
+  ) {}
 
   /**
    * Retrieves the total count of businesses in the database.
@@ -169,41 +173,49 @@ export class BusinessPrismaRepository implements BusinessRepository {
   }
 
   /**
-   * Retrieves a list of businesses with optional pagination and sorting.
+   * Retrieves a list of all businesses with their categories and average rating.
    *
-   * @param skip - The number of businesses to skip, for pagination.
-   * @param limit - The maximum number of businesses to retrieve.
-   * @param order - The order in which to sort the businesses, either 'asc' or 'desc'.
-   * @returns A promise that resolves with an array of Business entities, or null if no businesses are found.
+   * @param pagination - Optional pagination parameters.
+   * @returns A promise that resolves with an array of Business objects, or null if no businesses are found.
    */
-  async getAllBusiness({
-    skip,
-    limit,
-    order,
-  }: Partial<IPagination>): Promise<Business[] | null> {
-    const business = await this.prisma.business.findMany({
+  async getAllBusiness({ skip, limit }: Partial<IPagination>) {
+    const businesses = await this.prisma.business.findMany({
       where: { isDeleted: false },
       skip,
       take: limit,
-      orderBy: { createdAt: order },
       include: {
+        businessProfile: { omit: { businessId: true } },
         categories: {
           include: { category: true },
-          omit: { businessId: true, categoryId: true },
+          omit: { businessId: true },
         },
       },
     });
 
-    if (!business || business.length === 0) return null;
+    if (!businesses || businesses.length === 0) return null;
 
-    return business.map((item) => {
-      return new Business({
-        ...item,
-        latitude: item.latitude?.toNumber() ?? 0,
-        longitude: item.longitude?.toNumber() ?? 0,
-        categories: item.categories as BusinessCategory[],
-      });
-    });
+    const businessesWithRatings = await Promise.all(
+      businesses.map(async (business) => {
+        const avgRating = await this.prisma.review.aggregate({
+          where: { businessId: business.id },
+          _avg: { rate: true },
+        });
+
+        const businessEntity = new Business({
+          ...business,
+          businessProfile: business.businessProfile as BusinessProfile,
+          latitude: business.latitude?.toNumber() ?? 0,
+          longitude: business.longitude?.toNumber() ?? 0,
+          categories: business.categories as BusinessCategory[],
+        });
+
+        return Object.assign(businessEntity, {
+          rateAvg: avgRating._avg.rate ?? 0,
+        });
+      }),
+    );
+
+    return businessesWithRatings;
   }
 
   /**
@@ -214,10 +226,14 @@ export class BusinessPrismaRepository implements BusinessRepository {
    */
   async saveLocalBusiness(entity: Business) {
     const { name, description, address, phone, user } = entity;
+    const userSlug = this.utils.camelCaseToSlug(
+      `${user?.name} ${user?.lastName}`,
+    );
 
     const business = await this.prisma.business.create({
       data: {
         name,
+        slug: this.utils.camelCaseToSlug(name),
         description,
         address,
         phone,
@@ -231,7 +247,9 @@ export class BusinessPrismaRepository implements BusinessRepository {
             accounts: {
               create: { provider: 'local', providerId: user?.email },
             },
-            userProfile: { create: {} },
+            userProfile: {
+              create: { slug: userSlug },
+            },
             tokenVersion: { create: {} },
           },
         },
@@ -279,6 +297,7 @@ export class BusinessPrismaRepository implements BusinessRepository {
       const business = await tx.business.create({
         data: {
           name,
+          slug: this.utils.camelCaseToSlug(name),
           description,
           address,
           phone,

@@ -2,6 +2,7 @@ import { User } from './user';
 
 export class UserProfile {
   public id: string;
+  public slug: string;
   public profilePicture: string;
   public bio: string;
   public address: string;
