@@ -5,7 +5,7 @@ import { Business } from './business';
 export class Review {
   public id: string;
   public rate: number;
-  public comment?: string;
+  public comment?: string | null;
   public reviewedAt: Date;
   public workId: string;
   public work?: Work;
@@ -13,6 +13,10 @@ export class Review {
   public client?: User;
   public businessId: string;
   public business?: Business;
+
+  constructor(partial: Partial<Review>) {
+    Object.assign(this, partial);
+  }
 
   /**
    * Updates the review with the provided data.
