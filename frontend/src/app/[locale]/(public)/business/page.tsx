@@ -6,6 +6,7 @@ import {
 	Select,
 	SelectContent,
 	SelectItem,
+	SelectLabel,
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
@@ -23,10 +24,10 @@ import BusinessCard from "@/components/BusinessCard";
 import FilterSidebar from "@/components/FilterSidebar";
 import { useBusiness } from "@/hooks/useBusiness";
 import Loading from "@/app/loading";
+import { SelectGroup } from "@radix-ui/react-select";
 
 export default function Business() {
 	const [itemsPerPage, setItemsPerPage] = useState(6);
-	setItemsPerPage(9);
 	const { business, status } = useBusiness(1, itemsPerPage);
 
 	const [sortBy, setSortBy] = useState<string>("name");
@@ -98,6 +99,23 @@ export default function Business() {
 							</SelectContent>
 						</Select>
 
+						{/* Items per page */}
+						<SelectGroup className="flex items-center">
+							<SelectLabel>No. Items</SelectLabel>
+							<Select
+								value={itemsPerPage.toString()}
+								onValueChange={(value) => setItemsPerPage(Number(value))}>
+								<SelectTrigger className="w-[75px]">
+									<SelectValue placeholder="Items per page" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="6">6</SelectItem>
+									<SelectItem value="9">9</SelectItem>
+									<SelectItem value="12">12</SelectItem>
+								</SelectContent>
+							</Select>
+						</SelectGroup>
+
 						{/* Filter sidebar to small screens */}
 						<Sheet>
 							<SheetTrigger asChild>
@@ -125,6 +143,8 @@ export default function Business() {
 											</Button>
 										)}
 									</SheetTitle>
+									Too many re-renders. React limits the number of renders to
+									prevent an infinite loop.
 								</SheetHeader>
 								<FilterSidebar
 									selectedCategories={selectedCategory}
