@@ -48,7 +48,6 @@ async function bootstrap() {
             'http://localhost:3000', // development frontend url
             envs.get<string>('security.originUrl') ?? '', // deploy frontend url
             'https://negoprox-1bx58tv2c-mesach-venegas-projects.vercel.app', // pr
-            // frontend url
             // payment provider url
           ],
           objectSrc: ["'none'"],
