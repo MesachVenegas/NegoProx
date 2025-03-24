@@ -71,17 +71,7 @@ function getCsrfToken() {
 		if (token?.includes("%7C")) {
 			token = token.split("%7C")[0];
 		}
-		if (token) {
-			try {
-				token = decodeURIComponent(token);
-			} catch (error) {
-				console.error("Error decodificando el token CSRF:", error);
-				return null;
-			}
-		}
-		// debug logs
-		console.log(`CSRF Token: ${token}`);
-		console.log("Longitud del token: ", token?.length);
+
 		return token;
 	}
 	return null;
