@@ -15,6 +15,7 @@ interface Props {
 export default function ErrorBoundary({ error, reset }: Props) {
 	const router = useRouter();
 	const txt = useTranslations("ErrorPage");
+	console.error(error);
 
 	function reload() {
 		startTransition(() => {
@@ -155,7 +156,6 @@ export default function ErrorBoundary({ error, reset }: Props) {
 				</svg>
 				<h1 className="text-3xl font-bold">{txt("title")}</h1>
 				<p className="text-muted-foreground">{txt("description")}</p>
-				<p className="text-2xl text-muted-foreground">{error.message}</p>
 				<div className="flex gap-4 items-center justify-center">
 					<Button onClick={() => reload()}>{txt("tryAgain")}</Button>
 					<Link
