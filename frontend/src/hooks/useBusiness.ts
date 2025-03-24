@@ -15,11 +15,16 @@ export const useBusiness = (page: number = 1, limit: number = 6) => {
 		return data;
 	}
 
-	const { data: business, status } = useQuery({
+	const {
+		data: business,
+		refetch: refetchBusiness,
+		status,
+		error,
+	} = useQuery({
 		queryKey: ["business", page, limit],
 		queryFn: () => getBusiness(page, limit),
 		retry: 2,
 	});
 
-	return { business, status };
+	return { business, refetchBusiness, status, error };
 };

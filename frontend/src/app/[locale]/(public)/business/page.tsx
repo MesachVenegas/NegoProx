@@ -25,10 +25,14 @@ import FilterSidebar from "@/components/FilterSidebar";
 import { useBusiness } from "@/hooks/useBusiness";
 import Loading from "@/app/loading";
 import { SelectGroup } from "@radix-ui/react-select";
+import ErrorBoundary from "./error";
 
 export default function Business() {
 	const [itemsPerPage, setItemsPerPage] = useState(6);
-	const { business, status } = useBusiness(1, itemsPerPage);
+	const { business, refetchBusiness, status, error } = useBusiness(
+		1,
+		itemsPerPage
+	);
 
 	const [sortBy, setSortBy] = useState<string>("name");
 	const [currentPage, setCurrentPage] = useState<number>(1);
@@ -189,8 +193,8 @@ export default function Business() {
 					{/* Business grid */}
 					{status === "pending" ? (
 						<Loading />
-					) : status === "error" ? (
-						<div>Error</div>
+					) : error ? (
+						<ErrorBoundary error={error} reset={refetchBusiness} />
 					) : (
 						business && (
 							<>
