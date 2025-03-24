@@ -19,6 +19,7 @@ import { SecurityModule } from '@/infrastructure/modules/csrf.module';
 import { BusinessServicesModule } from '@modules/business-services.module';
 import { HttpLoggerMiddleware } from '@/shared/middlewares/http-logger.middleware';
 import { AvailabilityModule } from './infrastructure/modules/availability.module';
+import { CategoryModule } from './infrastructure/modules/category.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { AvailabilityModule } from './infrastructure/modules/availability.module
     BusinessModule,
     BusinessServicesModule,
     AvailabilityModule,
+    CategoryModule,
     SecurityModule.forRoot(),
   ],
   controllers: [],

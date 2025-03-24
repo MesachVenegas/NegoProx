@@ -26,8 +26,13 @@ async function bootstrap() {
   // Security
   app.use(cookieParser());
   app.enableCors({
-    origin: envs.get<string>('security.originUrl') ?? '*',
-    methods: 'GET,PUT,PATCH,POST,DELETE',
+    origin: [
+      '*',
+      'http://localhost:3000', // development frontend url
+      envs.get<string>('security.originUrl'), // deploy frontend url
+      'https://negoprox-1bx58tv2c-mesach-venegas-projects.vercel.app', // preview frontend url
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
   });
   app.use(
@@ -40,7 +45,9 @@ async function bootstrap() {
             "'self'",
             'https://accounts.google.com',
             'https://*.googleapis.com',
-            // frontend url
+            'http://localhost:3000', // development frontend url
+            envs.get<string>('security.originUrl') ?? '', // deploy frontend url
+            'https://negoprox-1bx58tv2c-mesach-venegas-projects.vercel.app', // pr
             // payment provider url
           ],
           objectSrc: ["'none'"],

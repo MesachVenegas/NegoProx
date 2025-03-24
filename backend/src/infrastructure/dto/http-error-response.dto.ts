@@ -1,11 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class IMessageError {
-  @ApiProperty({ example: 'Bad Request' })
+  @ApiProperty({ example: 'Error message here' })
   message: string;
   @ApiProperty({ example: 'BAD_REQUEST' })
   error: string;
-  @ApiProperty({ example: 'Detailed error message', required: false })
+  @ApiProperty({ example: 400 })
+  statusCode: number;
+  @ApiProperty({
+    example: 'Detailed error message if available',
+    required: false,
+  })
   cause?: string;
 }
 

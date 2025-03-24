@@ -7,6 +7,10 @@ export class Category {
   public svg_icon: string;
   public businessCategories?: BusinessCategory[];
 
+  constructor(init: Partial<Category>) {
+    Object.assign(this, init);
+  }
+
   /**
    * Updates the category with the provided data.
    *
