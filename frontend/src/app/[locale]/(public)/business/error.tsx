@@ -24,7 +24,7 @@ export default function ErrorBoundary({ error, reset }: Props) {
 	}
 
 	return (
-		<div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-background to-secondary/20 text-foreground px-4 overflow-hidden">
+		<div className="flex flex-col items-center justify-center bg-transparent text-foreground px-4 overflow-hidden">
 			<div className="max-w-1/2 text-center relative z-10 space-y-6">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
 					<rect width="800" height="500" fill="transparent" />
@@ -165,10 +165,6 @@ export default function ErrorBoundary({ error, reset }: Props) {
 						{txt("backhome")}
 					</Link>
 				</div>
-			</div>
-			<div className="absolute inset-0 overflow-hidden pointer-events-none">
-				<div className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-primary/20 animate-pulse" />
-				<div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-secondary/30 animate-pulse" />
 			</div>
 		</div>
 	);
