@@ -1,18 +1,23 @@
-import { Category } from '@/domain/entities';
-import { PrismaService } from '../orm/prisma.service';
+import { Injectable } from '@nestjs/common';
 
-export class CategoryPrismaRepository {
+import { Category } from '@/domain/entities';
+import { PrismaService } from '@/infrastructure/orm/prisma.service';
+import { CategoryRepository } from '@/domain/interfaces/category-repository';
+
+@Injectable()
+export class CategoryPrismaRepository implements CategoryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Retrieves all categories from the database.
+   * Retrieves a list of all categories from the database.
    *
-   * @returns A promise that resolves with an array of Category objects.
+   * @returns A promise that resolves with an array of Category objects, or null if no categories are found.
    */
   async getAllCategories() {
     const result = await this.prisma.category.findMany();
+    if (!result) return null;
 
-    return result;
+    return result.map((category) => new Category(category));
   }
 
   /**
@@ -26,7 +31,10 @@ export class CategoryPrismaRepository {
       where: { id },
     });
 
-    return result;
+    if (!result) {
+      return null;
+    }
+    return new Category(result);
   }
 
   /**
@@ -39,8 +47,8 @@ export class CategoryPrismaRepository {
     const result = await this.prisma.category.create({
       data: category,
     });
-
-    return result;
+    if (!result) return null;
+    return new Category(result);
   }
 
   /**
@@ -50,13 +58,13 @@ export class CategoryPrismaRepository {
    * @param category - The updated Category object.
    * @returns A promise that resolves with the updated Category object.
    */
-  async updateCategory(id: string, category: Category) {
+  async updateCategory(category: Category) {
     const result = await this.prisma.category.update({
-      where: { id },
+      where: { id: category.id },
       data: category,
     });
 
-    return result;
+    return new Category(result);
   }
 
   /**
@@ -70,6 +78,22 @@ export class CategoryPrismaRepository {
       where: { id },
     });
 
-    return result;
+    return new Category(result);
+  }
+
+  /**
+   * Validates if a category with the given name and English name already exists in the database.
+   *
+   * @param name - The name of the category to validate.
+   * @param en_name - The English name of the category to validate.
+   * @returns A promise that resolves with the existing category if found, otherwise null.
+   */
+  async validateCategory(name: string, en_name: string) {
+    const result = await this.prisma.category.findUnique({
+      where: { name_en_name: { name, en_name } },
+    });
+
+    if (!result) return null;
+    return new Category(result);
   }
 }
