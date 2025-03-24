@@ -28,9 +28,9 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       '*',
-      'http://localhost:3000',
-      envs.get<string>('security.originUrl'), // frontend url
-      'https://negoprox-1bx58tv2c-mesach-venegas-projects.vercel.app', // preview url
+      'http://localhost:3000', // development frontend url
+      envs.get<string>('security.originUrl'), // deploy frontend url
+      'https://negoprox-1bx58tv2c-mesach-venegas-projects.vercel.app', // preview frontend url
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
