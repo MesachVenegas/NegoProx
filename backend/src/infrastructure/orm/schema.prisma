@@ -298,11 +298,12 @@ model TokenVersion {
 model Category {
   id       String @id @default(cuid())
   name     String @unique
-  en_name  String
+  en_name  String @unique
   svg_icon String
 
   businessesCategories BusinessCategory[]
 
+  @@unique([name, en_name])
   @@map("categories")
 }
 
