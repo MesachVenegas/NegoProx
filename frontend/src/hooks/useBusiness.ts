@@ -1,14 +1,12 @@
 "use client";
 import apiRequest from "@/lib/axios";
-import { BusinessCard } from "@/types/business";
+import { BusinessData } from "@/types/business";
+import { PaginatedResponse } from "@/types/api";
 import { useQuery } from "@tanstack/react-query";
 
 export const useBusiness = (page: number = 1, limit: number = 6) => {
-	async function getBusiness(
-		page: number,
-		limit: number
-	): Promise<BusinessCard[]> {
-		const { data } = await apiRequest.get(
+	async function getBusiness(page: number, limit: number) {
+		const { data } = await apiRequest.get<PaginatedResponse<BusinessData[]>>(
 			`/business?page=${page}&limit=${limit}`
 		);
 
