@@ -21,7 +21,7 @@ export class CategoryResponseDto {
   @ApiProperty({ example: 'data:image/png;base64,iVBORw0K...' })
   @IsString()
   @IsBase64Svg({ message: 'El formato de la imagen no es válido' })
-  svg_icon: string;
+  icon: string;
 
   @ApiPropertyOptional()
   @ValidateNested({ each: true })
