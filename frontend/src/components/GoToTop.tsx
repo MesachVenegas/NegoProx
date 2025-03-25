@@ -13,9 +13,12 @@ export default function GoToTop() {
 			const scrollPosition = window.scrollY;
 			const windowHeight = window.innerHeight;
 			const documentHeight = document.documentElement.scrollHeight;
-			const halfwayPoint = documentHeight / 3;
+			const scrollThreshold = documentHeight * 0.7;
+			const hasEnoughContent = documentHeight > windowHeight * 1.3;
 
-			setShowButton(scrollPosition > halfwayPoint - windowHeight);
+			setShowButton(
+				hasEnoughContent && scrollPosition > scrollThreshold - windowHeight
+			);
 		};
 
 		handleScroll();
@@ -34,7 +37,7 @@ export default function GoToTop() {
 	return showButton && !["not-found", "error"].includes(pathname) ? (
 		<Button
 			onClick={scrollToTop}
-			className="fixed bottom-12 right-16 z-50 rounded-full p-2 shadow-lg hover:bg-primary/90 transition-all duration-300 ease-in-out h-10 w-10"
+			className="fixed bottom-12 right-16 z-50 rounded-full p-2 shadow-2xl hover:bg-primary/90 transition-all duration-300 ease-in-out h-10 w-10 cursor-pointer"
 			variant="default">
 			<ArrowUp className="h-8 w-8" />
 			<span className="sr-only">Go to top</span>
