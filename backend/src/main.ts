@@ -26,28 +26,23 @@ async function bootstrap() {
   // Security
   app.use(cookieParser());
   app.enableCors({
-    origin: [
-      '*',
-      'http://localhost:3000', // development frontend url
-      envs.get<string>('security.originUrl'), // deploy frontend url
-      'https://negoprox-1bx58tv2c-mesach-venegas-projects.vercel.app', // preview frontend url
-    ],
+    origin: envs.get<string>('security.originUrl') ?? '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
   });
   app.use(
     helmet({
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          scriptSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", 'data:', 'blob:', 'https:', 'http:'],
           connectSrc: [
             "'self'",
             'https://accounts.google.com',
             'https://*.googleapis.com',
-            'http://localhost:3000', // development frontend url
-            envs.get<string>('security.originUrl') ?? '', // deploy frontend url
-            'https://negoprox-1bx58tv2c-mesach-venegas-projects.vercel.app', // pr
+            envs.get<string>('security.originUrl') ?? '*',
             // payment provider url
           ],
           objectSrc: ["'none'"],
