@@ -1,10 +1,7 @@
 "use client";
-
+import { startTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { startTransition } from "react";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Props {
@@ -158,12 +155,6 @@ export default function ErrorBoundary({ error, reset }: Props) {
 				<p className="text-muted-foreground">{txt("description")}</p>
 				<div className="flex gap-4 items-center justify-center">
 					<Button onClick={() => reload()}>{txt("tryAgain")}</Button>
-					<Link
-						href="/"
-						className="flex gap-2 items-center justify-between hover:gap-3 hover:underline border border-primary p-2 rounded-md">
-						<ArrowLeft className="h-5 w-5" />
-						{txt("backhome")}
-					</Link>
 				</div>
 			</div>
 		</div>
