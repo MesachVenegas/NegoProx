@@ -99,6 +99,7 @@ export class BusinessPrismaRepository implements BusinessRepository {
         include: {
           images: { omit: { businessId: true } },
           services: { omit: { businessId: true } },
+          reviews: { omit: { businessId: true } },
           businessProfile: { omit: { businessId: true } },
           availability: true,
         },
@@ -116,6 +117,7 @@ export class BusinessPrismaRepository implements BusinessRepository {
       latitude: business.latitude?.toNumber() ?? 0,
       longitude: business.longitude?.toNumber() ?? 0,
       images: business.images as BusinessImage[],
+      reviews: business.reviews.map((item) => new Review(item)),
       services: business.services.map(
         (item) =>
           new BusinessService({
