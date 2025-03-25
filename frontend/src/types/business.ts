@@ -1,3 +1,5 @@
+import { Category } from "./category";
+
 export interface ServiceProps {
 	id: number;
 	name: string;
@@ -35,16 +37,11 @@ export type BusinessProps = {
 	updatedAt: Date;
 };
 
-export interface BusinessCard extends BusinessProps {
+export interface BusinessData extends BusinessProps {
 	businessProfile: BusinessProfile;
 	categories: {
 		categoryId: string;
-		category: {
-			id: string;
-			name: string;
-			en_name: string;
-			svg_icon: string;
-		};
+		category: Category;
 	}[];
 	rateAvg: number;
 }
