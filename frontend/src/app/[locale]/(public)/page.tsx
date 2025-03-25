@@ -1,14 +1,12 @@
 "use client";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import { ComponentType } from "react";
 import { motion } from "framer-motion";
+import * as LucideUIcons from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { CalendarDays, CheckCircle, MapPin, Search, Users } from "lucide-react";
-import dynamic from "next/dynamic";
-import { Card, CardContent } from "@/components/ui/card";
-import { testimonials } from "@/lib/constants/testimonials";
-import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
-import { Input } from "@/components/ui/input";
+
 import {
 	Select,
 	SelectContent,
@@ -16,8 +14,13 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useCategories } from "@/hooks/useCategories";
+import { Card, CardContent } from "@/components/ui/card";
+import { testimonials } from "@/lib/constants/testimonials";
 
 const Testimonials = dynamic(() => import("@/components/Testimonials"), {
 	loading: () => <div className="min-h-[400px] animate-pulse bg-muted/50" />,
@@ -32,6 +35,13 @@ export default function Home() {
 	const locale = useLocale();
 	const t = useTranslations("HomePage");
 	const { categories } = useCategories();
+
+	const renderCategoryIcon = (iconName: string) => {
+		const Icon = (LucideUIcons as never)[iconName] as ComponentType<{
+			className: string;
+		}>;
+		return Icon ? <Icon className="h-8 w-8" /> : null;
+	};
 
 	return (
 		<div className="flex-1 flex flex-col items-center">
@@ -401,7 +411,9 @@ export default function Home() {
 										<Link
 											href={`/categories/${category.en_name}`}
 											className="flex flex-col items-center justify-center p-4 rounded-lg border bg-background hover:bg-muted/50 transition-colors">
-											{/* <div className="mb-2 text-primary">{category.icon}</div> */}
+											<div className="mb-2 text-primary">
+												{renderCategoryIcon(category.icon)}
+											</div>
 											<span className="text-sm font-medium text-center">
 												{locale === "en" ? category.en_name : category.name}
 											</span>
