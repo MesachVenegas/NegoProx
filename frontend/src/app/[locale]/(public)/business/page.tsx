@@ -28,12 +28,13 @@ import { useBusiness } from "@/hooks/useBusiness";
 import BusinessCard from "@/components/BusinessCard";
 import FilterSidebar from "@/components/FilterSidebar";
 import { useRouter } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function Business() {
-	const txt = useTranslations("BusinessPage");
+	const locale = useLocale();
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const txt = useTranslations("BusinessPage");
 
 	// get query params
 	const page = Number(searchParams.get("page")) || 1;
@@ -214,31 +215,39 @@ export default function Business() {
 					{/* Currently selected categories */}
 					{selectedCategory.length > 0 && (
 						<div className="flex gap-2 flex-wrap">
-							{selectedCategory.map((category) => (
-								<Badge
-									key={category}
-									variant="secondary"
-									className="flex items-center gap-1">
-									{category}
-									<button
-										type="button"
-										title="clear categories"
-										onClick={() =>
-											handleCategoryChange(
-												selectedCategory.filter((cat) => cat !== category)
-											)
-										}
-										className="ml-1 hover:text-destructive transition-colors duration-150">
-										<X className="h-3 w-3" />
-									</button>
-								</Badge>
-							))}
+							{selectedCategory.map((category) => {
+								const businessCategory = business?.data
+									?.flatMap((b) => b.categories)
+									.find((cat) => cat.category.en_name === category)?.category;
+
+								return (
+									<Badge
+										key={category}
+										variant="secondary"
+										className="flex items-center gap-1">
+										{businessCategory
+											? businessCategory[locale === "en" ? "en_name" : "name"]
+											: category}
+										<button
+											type="button"
+											title="clear categories"
+											onClick={() =>
+												handleCategoryChange(
+													selectedCategory.filter((cat) => cat !== category)
+												)
+											}
+											className="ml-1 hover:text-destructive transition-colors duration-150">
+											<X className="h-3 w-3" />
+										</button>
+									</Badge>
+								);
+							})}
 							<Button
 								variant="outline"
 								size="sm"
 								onClick={() => handleCategoryChange([])}
 								className="transition-colors duration-150 border-secondary hover:bg-secondary hover:text-white">
-								Clear all
+								{txt("sortBar.clear")}
 							</Button>
 						</div>
 					)}
