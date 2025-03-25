@@ -1,7 +1,8 @@
 "use client";
-import { categories } from "@/lib/constants/categories";
+import { useLocale, useTranslations } from "next-intl";
+
 import { Checkbox } from "./ui/checkbox";
-import { useTranslations } from "next-intl";
+import { useCategories } from "@/hooks/useCategories";
 
 export default function FilterSidebar({
 	selectedCategories,
@@ -10,6 +11,8 @@ export default function FilterSidebar({
 	selectedCategories: string[];
 	setSelectedCategories: (categories: string[]) => void;
 }) {
+	const locale = useLocale();
+	const { categories } = useCategories();
 	const txt = useTranslations("BusinessPage.sortBar");
 
 	// handle category change
@@ -26,22 +29,23 @@ export default function FilterSidebar({
 			<div className="flex flex-col gap-4">
 				<h2 className="text-lg font-semibold mb-2">{txt("title2")}</h2>
 				<div className="space-y-3">
-					{categories.map((category) => (
-						<div key={category.name} className="flex items-center">
-							<Checkbox
-								id={category.name}
-								checked={selectedCategories.includes(category.name)}
-								onCheckedChange={(checked) => {
-									handleCategoryChange(category.name, checked === true);
-								}}
-							/>
-							<label
-								htmlFor={category.name}
-								className="ml-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-								{category.name}
-							</label>
-						</div>
-					))}
+					{categories &&
+						categories.map((category) => (
+							<div key={category.en_name} className="flex items-center">
+								<Checkbox
+									id={category.en_name}
+									checked={selectedCategories.includes(category.en_name)}
+									onCheckedChange={(checked) => {
+										handleCategoryChange(category.en_name, checked === true);
+									}}
+								/>
+								<label
+									htmlFor={category.en_name}
+									className="ml-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+									{locale === "en" ? category.en_name : category.name}
+								</label>
+							</div>
+						))}
 				</div>
 			</div>
 		</div>

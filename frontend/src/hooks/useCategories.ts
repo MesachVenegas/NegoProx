@@ -6,7 +6,7 @@ import { Category } from "@/types/category";
 
 export const useCategories = () => {
 	async function getCategories() {
-		const { data } = await apiRequest.get<Category[]>("/categories");
+		const { data } = await apiRequest.get<Category[]>("/category");
 
 		return data;
 	}

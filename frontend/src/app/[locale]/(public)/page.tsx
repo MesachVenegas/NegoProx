@@ -1,10 +1,9 @@
 "use client";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { CalendarDays, CheckCircle, MapPin, Search, Users } from "lucide-react";
 import dynamic from "next/dynamic";
-import { categories } from "@/lib/constants/categories";
 import { Card, CardContent } from "@/components/ui/card";
 import { testimonials } from "@/lib/constants/testimonials";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { useCategories } from "@/hooks/useCategories";
 
 const Testimonials = dynamic(() => import("@/components/Testimonials"), {
 	loading: () => <div className="min-h-[400px] animate-pulse bg-muted/50" />,
@@ -29,8 +29,9 @@ const FadeWhenVisible = dynamic(
 	}
 );
 export default function Home() {
+	const locale = useLocale();
 	const t = useTranslations("HomePage");
-
+	const { categories } = useCategories();
 
 	return (
 		<div className="flex-1 flex flex-col items-center">
@@ -389,23 +390,24 @@ export default function Home() {
 							</div>
 						</div>
 						<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 mt-8">
-							{categories.map((category, i) => (
-								<motion.div
-									key={i}
-									initial={{ opacity: 0, scale: 0.9 }}
-									whileInView={{ opacity: 1, scale: 1 }}
-									viewport={{ once: true }}
-									transition={{ duration: 0.3, delay: i * 0.1 }}>
-									<Link
-										href={`/categories/${category.name}`}
-										className="flex flex-col items-center justify-center p-4 rounded-lg border bg-background hover:bg-muted/50 transition-colors">
-										<div className="mb-2 text-primary">{category.icon}</div>
-										<span className="text-sm font-medium text-center">
-											{category.name}
-										</span>
-									</Link>
-								</motion.div>
-							))}
+							{categories &&
+								categories.map((category, i) => (
+									<motion.div
+										key={i}
+										initial={{ opacity: 0, scale: 0.9 }}
+										whileInView={{ opacity: 1, scale: 1 }}
+										viewport={{ once: true }}
+										transition={{ duration: 0.3, delay: i * 0.1 }}>
+										<Link
+											href={`/categories/${category.en_name}`}
+											className="flex flex-col items-center justify-center p-4 rounded-lg border bg-background hover:bg-muted/50 transition-colors">
+											{/* <div className="mb-2 text-primary">{category.icon}</div> */}
+											<span className="text-sm font-medium text-center">
+												{locale === "en" ? category.en_name : category.name}
+											</span>
+										</Link>
+									</motion.div>
+								))}
 						</div>
 					</div>
 				</section>
