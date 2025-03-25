@@ -23,12 +23,14 @@ async function bootstrap() {
   const envs = app.get(ConfigService);
   const isProduction = envs.get<string>('app.environment') === 'production';
 
+  const urlOrigin = envs.get<string>('security.originUrl');
+
   // Security
   app.use(cookieParser());
   app.enableCors({
-    origin: envs.get<string>('security.originUrl') ?? '*',
+    origin: urlOrigin ?? '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    credentials: true,
+    credentials: urlOrigin ? true : false,
   });
   app.use(
     helmet({
