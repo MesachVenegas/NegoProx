@@ -1,7 +1,6 @@
-import { Exclude, Expose, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { IsDate, IsString, IsUrl } from 'class-validator';
-import { Review } from '@/domain/entities';
 
 @Exclude()
 export class BusinessResponseDto {
@@ -60,15 +59,4 @@ export class BusinessResponseDto {
   @IsDate()
   @Expose()
   updatedAt: Date;
-
-  @ApiProperty({ type: [Review] })
-  @Type(() => Review)
-  @Expose()
-  reviews?: Review[];
-}
-
-export class BusinessWhitAverageDto extends BusinessResponseDto {
-  @ApiProperty({ example: 4.5 })
-  @Expose()
-  rateAvg?: number;
 }

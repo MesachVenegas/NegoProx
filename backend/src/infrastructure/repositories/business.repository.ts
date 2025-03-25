@@ -28,8 +28,21 @@ export class BusinessPrismaRepository implements BusinessRepository {
    *
    * @returns A promise that resolves with the total count of businesses.
    */
-  async countBusiness(): Promise<number> {
-    return this.prisma.business.count();
+  async countBusiness(category?: string): Promise<number> {
+    return this.prisma.business.count({
+      where: {
+        isDeleted: false,
+        ...(category && {
+          categories: {
+            some: {
+              category: {
+                en_name: { contains: category, mode: 'insensitive' },
+              },
+            },
+          },
+        }),
+      },
+    });
   }
 
   /**
@@ -175,18 +188,37 @@ export class BusinessPrismaRepository implements BusinessRepository {
   }
 
   /**
-   * Retrieves a list of all businesses with their categories and average rating.
-   *
-   * @param pagination - Optional pagination parameters.
+   * Retrieves a paginated list of businesses, with an optional filter for category.
+   * The list includes the business details, business profile, availability, and categories.
+   * The response is also enriched with the average rating of each business.
+   * @param skip - The number of businesses to skip, for pagination.
+   * @param limit - The maximum number of businesses to retrieve.
+   * @param category - (Optional) The category filter to search businesses by category.
    * @returns A promise that resolves with an array of Business objects, or null if no businesses are found.
    */
-  async getAllBusiness({ skip, limit }: Partial<IPagination>) {
+  async getAllBusiness({
+    skip,
+    limit,
+    category,
+  }: Partial<IPagination & { category?: string }>) {
     const businesses = await this.prisma.business.findMany({
-      where: { isDeleted: false },
+      where: {
+        isDeleted: false,
+        ...(category && {
+          categories: {
+            some: {
+              category: {
+                en_name: { contains: category, mode: 'insensitive' },
+              },
+            },
+          },
+        }),
+      },
       skip,
       take: limit,
       include: {
         businessProfile: { omit: { businessId: true } },
+        availability: true,
         categories: {
           include: { category: true },
           omit: { businessId: true },
@@ -206,6 +238,9 @@ export class BusinessPrismaRepository implements BusinessRepository {
         const businessEntity = new Business({
           ...business,
           businessProfile: business.businessProfile as BusinessProfile,
+          availability: business.availability.map(
+            (item) => new Availability(item),
+          ),
           latitude: business.latitude?.toNumber() ?? 0,
           longitude: business.longitude?.toNumber() ?? 0,
           categories: business.categories as BusinessCategory[],

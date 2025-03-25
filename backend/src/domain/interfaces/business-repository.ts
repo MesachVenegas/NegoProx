@@ -3,7 +3,7 @@ import { Role } from '../constants/role.enum';
 import { IPagination } from '@/shared/interfaces/pagination.interface';
 
 export interface BusinessRepository {
-  countBusiness(): Promise<number>;
+  countBusiness(category?: string): Promise<number>;
   searchBusiness(
     skip: number,
     limit: number,
@@ -16,7 +16,7 @@ export interface BusinessRepository {
   ): Promise<{ business: Business; rate: number } | null>;
   findBusinessByOwnerId(id: string): Promise<Business | null>;
   getAllBusiness(
-    data: Partial<IPagination>,
+    data: Partial<IPagination & { category?: string }>,
   ): Promise<(Business & { rateAvg: number })[] | null>;
   saveLocalBusiness(entity: Business): Promise<Business>;
   promoteBusinessOwner(

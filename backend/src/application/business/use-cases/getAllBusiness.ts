@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 
-import { BusinessWhitAverageDto } from '@/infrastructure/dto/business';
+import { BusinessProfileResponseDto } from '@/infrastructure/dto/business';
 import { BusinessRepository } from '@/domain/interfaces/business-repository';
 import {
   PaginationDto,
@@ -14,15 +14,17 @@ export class GetAllBusinessUseCase {
   async execute({
     page = 1,
     limit = 10,
-  }: Partial<PaginationDto>): Promise<
-    PaginationResponseDto<BusinessWhitAverageDto[]>
+    category,
+  }: Partial<PaginationDto & { category?: string }>): Promise<
+    PaginationResponseDto<BusinessProfileResponseDto[]>
   > {
     const skip = (page - 1) * limit;
 
-    const count = await this.businessRepository.countBusiness();
+    const count = await this.businessRepository.countBusiness(category);
     const businesses = await this.businessRepository.getAllBusiness({
       skip,
       limit,
+      category,
     });
 
     if (!businesses) throw new NotFoundException('Businesses not found.');
@@ -32,7 +34,7 @@ export class GetAllBusinessUseCase {
       prev: page > 1 ? page - 1 : null,
       next: page * limit < count ? page + 1 : null,
       limit,
-      data: plainToInstance(BusinessWhitAverageDto, businesses),
+      data: plainToInstance(BusinessProfileResponseDto, businesses),
     };
   }
 }

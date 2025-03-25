@@ -12,24 +12,25 @@ export class Availability {
   public business?: Business;
   public service?: BusinessService;
 
-  constructor(params: {
+  constructor(init: {
     id?: string;
     dayOfWeek: number;
     startTime: Date;
     endTime: Date;
     businessId: string;
     serviceId?: string | null;
+
     business?: Business;
     service?: BusinessService;
   }) {
-    this.id = params.id;
-    this.dayOfWeek = params.dayOfWeek;
-    this.startTime = params.startTime;
-    this.endTime = params.endTime;
-    this.businessId = params.businessId;
-    this.serviceId = params.serviceId ?? null;
-    this.business = params.business;
-    this.service = params.service;
+    this.id = init.id;
+    this.dayOfWeek = init.dayOfWeek;
+    this.startTime = init.startTime;
+    this.endTime = init.endTime;
+    this.businessId = init.businessId;
+    this.serviceId = init.serviceId ?? null;
+    this.business = init.business;
+    this.service = init.service;
   }
 
   /**
