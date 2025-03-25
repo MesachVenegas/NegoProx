@@ -126,7 +126,7 @@ export class BusinessController {
       BusinessProfileResponseDto,
       result.business,
     );
-    business.rating_average = result.rate;
+    business.rateAvg = result.rate;
 
     return business;
   }

@@ -49,6 +49,11 @@ export class PaginationDto {
   @Min(1)
   public limit?: number;
 
+  @ApiPropertyOptional({ example: 'Health & Wellness' })
+  @IsOptional()
+  @IsString()
+  public category?: string;
+
   @ApiPropertyOptional({ example: 'desc' })
   @IsOptional()
   @IsString()
