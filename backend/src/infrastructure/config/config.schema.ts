@@ -11,7 +11,7 @@ export const envSchema = joi
     APP_DESCRIPTION: joi.string().optional(),
     APP_VERSION: joi.string().default('1'),
     APP_URL: joi.string().uri().default('http://localhost:3000'),
-    ORIGIN_URL: joi.string().uri().default('http://localhost:3000'),
+    ORIGIN_URL: joi.string().uri().opcional(),
     DATABASE_URL: joi.string().required(),
     JWT_SECRET: joi.string().required(),
     JWT_EXPIRES_IN: joi.string().required(),
