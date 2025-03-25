@@ -18,9 +18,11 @@ export default function GoToTop() {
 			setShowButton(scrollPosition > halfwayPoint - windowHeight);
 		};
 
+		handleScroll();
+
 		window.addEventListener("scroll", handleScroll);
 		return () => window.removeEventListener("scroll", handleScroll);
-	}, []);
+	}, [pathname]);
 
 	const scrollToTop = () => {
 		window.scrollTo({
@@ -29,7 +31,7 @@ export default function GoToTop() {
 		});
 	};
 
-	return showButton && ["not-found", "error"].includes(pathname) ? (
+	return showButton && !["not-found", "error"].includes(pathname) ? (
 		<Button
 			onClick={scrollToTop}
 			className="fixed bottom-12 right-16 z-50 rounded-full p-2 shadow-lg hover:bg-primary/90 transition-all duration-300 ease-in-out h-10 w-10"
