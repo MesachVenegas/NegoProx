@@ -7,13 +7,9 @@ import { MapPin, Star } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "@/i18n/navigation";
 import { Card, CardContent } from "./ui/card";
-import { BusinessCard as BusinessProps } from "@/types/business";
+import { BusinessData } from "@/types/business";
 
-export default function BusinessCard({
-	business,
-}: {
-	business: BusinessProps;
-}) {
+export default function BusinessCard({ business }: { business: BusinessData }) {
 	return (
 		<Card key={business.id} className="overflow-hidden">
 			<Link href={`/business/${business.slug}`}>

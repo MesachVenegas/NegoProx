@@ -1,15 +1,22 @@
 "use client";
 import { categories } from "@/lib/constants/categories";
 import { Checkbox } from "./ui/checkbox";
-import { Dispatch, SetStateAction } from "react";
 
 export default function FilterSidebar({
 	selectedCategories,
 	setSelectedCategories,
 }: {
 	selectedCategories: string[];
-	setSelectedCategories: Dispatch<SetStateAction<string[]>>;
+	setSelectedCategories: (categories: string[]) => void;
 }) {
+	const handleCategoryChange = (category: string, checked: boolean) => {
+		if (checked) {
+			setSelectedCategories([...selectedCategories, category]);
+		} else {
+			setSelectedCategories(selectedCategories.filter((c) => c !== category));
+		}
+	};
+
 	return (
 		<div className="px-4">
 			<div className="flex flex-col gap-4">
@@ -21,13 +28,7 @@ export default function FilterSidebar({
 								id={category.name}
 								checked={selectedCategories.includes(category.name)}
 								onCheckedChange={(checked) => {
-									if (checked === true) {
-										setSelectedCategories((prev) => [...prev, category.name]);
-									} else {
-										setSelectedCategories((prev) =>
-											prev.filter((cat) => cat !== category.name)
-										);
-									}
+									handleCategoryChange(category.name, checked === true);
 								}}
 							/>
 							<label

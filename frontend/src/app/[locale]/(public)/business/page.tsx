@@ -1,10 +1,13 @@
 "use client";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { MagnifyingGlass } from "react-loader-spinner";
 import { ChevronLeft, ChevronRight, Filter, Search, X } from "lucide-react";
 
 import {
 	Select,
 	SelectContent,
+	SelectGroup,
 	SelectItem,
 	SelectLabel,
 	SelectTrigger,
@@ -17,33 +20,42 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
+import ErrorBoundary from "./error";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useBusiness } from "@/hooks/useBusiness";
 import BusinessCard from "@/components/BusinessCard";
 import FilterSidebar from "@/components/FilterSidebar";
-import { useBusiness } from "@/hooks/useBusiness";
-import Loading from "@/app/loading";
-import { SelectGroup } from "@radix-ui/react-select";
-import ErrorBoundary from "./error";
+import { useRouter } from "@/i18n/navigation";
 
 export default function Business() {
-	const [itemsPerPage, setItemsPerPage] = useState(6);
+	const router = useRouter();
+	const searchParams = useSearchParams();
+	const page = Number(searchParams.get("page")) || 1;
+	const limit = Number(searchParams.get("limit")) || 6;
+	const sort = searchParams.get("sort") || "name";
+	const categories =
+		searchParams.get("categories")?.split(",").filter(Boolean) || [];
+
+	const [sortBy, setSortBy] = useState<string>(sort);
+	const [itemsPerPage, setItemsPerPage] = useState(limit);
+	const [currentPage, setCurrentPage] = useState<number>(page);
+
+	const [selectedCategory, setSelectedCategory] =
+		useState<string[]>(categories);
+	// fetch business
 	const { business, refetchBusiness, status, error } = useBusiness(
-		1,
+		currentPage,
 		itemsPerPage
 	);
 
-	const [sortBy, setSortBy] = useState<string>("name");
-	const [currentPage, setCurrentPage] = useState<number>(1);
-	const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
-
 	// filter and sort business
-	const filteredBusiness = business
-		?.filter(
-			(b) =>
+	const filteredBusiness = business?.data
+		.filter(
+			(business) =>
 				selectedCategory.length === 0 ||
-				selectedCategory.includes(b.categories[0].category.en_name)
+				selectedCategory.includes(business.categories[0].category.en_name)
 		)
 		.sort((a, b) => {
 			switch (sortBy) {
@@ -61,11 +73,44 @@ export default function Business() {
 		});
 
 	// pagination
-	const totalPages = Math.ceil(filteredBusiness?.length || 0 / itemsPerPage);
-	const currentBusiness = filteredBusiness?.slice(
-		(currentPage - 1) * itemsPerPage,
-		currentPage * itemsPerPage
-	);
+	const totalPages = business?.pages || 1;
+
+	const updateQueryParams = (updates: Record<string, string>) => {
+		const params = new URLSearchParams(searchParams.toString());
+
+		Object.entries(updates).forEach(([key, value]) => {
+			params.set(key, value);
+		});
+
+		router.push(`?${params.toString()}`);
+	};
+
+	const handlePageChange = (newPage: number) => {
+		setCurrentPage(newPage);
+		updateQueryParams({ page: newPage.toString() });
+	};
+
+	const handleItemsPerPageChange = (value: string) => {
+		setItemsPerPage(Number(value));
+		updateQueryParams({ limit: value.toString(), page: "1" });
+	};
+
+	const handleCategoryChange = (category: string[]) => {
+		setSelectedCategory(category);
+		const params = new URLSearchParams(searchParams.toString());
+		if (category.length > 0) {
+			params.set("categories", category.join(","));
+		} else {
+			params.delete("categories");
+		}
+		params.set("page", "1");
+		router.push(`?${params.toString()}`);
+	};
+
+	const handleSortChange = (value: string) => {
+		setSortBy(value);
+		updateQueryParams({ sort: value });
+	};
 
 	return (
 		<div className="container mx-auto max-w-[1400px] px-4 py-8">
@@ -74,7 +119,7 @@ export default function Business() {
 				<aside className="hidden xl:block w-64 sticky top-24 h-fit">
 					<FilterSidebar
 						selectedCategories={selectedCategory}
-						setSelectedCategories={setSelectedCategory}
+						setSelectedCategories={handleCategoryChange}
 					/>
 				</aside>
 
@@ -92,7 +137,7 @@ export default function Business() {
 						</div>
 
 						{/* Sort by */}
-						<Select value={sortBy} onValueChange={setSortBy}>
+						<Select value={sortBy} onValueChange={handleSortChange}>
 							<SelectTrigger className="w-[180px]">
 								<SelectValue placeholder="Sort by" />
 							</SelectTrigger>
@@ -108,7 +153,7 @@ export default function Business() {
 							<SelectLabel>No. Items</SelectLabel>
 							<Select
 								value={itemsPerPage.toString()}
-								onValueChange={(value) => setItemsPerPage(Number(value))}>
+								onValueChange={handleItemsPerPageChange}>
 								<SelectTrigger className="w-[75px]">
 									<SelectValue placeholder="Items per page" />
 								</SelectTrigger>
@@ -141,18 +186,16 @@ export default function Business() {
 											<Button
 												variant="ghost"
 												size="sm"
-												onClick={() => setSelectedCategory([])}
+												onClick={() => handleCategoryChange([])}
 												className="hover:text-black transition-colors duration-150">
 												Clear all
 											</Button>
 										)}
 									</SheetTitle>
-									Too many re-renders. React limits the number of renders to
-									prevent an infinite loop.
 								</SheetHeader>
 								<FilterSidebar
 									selectedCategories={selectedCategory}
-									setSelectedCategories={setSelectedCategory}
+									setSelectedCategories={handleCategoryChange}
 								/>
 							</SheetContent>
 						</Sheet>
@@ -171,8 +214,8 @@ export default function Business() {
 										type="button"
 										title="clear categories"
 										onClick={() =>
-											setSelectedCategory((prev) =>
-												prev.filter((cat) => cat !== category)
+											handleCategoryChange(
+												selectedCategory.filter((cat) => cat !== category)
 											)
 										}
 										className="ml-1 hover:text-destructive transition-colors duration-150">
@@ -183,7 +226,7 @@ export default function Business() {
 							<Button
 								variant="ghost"
 								size="sm"
-								onClick={() => setSelectedCategory([])}
+								onClick={() => handleCategoryChange([])}
 								className="hover:text-black transition-colors duration-150">
 								Clear all
 							</Button>
@@ -192,14 +235,27 @@ export default function Business() {
 
 					{/* Business grid */}
 					{status === "pending" ? (
-						<Loading />
+						<div className="flex flex-col gap-4 items-center justify-center h-full">
+							<MagnifyingGlass
+								visible={true}
+								height="120"
+								width="120"
+								ariaLabel="magnifying-glass-loading"
+								wrapperStyle={{}}
+								wrapperClass="magnifying-glass-wrapper"
+								glassColor="#c0efff"
+								color="#e15b64"
+							/>
+							<p className="text-muted-foreground text-xl">Searching...</p>
+						</div>
 					) : error ? (
 						<ErrorBoundary error={error} reset={refetchBusiness} />
 					) : (
-						business && (
+						business &&
+						business.data && (
 							<>
 								<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-									{currentBusiness?.map((business) => (
+									{filteredBusiness?.map((business) => (
 										<BusinessCard key={business.id} business={business} />
 									))}
 								</div>
@@ -208,9 +264,8 @@ export default function Business() {
 									<Button
 										variant="outline"
 										size="icon"
-										onClick={() =>
-											setCurrentPage((prev) => Math.max(prev - 1, 1))
-										}>
+										onClick={() => handlePageChange(currentPage - 1)}
+										disabled={!business.prev}>
 										<ChevronLeft className="h-4 w-4" />
 									</Button>
 									{Array.from({ length: totalPages }, (_, i) => i + 1).map(
@@ -219,7 +274,7 @@ export default function Business() {
 												key={page}
 												variant={currentPage === page ? "default" : "outline"}
 												size="icon"
-												onClick={() => setCurrentPage(page)}>
+												onClick={() => handlePageChange(page)}>
 												{page}
 											</Button>
 										)
@@ -227,10 +282,8 @@ export default function Business() {
 									<Button
 										variant="outline"
 										size="icon"
-										onClick={() =>
-											setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-										}
-										disabled={currentPage === totalPages}>
+										onClick={() => handlePageChange(currentPage + 1)}
+										disabled={!business.next}>
 										<ChevronRight className="h-4 w-4" />
 									</Button>
 								</div>
