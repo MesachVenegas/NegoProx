@@ -58,7 +58,9 @@ export default async function LanguageLayout({
 					disableTransitionOnChange>
 					<NextIntlClientProvider messages={messages}>
 						<ReactQueryProvider>
-							<div className="flex flex-col">{children}</div>
+							<div className="flex flex-col [data-aria-hidden=true] [aria-hidden=true]">
+								{children}
+							</div>
 						</ReactQueryProvider>
 						<GoToTop />
 					</NextIntlClientProvider>

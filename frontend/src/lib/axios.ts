@@ -1,12 +1,14 @@
 import axios from "axios";
 
+const baseURL = process.env.NEXT_PUBLIC_API_URL;
+
 const apiRequest = axios.create({
-	baseURL: process.env.NEXT_PUBLIC_API_URL,
+	baseURL,
 	headers: {
 		"Content-Type": "application/json",
 		Accept: "application/json",
 	},
-	withCredentials: true,
+	withCredentials: baseURL ? true : false,
 	timeout: 10000, // 10 seconds
 });
 

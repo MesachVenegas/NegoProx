@@ -1,12 +1,18 @@
 import { Category } from "./category";
+import { ServiceProps } from "./services";
 
-export interface ServiceProps {
-	id: number;
+export type BusinessProps = {
+	id: string;
+	slug: string;
 	name: string;
 	description: string;
-	price: string;
-	date: string;
-}
+	address: string;
+	latitude: number;
+	longitude: number;
+	phone: string;
+	createdAt: Date;
+	updatedAt: Date;
+};
 
 export type BusinessProfile = {
 	id: string;
@@ -24,24 +30,20 @@ export type BusinessProfile = {
 	updatedAt: Date;
 };
 
-export type BusinessProps = {
-	id: string;
-	slug: string;
-	name: string;
-	description: string;
-	address: string;
-	latitude: number;
-	longitude: number;
-	phone: string;
-	createdAt: Date;
-	updatedAt: Date;
-};
-
 export interface BusinessData extends BusinessProps {
 	businessProfile: BusinessProfile;
 	categories: {
 		categoryId: string;
 		category: Category;
+	}[];
+	services: ServiceProps[];
+	availability: {
+		id: string;
+		dayOfWeek: number;
+		startTime: Date;
+		endTime: Date;
+		businessId: string;
+		serviceId: string;
 	}[];
 	rateAvg: number;
 }

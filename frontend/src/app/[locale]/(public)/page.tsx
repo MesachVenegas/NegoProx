@@ -14,13 +14,16 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useBusiness } from "@/hooks/useBusiness";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useCategories } from "@/hooks/useCategories";
 import { Card, CardContent } from "@/components/ui/card";
 import { testimonials } from "@/lib/constants/testimonials";
+import { ThreeDots } from "react-loader-spinner";
+import ErrorBoundary from "../error";
 
 const Testimonials = dynamic(() => import("@/components/Testimonials"), {
 	loading: () => <div className="min-h-[400px] animate-pulse bg-muted/50" />,
@@ -32,7 +35,9 @@ const FadeWhenVisible = dynamic(
 	}
 );
 export default function Home() {
+	const router = useRouter();
 	const locale = useLocale();
+	const { business, status, error, refetchBusiness } = useBusiness(1, 4);
 	const t = useTranslations("HomePage");
 	const { categories } = useCategories();
 
@@ -82,14 +87,18 @@ export default function Home() {
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ delay: 0.6, duration: 0.8 }}>
-							<Button size="lg" className="px-8">
-								<Link href="/business">{t("hero.button1")}</Link>
+							<Button
+								size="lg"
+								className="px-8"
+								onClick={() => router.push("/business")}>
+								{t("hero.button1")}
 							</Button>
 							<Button
 								size="lg"
 								variant="outline"
-								className="bg-white/10 hover:bg-white/20 border-white/50 text-white hover:text-white backdrop-blur supports-[backdrop-filter]:bg-white/5">
-								<Link href="/business/register">{t("hero.button2")}</Link>
+								className="bg-white/10 hover:bg-white/20 border-white/50 text-white hover:text-white backdrop-blur supports-[backdrop-filter]:bg-white/5"
+								onClick={() => router.push("/register/business")}>
+								{t("hero.button2")}
 							</Button>
 						</motion.div>
 					</div>
@@ -166,91 +175,107 @@ export default function Home() {
 							</div>
 						</div>
 						<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-8">
-							{[1, 2, 3, 4].map((item) => (
-								<motion.div
-									key={item}
-									initial={{ opacity: 0, y: 20 }}
-									animate={{ opacity: 1, y: 0 }}
-									viewport={{ once: true }}
-									transition={{ duration: 0.5, delay: item * 0.1 }}>
-									<Card className="overflow-hidden group hover:shadow-lg transition-all duration-200">
-										<Link key={item} href={`/business/${item}`}>
-											<div className="relative">
-												<Image
-													src="https://picsum.photos/400/200?random=2"
-													alt={`Business ${item}`}
-													width={400}
-													height={200}
-													className="object-cover w-full h-48 group-hover:scale-105 transition-all duration-300"
-												/>
-												<Badge className="absolute top-2 right-2 bg-primary/90 hover:bg-primary">
-													{t("featuredBusiness.featured")}
-												</Badge>
-											</div>
-										</Link>
-										<CardContent className="p-4">
-											<div className="space-y-2">
-												<div className="flex items-center justify-between">
-													<h3 className="font-bold">Business {item}</h3>
-													<div className="flex items-center">
-														{Array(5)
-															.fill(0)
-															.map((_, index) => (
-																<svg
-																	key={index}
-																	xmlns="http://www.w3.org/2000/svg"
-																	viewBox="0 0 24 24"
-																	fill="currentColor"
-																	className={`w-4 h-4 ${
-																		index < 4
-																			? "text-yellow-500"
-																			: "text-gray-300"
-																	}`}>
-																	<path
-																		fillRule="evenodd"
-																		d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-																		clipRule="evenodd"
-																	/>
-																</svg>
-															))}
+							{status === "pending" ? (
+								<div className="flex items-center justify-center col-span-full">
+									<ThreeDots
+										visible={true}
+										height="80"
+										width="80"
+										color="#4fa94d"
+										radius="9"
+										ariaLabel="three-dots-loading"
+										wrapperStyle={{}}
+										wrapperClass=""
+									/>
+								</div>
+							) : error ? (
+								<ErrorBoundary error={error} reset={refetchBusiness} />
+							) : (
+								business &&
+								business.data.map((item, index) => (
+									<motion.div
+										key={item.id}
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										viewport={{ once: true }}
+										transition={{ duration: 0.5, delay: index * 0.1 }}>
+										<Card className="overflow-hidden group hover:shadow-lg transition-all duration-200">
+											<Link key={item.id} href={`/business/${item.slug}`}>
+												<div className="relative">
+													<Image
+														src={item.businessProfile.bannerImage}
+														alt={item.name}
+														width={400}
+														height={200}
+														className="object-cover w-full h-48 group-hover:scale-105 transition-all duration-300"
+													/>
+													<Badge className="absolute top-2 right-2 bg-primary/90 hover:bg-primary">
+														{t("featuredBusiness.featured")}
+													</Badge>
+												</div>
+											</Link>
+											<CardContent className="p-4">
+												<div className="space-y-2">
+													<div className="flex items-center justify-between">
+														<h3 className="font-bold">{item.name}</h3>
+														<div className="flex items-center">
+															{Array(5)
+																.fill(0)
+																.map((_, index) => (
+																	<svg
+																		key={index}
+																		xmlns="http://www.w3.org/2000/svg"
+																		viewBox="0 0 24 24"
+																		fill="currentColor"
+																		className={`w-4 h-4 ${
+																			index < 4
+																				? "text-yellow-500"
+																				: "text-gray-300"
+																		}`}>
+																		<path
+																			fillRule="evenodd"
+																			d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
+																			clipRule="evenodd"
+																		/>
+																	</svg>
+																))}
+														</div>
+													</div>
+													<p className="text-sm text-muted-foreground line-clamp-3">
+														{item.description}
+													</p>
+													<div className="flex items-center text-sm text-muted-foreground">
+														<MapPin className="mr-1 h-3 w-3" />
+														<span>{item.address}</span>
+													</div>
+													<div className="flex items-center justify-between pt-2">
+														<Badge
+															variant="outline"
+															className="flex items-center">
+															<CalendarDays className="mr-1 h-3 w-3" />
+															{t("featuredBusiness.availability")}
+														</Badge>
+														<Button
+															size="sm"
+															className="bg-primary/90 hover:bg-primary"
+															asChild>
+															<Link href={`/business/${item.slug}`}>
+																{t("featuredBusiness.appointment")}
+															</Link>
+														</Button>
 													</div>
 												</div>
-												<p className="text-sm text-muted-foreground line-clamp-3">
-													Lorem ipsum dolor sit amet consectetur adipisicing
-													elit. Natus placeat fugit obcaecati deserunt quisquam,
-													dignissimos totam quae maxime at neque nemo rem nulla
-													tenetur numquam aliquam. Id perferendis officia
-													dolorem!
-												</p>
-												<div className="flex items-center text-sm text-muted-foreground">
-													<MapPin className="mr-1 h-3 w-3" />
-													<span>Location</span>
-												</div>
-												<div className="flex items-center justify-between pt-2">
-													<Badge
-														variant="outline"
-														className="flex items-center">
-														<CalendarDays className="mr-1 h-3 w-3" />
-														{t("featuredBusiness.availability")}
-													</Badge>
-													<Button
-														size="sm"
-														className="bg-primary/90 hover:bg-primary">
-														<Link href={`/business/${item}`}>
-															{t("featuredBusiness.appointment")}
-														</Link>
-													</Button>
-												</div>
-											</div>
-										</CardContent>
-									</Card>
-								</motion.div>
-							))}
+											</CardContent>
+										</Card>
+									</motion.div>
+								))
+							)}
 						</div>
 						<div className="flex justify-center mt-8">
 							<Button
+								asChild
 								variant="outline"
-								className="border-primary/50 text-primary hover:bg-primary/10">
+								className="border-primary/50 text-primary hover:bg-primary/10 dark:hover:text-white">
 								<Link href="/business">{t("featuredBusiness.seeMore")}</Link>
 							</Button>
 						</div>
@@ -365,7 +390,7 @@ export default function Home() {
 									))}
 								</motion.ul>
 								<div className="flex flex-col gap-2 min-[400px]:flex-row pt-4">
-									<Button size="lg" className="cursor-pointer">
+									<Button size="lg" className="cursor-pointer" asChild>
 										<Link href="/business/register">
 											{t("forBusiness.register")}
 										</Link>
@@ -373,7 +398,8 @@ export default function Home() {
 									<Button
 										size="lg"
 										variant="outline"
-										className="hover:text-black transition-all duration-200 cursor-pointer">
+										className="hover:text-black transition-all duration-200 cursor-pointer"
+										asChild>
 										<Link href="/how-it-works">
 											{t("forBusiness.learnMore")}
 										</Link>
@@ -410,7 +436,7 @@ export default function Home() {
 										transition={{ duration: 0.3, delay: i * 0.1 }}>
 										<Link
 											href={`/categories/${category.en_name}`}
-											className="flex flex-col items-center justify-center p-4 rounded-lg border bg-background hover:bg-muted/50 transition-colors">
+											className="flex flex-col items-center justify-center p-4 rounded-lg border bg-background hover:bg-muted/50 transition-colors h-[100px]">
 											<div className="mb-2 text-primary">
 												{renderCategoryIcon(category.icon)}
 											</div>

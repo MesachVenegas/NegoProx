@@ -52,7 +52,8 @@ export default function Business() {
 	// fetch business
 	const { business, refetchBusiness, status, error } = useBusiness(
 		currentPage,
-		itemsPerPage
+		itemsPerPage,
+		selectedCategory
 	);
 
 	// filter and sort business
