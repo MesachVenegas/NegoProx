@@ -32,18 +32,20 @@ import { useRouter } from "@/i18n/navigation";
 export default function Business() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+
+	// get query params
 	const page = Number(searchParams.get("page")) || 1;
 	const limit = Number(searchParams.get("limit")) || 6;
 	const sort = searchParams.get("sort") || "name";
 	const categories =
 		searchParams.get("categories")?.split(",").filter(Boolean) || [];
-
+	// set initial state of query params
 	const [sortBy, setSortBy] = useState<string>(sort);
 	const [itemsPerPage, setItemsPerPage] = useState(limit);
 	const [currentPage, setCurrentPage] = useState<number>(page);
-
 	const [selectedCategory, setSelectedCategory] =
 		useState<string[]>(categories);
+
 	// fetch business
 	const { business, refetchBusiness, status, error } = useBusiness(
 		currentPage,
