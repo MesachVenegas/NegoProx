@@ -180,5 +180,30 @@
       "settings": "Configuración",
       "logout": "Cerrar sesión"
     }
+  },
+  "BusinessPage": {
+    "sortBar": {
+      "title": "Filtrar",
+      "title2": "Categorías",
+      "filters": "Filtros",
+      "clear": "Limpiar todos"
+    },
+    "header": {
+      "search": "Buscar negocios...",
+      "filterBy": {
+        "placeHolder": "Filtrar por",
+        "name": "Nombre",
+        "rated": "Puntuación",
+        "newest": "Recientes"
+      },
+      "items": {
+        "title": "No. de items"
+      }
+    },
+    "cards": {
+      "booked": "Agendar cita",
+      "available": "Disponible ahora",
+      "unavailable": "No disponible"
+    }
   }
 }

@@ -28,8 +28,10 @@ import { useBusiness } from "@/hooks/useBusiness";
 import BusinessCard from "@/components/BusinessCard";
 import FilterSidebar from "@/components/FilterSidebar";
 import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 export default function Business() {
+	const txt = useTranslations("BusinessPage");
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -133,7 +135,7 @@ export default function Business() {
 							<Search className="absolute left-2.5 top-2.5 w-4 h-4 text-muted-foreground" />
 							<Input
 								type="search"
-								placeholder="Search business..."
+								placeholder={txt("header.search")}
 								className="pl-8"
 							/>
 						</div>
@@ -141,18 +143,24 @@ export default function Business() {
 						{/* Sort by */}
 						<Select value={sortBy} onValueChange={handleSortChange}>
 							<SelectTrigger className="w-[180px]">
-								<SelectValue placeholder="Sort by" />
+								<SelectValue placeholder={txt("header.filterBy.placeHolder")} />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="name">Name</SelectItem>
-								<SelectItem value="rating">Highest Rating</SelectItem>
-								<SelectItem value="newest">Newest First</SelectItem>
+								<SelectItem value="name">
+									{txt("header.filterBy.name")}
+								</SelectItem>
+								<SelectItem value="rating">
+									{txt("header.filterBy.rated")}
+								</SelectItem>
+								<SelectItem value="newest">
+									{txt("header.filterBy.newest")}
+								</SelectItem>
 							</SelectContent>
 						</Select>
 
 						{/* Items per page */}
 						<SelectGroup className="flex items-center">
-							<SelectLabel>No. Items</SelectLabel>
+							<SelectLabel>{txt("header.items.title")}</SelectLabel>
 							<Select
 								value={itemsPerPage.toString()}
 								onValueChange={handleItemsPerPageChange}>
@@ -172,7 +180,7 @@ export default function Business() {
 							<SheetTrigger asChild>
 								<Button variant="outline" className="xl:hidden">
 									<Filter className="mr-2 h4- w-4" />
-									Filter
+									{txt("sortBar.title")}
 									{selectedCategory.length > 0 && (
 										<Badge variant="secondary" className="ml-2">
 											{selectedCategory.length}
@@ -182,15 +190,15 @@ export default function Business() {
 							</SheetTrigger>
 							<SheetContent side="left" className="p-4">
 								<SheetHeader>
-									<SheetTitle>
-										Filters{" "}
+									<SheetTitle className="flex items-center justify-between mt-4">
+										{txt("sortBar.filters")}{" "}
 										{selectedCategory.length > 0 && (
 											<Button
-												variant="ghost"
+												variant="outline"
 												size="sm"
 												onClick={() => handleCategoryChange([])}
-												className="hover:text-black transition-colors duration-150">
-												Clear all
+												className="hover:text-black border-primary  transition-colors duration-150">
+												{txt("sortBar.clear")}
 											</Button>
 										)}
 									</SheetTitle>
@@ -226,10 +234,10 @@ export default function Business() {
 								</Badge>
 							))}
 							<Button
-								variant="ghost"
+								variant="outline"
 								size="sm"
 								onClick={() => handleCategoryChange([])}
-								className="hover:text-black transition-colors duration-150">
+								className="transition-colors duration-150 border-secondary hover:bg-secondary hover:text-white">
 								Clear all
 							</Button>
 						</div>

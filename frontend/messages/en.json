@@ -180,5 +180,30 @@
       "settings": "Settings",
       "logout": "Logout"
     }
+  },
+  "BusinessPage": {
+    "sortBar": {
+      "title": "Filter",
+      "title2": "Categories",
+      "filters": "Filters",
+      "clear": "Clear All"
+    },
+    "header": {
+      "search": "Search business...",
+      "filterBy": {
+        "placeHolder": "Sort by",
+        "name": "Name",
+        "rated": "High rated",
+        "newest": "Newest"
+      },
+      "items": {
+        "title": "No. items"
+      }
+    },
+    "cards": {
+      "booked": "Book now",
+      "available": "Available",
+      "unavailable": "Unavailable"
+    }
   }
 }

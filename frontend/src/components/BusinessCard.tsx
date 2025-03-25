@@ -8,8 +8,11 @@ import { Button } from "./ui/button";
 import { Link } from "@/i18n/navigation";
 import { Card, CardContent } from "./ui/card";
 import { BusinessData } from "@/types/business";
+import { useTranslations } from "next-intl";
 
 export default function BusinessCard({ business }: { business: BusinessData }) {
+	const txt = useTranslations("BusinessPage.cards");
+
 	return (
 		<Card key={business.id} className="overflow-hidden">
 			<Link href={`/business/${business.slug}`}>
@@ -53,7 +56,7 @@ export default function BusinessCard({ business }: { business: BusinessData }) {
 								{business.availability ? "Available today" : "Closed"}
 							</Badge> */}
 							<Button size="sm" className="hover:text-black">
-								Book Now
+								{txt("booked")}
 							</Button>
 						</div>
 					</div>
