@@ -4,7 +4,7 @@ export class Category {
   public id: string;
   public name: string;
   public en_name: string;
-  public svg_icon: string;
+  public icon: string;
   public businessCategories?: BusinessCategory[];
 
   constructor(init: Partial<Category>) {

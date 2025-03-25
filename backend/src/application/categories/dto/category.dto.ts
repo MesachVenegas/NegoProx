@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBase64, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CategoryDto {
   @ApiProperty({ example: 'asd123' })
@@ -14,8 +14,7 @@ export class CategoryDto {
   @IsString()
   en_name: string;
 
-  @ApiProperty({ example: 'data:image/svg+xml;base64, adklsj...  ' })
+  @ApiProperty({ example: 'HeartBeats' })
   @IsString()
-  @IsBase64()
-  svg_icon: string;
+  icon: string;
 }
