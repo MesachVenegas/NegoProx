@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
+const origin = process.env.NEXT_PUBLIC_API_URL ?? "*";
+
 const nextConfig: NextConfig = {
 	/* config options here */
 	images: {
@@ -26,7 +28,7 @@ const nextConfig: NextConfig = {
 				headers: [
 					{
 						key: "Access-Control-Allow-Origin",
-						value: "*",
+						value: origin,
 					},
 					{
 						key: "Access-Control-Allow-Methods",
