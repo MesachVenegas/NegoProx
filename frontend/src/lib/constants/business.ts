@@ -56,6 +56,16 @@ export const business = {
 	],
 };
 
+export const Days = [
+	"Lunes",
+	"Martes",
+	"Miércoles",
+	"Jueves",
+	"Viernes",
+	"Sábado",
+	"Domingo",
+];
+
 export const reviews = [
 	{
 		name: "John Doe",

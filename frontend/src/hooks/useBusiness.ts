@@ -1,34 +1,12 @@
 "use client";
-import apiRequest from "@/lib/axios";
-import { BusinessData } from "@/types/business";
-import { PaginatedResponse } from "@/types/api";
+import { getBusiness } from "@/data/business";
 import { useQuery } from "@tanstack/react-query";
 
 export const useBusiness = (
 	page: number = 1,
 	limit: number = 6,
-	category?: string[],
-	slug?: string
+	category?: string[]
 ) => {
-	async function getBusiness(
-		page: number,
-		limit: number,
-		category: string[] = []
-	) {
-		const { data } = await apiRequest.get<PaginatedResponse<BusinessData[]>>(
-			`/business?page=${page}&limit=${limit}&category=${category}`
-		);
-
-		return data;
-	}
-
-	async function getBusinessProfile(slug?: string) {
-		if (!slug) return null;
-		const { data } = await apiRequest.get<BusinessData>(`/business/${slug}`);
-
-		return data;
-	}
-
 	const {
 		data: business,
 		refetch: refetchBusiness,
@@ -38,11 +16,7 @@ export const useBusiness = (
 		queryKey: ["business", page, limit, category],
 		queryFn: () => getBusiness(page, limit),
 		retry: 2,
-	});
-
-	const {} = useQuery({
-		queryKey: ["businessProfile", slug],
-		queryFn: () => getBusinessProfile(slug),
+		staleTime: 1000 * 60 * 60 * 0.3, // 30 minutes
 	});
 
 	return { business, refetchBusiness, status, error };
