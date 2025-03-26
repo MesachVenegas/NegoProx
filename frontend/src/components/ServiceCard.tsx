@@ -1,6 +1,6 @@
 "use client";
+import { ServiceProps } from "@/types/services";
 import { Button } from "./ui/button";
-import { ServiceProps } from "@/types/business";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 export default function ServiceCard({ service }: { service: ServiceProps }) {
