@@ -48,16 +48,13 @@ apiRequest.interceptors.response.use(
 
 // Request interceptor
 apiRequest.interceptors.request.use((config) => {
-	const csrfToken = getCsrfToken();
-
 	if (
-		["GET", "HEAD", "OPTIONS"].includes(config.method?.toUpperCase() as string)
+		!["GET", "HEAD", "OPTIONS"].includes(config.method?.toUpperCase() as string)
 	) {
-		return config;
-	}
-
-	if (csrfToken) {
-		config.headers["X-CSRF-TOKEN"] = csrfToken;
+		const csrfToken = getCsrfToken();
+		if (csrfToken) {
+			config.headers["X-CSRF-TOKEN"] = csrfToken;
+		}
 	}
 
 	return config;
