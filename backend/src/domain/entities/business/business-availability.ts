@@ -15,8 +15,8 @@ export class Availability {
   constructor(init: {
     id?: string;
     dayOfWeek: number;
-    startTime: Date;
     endTime: Date;
+    startTime: Date;
     businessId: string;
     serviceId?: string | null;
 

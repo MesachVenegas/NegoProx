@@ -134,7 +134,6 @@ export class BusinessPrismaRepository implements BusinessRepository {
 
     if (!business) return null;
 
-    // TODO: Fix this.
     const businessEntity = new Business({
       ...business,
       latitude: business.latitude?.toNumber() ?? 0,
