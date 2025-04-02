@@ -5,7 +5,7 @@ import { ComponentType } from "react";
 import { motion } from "framer-motion";
 import * as LucideUIcons from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { CalendarDays, CheckCircle, MapPin, Search, Users } from "lucide-react";
+import { CalendarDays, CheckCircle, Search, Users } from "lucide-react";
 
 import {
 	Select,
@@ -14,33 +14,49 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+import {
+	BusinessCardFeatured,
+	BusinessCardSkeleton,
+} from "@/components/BusinessCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useBusiness } from "@/hooks/useBusiness";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useCategories } from "@/hooks/useCategories";
-import { Card, CardContent } from "@/components/ui/card";
 import { testimonials } from "@/lib/constants/testimonials";
-import { ThreeDots } from "react-loader-spinner";
-import ErrorBoundary from "../error";
+import { ReloadContent } from "@/components/ReloadContent";
+import { Skeleton } from "@/components/ui/skeleton";
 
+// Lazy load components
 const Testimonials = dynamic(() => import("@/components/Testimonials"), {
 	loading: () => <div className="min-h-[400px] animate-pulse bg-muted/50" />,
 });
+
 const FadeWhenVisible = dynamic(
 	() => import("@/components/containers/FadeWhenVisible"),
 	{
 		loading: () => <div className="min-h-[200px] animate-pulse bg-muted/50" />,
 	}
 );
+
 export default function Home() {
 	const router = useRouter();
 	const locale = useLocale();
-	const { business, status, error, refetchBusiness } = useBusiness(1, 4);
+	const {
+		business,
+		status: businessStatus,
+		error: businessError,
+		refetchBusiness,
+	} = useBusiness(1, 4);
 	const t = useTranslations("HomePage");
-	const { categories } = useCategories();
+	const {
+		categories,
+		status: categoriesStatus,
+		error: categoriesError,
+		refetchCategories,
+	} = useCategories();
 
+	// Render category icon component
 	const renderCategoryIcon = (iconName: string) => {
 		const Icon = (LucideUIcons as never)[iconName] as ComponentType<{
 			className: string;
@@ -175,21 +191,16 @@ export default function Home() {
 							</div>
 						</div>
 						<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-8">
-							{status === "pending" ? (
-								<div className="flex items-center justify-center col-span-full">
-									<ThreeDots
-										visible={true}
-										height="80"
-										width="80"
-										color="#4fa94d"
-										radius="9"
-										ariaLabel="three-dots-loading"
-										wrapperStyle={{}}
-										wrapperClass=""
-									/>
+							{businessStatus === "pending" ? (
+								<>
+									{[1, 2, 3, 4].map((_, index) => (
+										<BusinessCardSkeleton key={index} />
+									))}
+								</>
+							) : businessError ? (
+								<div className="col-span-full">
+									<ReloadContent refetch={refetchBusiness} />
 								</div>
-							) : error ? (
-								<ErrorBoundary error={error} reset={refetchBusiness} />
 							) : (
 								business &&
 								business.data.map((item, index) => (
@@ -199,74 +210,7 @@ export default function Home() {
 										animate={{ opacity: 1, y: 0 }}
 										viewport={{ once: true }}
 										transition={{ duration: 0.5, delay: index * 0.1 }}>
-										<Card className="overflow-hidden group hover:shadow-lg transition-all duration-200">
-											<Link key={item.id} href={`/business/${item.slug}`}>
-												<div className="relative">
-													<Image
-														src={item.businessProfile.bannerImage}
-														alt={item.name}
-														width={400}
-														height={200}
-														className="object-cover w-full h-48 group-hover:scale-105 transition-all duration-300"
-													/>
-													<Badge className="absolute top-2 right-2 bg-primary/90 hover:bg-primary">
-														{t("featuredBusiness.featured")}
-													</Badge>
-												</div>
-											</Link>
-											<CardContent className="p-4">
-												<div className="space-y-2">
-													<div className="flex items-center justify-between">
-														<h3 className="font-bold">{item.name}</h3>
-														<div className="flex items-center">
-															{Array(5)
-																.fill(0)
-																.map((_, index) => (
-																	<svg
-																		key={index}
-																		xmlns="http://www.w3.org/2000/svg"
-																		viewBox="0 0 24 24"
-																		fill="currentColor"
-																		className={`w-4 h-4 ${
-																			index < 4
-																				? "text-yellow-500"
-																				: "text-gray-300"
-																		}`}>
-																		<path
-																			fillRule="evenodd"
-																			d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-																			clipRule="evenodd"
-																		/>
-																	</svg>
-																))}
-														</div>
-													</div>
-													<p className="text-sm text-muted-foreground line-clamp-3">
-														{item.description}
-													</p>
-													<div className="flex items-center text-sm text-muted-foreground">
-														<MapPin className="mr-1 h-3 w-3" />
-														<span>{item.address}</span>
-													</div>
-													<div className="flex items-center justify-between pt-2">
-														<Badge
-															variant="outline"
-															className="flex items-center">
-															<CalendarDays className="mr-1 h-3 w-3" />
-															{t("featuredBusiness.availability")}
-														</Badge>
-														<Button
-															size="sm"
-															className="bg-primary/90 hover:bg-primary"
-															asChild>
-															<Link href={`/business/${item.slug}`}>
-																{t("featuredBusiness.appointment")}
-															</Link>
-														</Button>
-													</div>
-												</div>
-											</CardContent>
-										</Card>
+										<BusinessCardFeatured item={item} />
 									</motion.div>
 								))
 							)}
@@ -426,7 +370,21 @@ export default function Home() {
 							</div>
 						</div>
 						<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 mt-8">
-							{categories &&
+							{categoriesStatus !== "pending" ? (
+								<>
+									{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((_, index) => (
+										<div key={index}>
+											<div className="flex flex-col gap-4 items-center justify-center rounded-lg h-[100px] bg-foreground/10 p-4">
+												<Skeleton className="rounded-full h-12 w-12 bg-foreground/20" />
+												<Skeleton className="h-4 w-full bg-foreground/20" />
+											</div>
+										</div>
+									))}
+								</>
+							) : categoriesError ? (
+								<ReloadContent refetch={refetchCategories} />
+							) : (
+								categories &&
 								categories.map((category, i) => (
 									<motion.div
 										key={i}
@@ -445,7 +403,8 @@ export default function Home() {
 											</span>
 										</Link>
 									</motion.div>
-								))}
+								))
+							)}
 						</div>
 					</div>
 				</section>
