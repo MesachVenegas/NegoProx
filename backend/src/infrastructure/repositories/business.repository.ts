@@ -99,16 +99,25 @@ export class BusinessPrismaRepository implements BusinessRepository {
   }
 
   /**
-   * Finds a business by its ID and retrieves its details along with its average rating.
-   *
+   * Finds a business by its ID or slug and retrieves its details, including reviews, services, business profile, and availability.
    * @param id - The unique identifier of the business to find.
-   * @returns The business details including images, services, profile, categories, and its average rating.
-   * @throws NotFoundException if the business with the given ID is not found.
+   * @param slug - The slug of the business to find.
+   * @returns The business details, including reviews, services, business profile, and availability, or null if not found.
    */
-  async findBusinessById(id: string) {
+  async findBusinessByIdOrSlug(id?: string, slug?: string) {
     const [business, review] = await Promise.all([
-      this.prisma.business.findUnique({
-        where: { id },
+      this.prisma.business.findFirst({
+        where: {
+          AND: [
+            {
+              OR: [
+                ...(id ? [{ id: { equals: id } }] : []),
+                ...(slug ? [{ slug: { equals: slug } }] : []),
+              ],
+            },
+            { isDeleted: false },
+          ],
+        },
         include: {
           images: { omit: { businessId: true } },
           services: { omit: { businessId: true } },
@@ -125,11 +134,13 @@ export class BusinessPrismaRepository implements BusinessRepository {
 
     if (!business) return null;
 
+    // TODO: Fix this.
     const businessEntity = new Business({
       ...business,
       latitude: business.latitude?.toNumber() ?? 0,
       longitude: business.longitude?.toNumber() ?? 0,
       images: business.images as BusinessImage[],
+      businessProfile: business.businessProfile as BusinessProfile,
       reviews: business.reviews.map((item) => new Review(item)),
       services: business.services.map(
         (item) =>
@@ -138,7 +149,6 @@ export class BusinessPrismaRepository implements BusinessRepository {
             price: item.price.toNumber() ?? 0,
           }),
       ),
-      businessProfile: business.businessProfile as BusinessProfile,
       availability: business.availability.map((item) => new Availability(item)),
     });
 
@@ -238,12 +248,10 @@ export class BusinessPrismaRepository implements BusinessRepository {
         const businessEntity = new Business({
           ...business,
           businessProfile: business.businessProfile as BusinessProfile,
-          availability: business.availability.map(
-            (item) => new Availability(item),
-          ),
           latitude: business.latitude?.toNumber() ?? 0,
           longitude: business.longitude?.toNumber() ?? 0,
           categories: business.categories as BusinessCategory[],
+          availability: business.availability as Availability[],
         });
 
         return Object.assign(businessEntity, {
