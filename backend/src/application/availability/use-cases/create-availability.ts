@@ -42,7 +42,8 @@ export class CreateAvailabilityUseCase {
     if (exist)
       throw new ConflictException('The business already has availability set.');
 
-    const result = await this.businessRepository.findBusinessById(businessId);
+    const result =
+      await this.businessRepository.findBusinessByIdOrSlug(businessId);
     if (!result || Object.keys(result).length === 0)
       throw new NotFoundException('Business not found or does not exist');
     const { business } = result;

@@ -16,7 +16,7 @@ export class GetBusinessByIdUseCase {
    * @throws NotFoundException if the business cannot be found or does not exist.
    */
   async execute(id: string) {
-    const result = await this.businessRepository.findBusinessById(id);
+    const result = await this.businessRepository.findBusinessByIdOrSlug(id);
     if (!result || Object.keys(result).length === 0)
       throw new NotFoundException('The business cannot be found or not exists');
 
