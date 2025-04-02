@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { MagnifyingGlass } from "react-loader-spinner";
+import { useLocale, useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, Filter, Search, X } from "lucide-react";
 
 import {
@@ -25,10 +26,9 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useBusiness } from "@/hooks/useBusiness";
-import BusinessCard from "@/components/BusinessCard";
+import { BusinessCard } from "@/components/BusinessCard";
 import FilterSidebar from "@/components/FilterSidebar";
 import { useRouter } from "@/i18n/navigation";
-import { useLocale, useTranslations } from "next-intl";
 
 export default function Business() {
 	const locale = useLocale();
@@ -42,6 +42,7 @@ export default function Business() {
 	const sort = searchParams.get("sort") || "name";
 	const categories =
 		searchParams.get("categories")?.split(",").filter(Boolean) || [];
+
 	// set initial state of query params
 	const [sortBy, setSortBy] = useState<string>(sort);
 	const [itemsPerPage, setItemsPerPage] = useState(limit);
