@@ -20,10 +20,10 @@ import { PrismaUnknownExceptionFilter } from './shared/filters/prisma-unknown-ex
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const envs = app.get(ConfigService);
-  const isProduction = envs.get<string>('app.environment') === 'production';
 
+  const envs = app.get(ConfigService);
   const urlOrigin = envs.get<string>('security.originUrl');
+  const isProduction = envs.get<string>('app.environment') === 'production';
 
   // Security
   app.use(cookieParser());
@@ -44,7 +44,7 @@ async function bootstrap() {
             "'self'",
             'https://accounts.google.com',
             'https://*.googleapis.com',
-            envs.get<string>('security.originUrl') ?? '*',
+            urlOrigin ?? '*',
             // payment provider url
           ],
           objectSrc: ["'none'"],
@@ -72,6 +72,7 @@ async function bootstrap() {
     new PrismaKnownExceptionFilter(),
     new PrismaUnknownExceptionFilter(),
   );
+
   // Global Interceptors amd Serializers
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector)),
@@ -85,6 +86,7 @@ async function bootstrap() {
       validationError: { target: false, value: false },
     }),
   );
+
   // Enable Compression Response
   app.use(
     compression({
@@ -93,14 +95,6 @@ async function bootstrap() {
       filter: shouldCompress,
     }),
   );
-
-  // APi Prefix and Versioning
-  app.setGlobalPrefix('api');
-  app.enableVersioning({
-    type: VersioningType.URI,
-    defaultVersion: envs.get<string>('app.version') ?? '1',
-  });
-
   // Compression filter
   function shouldCompress(req: Request, res: Response) {
     if (req.headers['x-no-compression']) {
@@ -108,6 +102,13 @@ async function bootstrap() {
     }
     return compression.filter(req, res);
   }
+
+  // APi Prefix and Versioning
+  app.setGlobalPrefix('api');
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: envs.get<string>('app.version') ?? '1',
+  });
 
   // Swagger Configuration
   const config = new DocumentBuilder()
