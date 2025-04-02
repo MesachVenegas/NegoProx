@@ -25,7 +25,8 @@ export class UpdateBusinessUseCase {
    * @throws Error if the user does not have the necessary permission.
    */
   async execute({ userId, businessId, role, dto }: UpdateBusinessParamsDto) {
-    const result = await this.businessRepository.findBusinessById(businessId);
+    const result =
+      await this.businessRepository.findBusinessByIdOrSlug(businessId);
     if (!result) throw new Error('Business not found');
 
     const { business } = result;
