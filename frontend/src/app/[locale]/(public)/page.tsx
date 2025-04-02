@@ -370,7 +370,7 @@ export default function Home() {
 							</div>
 						</div>
 						<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 mt-8">
-							{categoriesStatus !== "pending" ? (
+							{categoriesStatus === "pending" ? (
 								<>
 									{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((_, index) => (
 										<div key={index}>
