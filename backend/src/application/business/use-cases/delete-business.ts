@@ -26,7 +26,7 @@ export class LogicDeleteBusinessUseCase {
    * @returns A promise that resolves with the deletion result.
    */
   async execute({ id, userId, userType }: LogicDeleteBusinessDto) {
-    const result = await this.businessRepository.findBusinessById(id);
+    const result = await this.businessRepository.findBusinessByIdOrSlug(id);
     if (!result) throw new NotFoundException('Business not found');
 
     const { business } = result;

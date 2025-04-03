@@ -11,8 +11,9 @@ export interface BusinessRepository {
     name?: string,
     category?: string,
   ): Promise<Business[] | null>;
-  findBusinessById(
-    id: string,
+  findBusinessByIdOrSlug(
+    id?: string,
+    slug?: string,
   ): Promise<{ business: Business; rate: number } | null>;
   findBusinessByOwnerId(id: string): Promise<Business | null>;
   getAllBusiness(

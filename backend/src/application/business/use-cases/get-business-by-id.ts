@@ -15,8 +15,11 @@ export class GetBusinessByIdUseCase {
    * @returns A promise that resolves with the business details associated with the ID.
    * @throws NotFoundException if the business cannot be found or does not exist.
    */
-  async execute(id: string) {
-    const result = await this.businessRepository.findBusinessById(id);
+  async execute({ id, slug }: { id?: string; slug?: string }) {
+    const result = await this.businessRepository.findBusinessByIdOrSlug(
+      id,
+      slug,
+    );
     if (!result || Object.keys(result).length === 0)
       throw new NotFoundException('The business cannot be found or not exists');
 
