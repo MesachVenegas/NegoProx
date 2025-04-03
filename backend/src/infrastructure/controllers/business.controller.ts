@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   NotAcceptableException,
-  Param,
   Post,
   Put,
   Query,
@@ -111,16 +110,16 @@ export class BusinessController {
   }
 
   // -- Get business by id
-  @Get('profile/:id')
+  @Get('profile')
   @Public()
-  @ApiOperation({ description: 'Retrieve business by id' })
+  @ApiOperation({ description: 'Retrieve business by id or slug' })
   @ApiOkResponse({
     description: 'Business found',
     type: BusinessProfileResponseDto,
   })
-  async businessProfile(@Param('id') id: string) {
+  async businessProfile(@Query('id') id: string, @Query('slug') slug: string) {
     const GetBusiness = new GetBusinessByIdUseCase(this.BusinessRepository);
-    const result = await GetBusiness.execute(id);
+    const result = await GetBusiness.execute({ id, slug });
 
     const business = plainToInstance(
       BusinessProfileResponseDto,
