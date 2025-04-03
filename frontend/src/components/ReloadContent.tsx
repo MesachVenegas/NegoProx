@@ -1,7 +1,7 @@
 "use client";
 import { startTransition } from "react";
 import { RotateCw } from "lucide-react";
-
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 
 /**
@@ -20,6 +20,7 @@ export function ReloadContent({
 	refetch: () => void;
 }): React.ReactElement {
 	const router = useRouter();
+	const txt = useTranslations("ErrorPage.Reload");
 
 	const handleReload = () => {
 		startTransition(() => {
@@ -30,14 +31,12 @@ export function ReloadContent({
 
 	return (
 		<div className="flex flex-col gap-2 min-h-56 w-full justify-center items-center">
-			<p className="font-semibold italic">
-				Something went wrong, cannot load content
-			</p>
+			<p className="font-semibold italic">{txt("title")}</p>
 			<RotateCw
 				onClick={handleReload}
 				className="cursor-pointer w-20 h-20 text-primary"
 			/>
-			<span>Try again</span>
+			<span>{txt("tryAgain")}</span>
 		</div>
 	);
 }

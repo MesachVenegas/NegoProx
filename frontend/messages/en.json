@@ -10,7 +10,11 @@
     "title": "Something went wrong",
     "description": "Sorry, something went wrong. Try again later. If the problem persists, contact us.",
     "backhome": "Back to home",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "Reload": {
+      "title": "Something went wrong, and we could not load the content",
+      "tryAgain": "Try again"
+    }
   },
   "Navbar": {
     "home": "Home",

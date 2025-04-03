@@ -10,7 +10,11 @@
     "title": "Algo salió mal",
     "description": "Lo sentimos, algo salió mal. Intenta nuevamente más tarde. Si el problema persiste, contáctenos.",
     "backhome": "Volver a la página principal",
-    "tryAgain": "Volver a intentarlo"
+    "tryAgain": "Volver a intentarlo",
+    "Reload": {
+      "title": "Algo salió mal, y no pudimos cargar el contenido",
+      "tryAgain": "Volver a intentarlo"
+    }
   },
   "Navbar": {
     "home": "Inicio",
