@@ -76,8 +76,8 @@ export function getDayName(dayOfWeek: number, locale: string) {
  * @example
  * formatPrice(1234) // "$1,234.00"
  */
-export function formatPrice(price: number) {
-	return new Intl.NumberFormat("es-Mx", {
+export function formatPrice(price: number, locale?: string) {
+	return new Intl.NumberFormat(locale || "es-MX", {
 		style: "currency",
 		currency: "MXN",
 	}).format(price);
