@@ -56,22 +56,15 @@ export default function BusinessProfilePage({ slug }: { slug: string }) {
 
 	const sortedServices = business?.services
 		? [...business?.services].sort((a, b) => {
-				switch (sortBy) {
-					case "price":
-						return Number(a.price) - Number(b.price);
-					case "duration":
-						return a.time - b.time;
-					default:
-						return a.name.localeCompare(b.name);
+				if (sortBy === "name") {
+					return a.name.localeCompare(b.name);
+				} else if (sortBy === "price") {
+					return a.price - b.price;
+				} else {
+					return a.time - b.time;
 				}
 		  })
 		: [];
-
-	const totalPages = Math.ceil(sortedServices.length / 9);
-	const paginatedServices = sortedServices.slice(
-		(currentPage - 1) * 9,
-		currentPage * 9
-	);
 
 	const nextImage = () => {
 		setCurrentImageIndex(
@@ -90,6 +83,12 @@ export default function BusinessProfilePage({ slug }: { slug: string }) {
 	const scrollToGallery = () => {
 		galleryRef.current?.scrollIntoView({ behavior: "smooth" });
 	};
+
+	const totalPages = Math.ceil(sortedServices.length / 9);
+	const paginatedServices = sortedServices.slice(
+		(currentPage - 1) * 9,
+		currentPage * 9
+	);
 
 	return (
 		<div className="bg-background">
@@ -502,9 +501,21 @@ export default function BusinessProfilePage({ slug }: { slug: string }) {
 												</div>
 												<Tabs defaultValue="recent">
 													<TabsList className="mb-4">
-														<TabsTrigger value="recent">Recent</TabsTrigger>
-														<TabsTrigger value="highest">Highest</TabsTrigger>
-														<TabsTrigger value="lowest">Lowest</TabsTrigger>
+														<TabsTrigger
+															value="recent"
+															className="dark:data-[state=active]:text-primary data-[state=active]:text-primary">
+															Recent
+														</TabsTrigger>
+														<TabsTrigger
+															value="highest"
+															className="dark:data-[state=active]:text-primary data-[state=active]:text-primary">
+															Highest Rated
+														</TabsTrigger>
+														<TabsTrigger
+															value="lowest"
+															className="dark:data-[state=active]:text-primary data-[state=active]:text-primary">
+															Lowest Rated
+														</TabsTrigger>
 													</TabsList>
 													<TabsContent value="recent">
 														<BusinessReviews id={business.id} sortBy="recent" />
