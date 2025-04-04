@@ -14,10 +14,10 @@ export async function getBusiness(
 	return data;
 }
 
-export async function getBusinessProfile(slug?: string, id?: string) {
+export async function getBusinessProfile(slug?: string) {
 	if (!slug) return null;
 	const { data } = await apiRequest.get<BusinessData>(
-		`/business/profile?slug=${slug}&id=${id}`
+		`/business/profile?slug=${slug}`
 	);
 
 	return data;
