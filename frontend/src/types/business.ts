@@ -45,6 +45,11 @@ export interface BusinessData extends BusinessProps {
 		businessId: string;
 		serviceId: string;
 	}[];
+	images: {
+		id: string;
+		imageUrl: string;
+		order: number;
+	}[];
 	reviews?: {
 		id: string;
 		rate: number;
