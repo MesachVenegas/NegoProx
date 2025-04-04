@@ -19,6 +19,12 @@ const nextConfig: NextConfig = {
 				port: "",
 				pathname: "/**",
 			},
+			{
+				protocol: "https",
+				hostname: "www.suac.ac.jp",
+				port: "",
+				pathname: "/**",
+			},
 		],
 	},
 	async headers() {
