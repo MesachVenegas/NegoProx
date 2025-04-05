@@ -22,12 +22,32 @@ export class ReviewPrismaRepository implements ReviewRepository {
   }
 
   /**
-   * Retrieves a list of reviews for a specific business, ordered by the specified criteria.
+   * Retrieves a review by its ID from the database.
    *
-   * @param id - The unique identifier of the business to retrieve reviews for.
-   * @param sortBy - The field by which to sort the reviews, in descending order.
+   * @param id - The unique identifier of the review to retrieve.
+   * @returns A promise that resolves with the Review object, or null if no review with the given ID is found.
+   */
+  async getReviewById(id: string): Promise<Review | null> {
+    const review = await this.prisma.review.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!review) return null;
+
+    return new Review(review);
+  }
+
+  /**
+   * Retrieves a paginated list of reviews for the given business ID, sorted
+   * by the given column in the given order.
+   *
+   * @param id - The unique identifier of the business to retrieve the reviews for.
+   * @param sortBy - The column to sort the reviews by.
    * @param limit - The maximum number of reviews to retrieve.
-   * @param skip - The number of reviews to skip, for pagination purposes.
+   * @param skip - The number of reviews to skip, for pagination.
+   * @param orderBy - The order in which to sort the reviews, either 'asc' or 'desc'.
    * @returns A promise that resolves with an array of Review objects.
    */
   async getReviews(
@@ -64,5 +84,61 @@ export class ReviewPrismaRepository implements ReviewRepository {
     });
 
     return result._avg.rate || 0;
+  }
+
+  /**
+   * Creates a new review for the given business and client.
+   *
+   * @param review - The review to create, without an ID.
+   * @returns A promise that resolves with the newly created Review object.
+   */
+  async createReview(review: Omit<Review, 'id'>) {
+    const newReview = await this.prisma.review.create({
+      data: {
+        rate: review.rate,
+        comment: review.comment,
+        businessId: review.businessId,
+        clientId: review.clientId,
+        workId: review.workId,
+      },
+    });
+
+    return new Review(newReview);
+  }
+
+  /**
+   * Updates an existing review in the database.
+   *
+   * @param review - The Review object containing the updated data. The review must include its unique identifier.
+   * @returns A promise that resolves when the review is successfully updated.
+   */
+  async updateReview(review: Review): Promise<Review> {
+    const result = await this.prisma.review.update({
+      where: {
+        id: review.id,
+      },
+      data: {
+        rate: review.rate,
+        comment: review.comment,
+      },
+    });
+
+    return new Review(result);
+  }
+
+  /**
+   * Deletes a review by its ID from the database.
+   *
+   * @param id - The unique identifier of the review to delete.
+   * @returns A promise that resolves when the review is successfully deleted.
+   */
+  async deleteReview(id: string): Promise<Review> {
+    const deleted = await this.prisma.review.delete({
+      where: {
+        id,
+      },
+    });
+
+    return new Review(deleted);
   }
 }
