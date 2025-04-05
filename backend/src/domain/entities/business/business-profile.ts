@@ -3,6 +3,7 @@ import { Business } from './business';
 export class BusinessProfile {
   public id: string;
   public bannerImage?: string;
+  public about?: string;
   public website?: string;
   public socialMedia?: object;
   public createdAt: Date;
