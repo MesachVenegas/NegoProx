@@ -105,8 +105,8 @@ export class BusinessPrismaRepository implements BusinessRepository {
    * @returns The business details, including reviews, services, business profile, and availability, or null if not found.
    */
   async findBusinessByIdOrSlug(id?: string, slug?: string) {
-    const [business, review] = await Promise.all([
-      this.prisma.business.findFirst({
+    const result = await this.prisma.$transaction(async (tx) => {
+      const business = await tx.business.findFirst({
         where: {
           AND: [
             {
@@ -125,36 +125,38 @@ export class BusinessPrismaRepository implements BusinessRepository {
           businessProfile: { omit: { businessId: true } },
           availability: true,
         },
-      }),
-      await this.prisma.review.aggregate({
-        where: { businessId: id },
+      });
+
+      const avgResult = await tx.review.aggregate({
+        where: { businessId: business?.id },
         _avg: { rate: true },
-      }),
-    ]);
+      });
 
-    if (!business) return null;
+      if (!business) return null;
+      const businessEntity = new Business({
+        ...business,
+        latitude: business.latitude?.toNumber() ?? 0,
+        longitude: business.longitude?.toNumber() ?? 0,
+        images: business.images as BusinessImage[],
+        businessProfile: business.businessProfile as BusinessProfile,
+        reviews: business.reviews.map((item) => new Review(item)),
+        services: business.services.map(
+          (item) =>
+            new BusinessService({
+              ...item,
+              price: item.price.toNumber() ?? 0,
+            }),
+        ),
+        availability: business.availability.map(
+          (item) => new Availability(item),
+        ),
+      });
 
-    const businessEntity = new Business({
-      ...business,
-      latitude: business.latitude?.toNumber() ?? 0,
-      longitude: business.longitude?.toNumber() ?? 0,
-      images: business.images as BusinessImage[],
-      businessProfile: business.businessProfile as BusinessProfile,
-      reviews: business.reviews.map((item) => new Review(item)),
-      services: business.services.map(
-        (item) =>
-          new BusinessService({
-            ...item,
-            price: item.price.toNumber() ?? 0,
-          }),
-      ),
-      availability: business.availability.map((item) => new Availability(item)),
+      return {
+        business: businessEntity,
+        rate: avgResult._avg.rate ?? 0,
+      };
     });
-
-    const result = {
-      business: businessEntity,
-      rate: review._avg.rate ?? 0,
-    };
 
     return result;
   }

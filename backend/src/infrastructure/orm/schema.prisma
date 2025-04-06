@@ -129,6 +129,7 @@ model Business {
 model BusinessProfile {
   id          String   @id @default(cuid())
   bannerImage String?  @map("banner_image")
+  about       String?
   website     String?
   socialMedia Json?    @map("social_media")
   createdAt   DateTime @default(now()) @map("created_at")
@@ -145,6 +146,7 @@ model Service {
   name        String
   price       Decimal @db.Decimal(10, 2)
   description String?
+  imgUrl      String? @default("https://www.suac.ac.jp/archives/data/00091/file/19559/noimage.png") @map("img_url")
   time        Int
   isDisabled  Boolean @default(false)
 

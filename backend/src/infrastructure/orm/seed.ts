@@ -367,6 +367,8 @@ async function main(): Promise<void> {
           bannerImage:
             'https://img.freepik.com/free-vector/hair-salon-banner-template_23-2148953337.jpg',
           website: 'https://peluqueria-glamour.com',
+          about:
+            'Somos un salón de belleza comprometido con resaltar tu belleza natural. Nuestro equipo de estilistas profesionales te brindará una experiencia única y personalizada.',
           socialMedia: {
             facebook: 'peluqueriaglamour',
             instagram: '@peluqueria_glamour',
@@ -418,6 +420,8 @@ async function main(): Promise<void> {
           bannerImage:
             'https://img.freepik.com/free-vector/medical-healthcare-banner-template_23-2148935371.jpg',
           website: 'https://centromedicobienestar.com',
+          about:
+            'Centro médico dedicado a la prevención y el cuidado integral de la salud. Contamos con profesionales altamente calificados y tecnología de vanguardia.',
           socialMedia: {
             facebook: 'centromedicobienestar',
             instagram: '@centro_medico_bienestar',
@@ -469,6 +473,8 @@ async function main(): Promise<void> {
           bannerImage:
             'https://img.freepik.com/free-vector/restaurant-banner-design_23-2148639461.jpg',
           website: 'https://restauranteelsabor.com',
+          about:
+            'Restaurante tradicional que fusiona sabores locales con técnicas modernas. Ofrecemos una experiencia gastronómica única en un ambiente acogedor.',
           socialMedia: {
             facebook: 'restauranteelsabor',
             instagram: '@restaurante_el_sabor',
@@ -520,6 +526,8 @@ async function main(): Promise<void> {
           bannerImage:
             'https://img.freepik.com/free-vector/law-firm-banner-template_23-2148925599.jpg',
           website: 'https://consultorialegal.com',
+          about:
+            'Despacho legal especializado en derecho corporativo y empresarial. Brindamos asesoría jurídica integral con un equipo de abogados expertos.',
           socialMedia: {
             facebook: 'consultorialegalexperta',
             instagram: '@consultoria_legal',
@@ -571,6 +579,8 @@ async function main(): Promise<void> {
           bannerImage:
             'https://img.freepik.com/free-vector/cleaning-service-banner-template_23-2148776265.jpg',
           website: 'https://limpiezahogar.com',
+          about:
+            'Empresa de limpieza profesional con más de 5 años de experiencia. Utilizamos productos ecológicos y ofrecemos servicios personalizados para hogares y oficinas.',
           socialMedia: {
             facebook: 'serviciosdelimpiezahogar',
             instagram: '@limpieza_hogar',
@@ -621,6 +631,8 @@ async function main(): Promise<void> {
           bannerImage:
             'https://img.freepik.com/free-vector/art-culture-banner-template_23-2148888223.jpg',
           website: 'https://academiacultural.com',
+          about:
+            'Academia dedicada al desarrollo artístico y cultural. Ofrecemos clases de música, pintura, danza y teatro para todas las edades.',
           socialMedia: {
             facebook: 'academiacultural',
             instagram: '@academia_cultural',
@@ -671,6 +683,8 @@ async function main(): Promise<void> {
           bannerImage:
             'https://img.freepik.com/free-vector/travel-agency-banner-template_23-2148614272.jpg',
           website: 'https://viajesaventura.com',
+          about:
+            'Agencia especializada en turismo de aventura y ecoturismo. Organizamos experiencias únicas y seguras para los amantes de la naturaleza y la adrenalina.',
           socialMedia: {
             facebook: 'viajesaventura',
             instagram: '@viajes_aventura',
@@ -996,6 +1010,334 @@ async function main(): Promise<void> {
           where: { conversationId: conversation.id },
         })
       )?.id,
+    },
+  });
+
+  // Crear usuario dueño del negocio de tecnología
+  const businessOwner8 = await prisma.user.upsert({
+    where: { email: 'tecnologia@negoprox.com' },
+    update: {},
+    create: {
+      name: 'Daniel',
+      lastName: 'Morales',
+      email: 'tecnologia@negoprox.com',
+      password: hashedPassword,
+      phone: '+0987654328',
+      userType: 'BUSINESS',
+      emailVerified: true,
+      accounts: {
+        create: {
+          provider: 'local',
+          providerId: 'tecnologia@negoprox.com',
+        },
+      },
+      userProfile: {
+        create: {
+          slug: 'DanielMorales',
+          profilePicture:
+            'https://img.freepik.com/free-photo/young-businessman-with-laptop_23-2148892324.jpg',
+          bio: 'Experto en soluciones tecnológicas y desarrollo de software',
+        },
+      },
+      tokenVersion: { create: {} },
+    },
+  });
+
+  // 8. TechSolutions Pro (Tecnología y Electrónica)
+  const business8 = await prisma.business.upsert({
+    where: { name: 'TechSolutions Pro' },
+    update: {},
+    create: {
+      slug: 'TechSolutionsPro',
+      name: 'TechSolutions Pro',
+      description:
+        'Servicios profesionales de tecnología y desarrollo de software',
+      address: 'Avenida Tecnológica 789',
+      latitude: 19.453607,
+      longitude: -99.154208,
+      phone: '+5558901234',
+      userId: businessOwner8.id,
+      businessProfile: {
+        create: {
+          bannerImage:
+            'https://img.freepik.com/free-vector/technology-banner-template_23-2148897319.jpg',
+          website: 'https://techsolutionspro.com',
+          about:
+            'Empresa líder en soluciones tecnológicas y desarrollo de software. Ofrecemos servicios personalizados para empresas y particulares con los más altos estándares de calidad.',
+          socialMedia: {
+            facebook: 'techsolutionspro',
+            instagram: '@tech_solutions_pro',
+          },
+        },
+      },
+      categories: {
+        create: [
+          {
+            category: {
+              connect: { name: 'Tecnología y Electrónica' },
+            },
+          },
+        ],
+      },
+      images: {
+        create: [
+          {
+            imageUrl:
+              'https://img.freepik.com/free-photo/programmer-working-office_23-2148217001.jpg',
+            order: 1,
+          },
+          {
+            imageUrl:
+              'https://img.freepik.com/free-photo/modern-equipped-computer-lab_23-2149241213.jpg',
+            order: 2,
+          },
+        ],
+      },
+    },
+  });
+
+  // Servicios para TechSolutions Pro (business8)
+  await prisma.service.create({
+    data: {
+      name: 'Desarrollo Web Personalizado',
+      price: 15000.0,
+      time: 480,
+      description:
+        'Desarrollo de sitios web profesionales y aplicaciones web a medida',
+      businessId: business8.id,
+      Availability: {
+        create: [
+          {
+            dayOfWeek: 1,
+            startTime: new Date('1970-01-01T09:00:00Z'),
+            endTime: new Date('1970-01-01T18:00:00Z'),
+            businessId: business8.id,
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.service.create({
+    data: {
+      name: 'Consultoría IT',
+      price: 1200.0,
+      time: 120,
+      description:
+        'Asesoría tecnológica para empresas y optimización de procesos',
+      businessId: business8.id,
+      Availability: {
+        create: [
+          {
+            dayOfWeek: 2,
+            startTime: new Date('1970-01-01T10:00:00Z'),
+            endTime: new Date('1970-01-01T17:00:00Z'),
+            businessId: business8.id,
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.service.create({
+    data: {
+      name: 'Mantenimiento de Equipos',
+      price: 800.0,
+      time: 180,
+      description:
+        'Servicio técnico y mantenimiento de computadoras y servidores',
+      businessId: business8.id,
+      Availability: {
+        create: [
+          {
+            dayOfWeek: 3,
+            startTime: new Date('1970-01-01T09:00:00Z'),
+            endTime: new Date('1970-01-01T16:00:00Z'),
+            businessId: business8.id,
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.service.create({
+    data: {
+      name: 'Desarrollo de Apps Móviles',
+      price: 20000.0,
+      time: 600,
+      description: 'Desarrollo de aplicaciones móviles para iOS y Android',
+      businessId: business8.id,
+      Availability: {
+        create: [
+          {
+            dayOfWeek: 4,
+            startTime: new Date('1970-01-01T09:00:00Z'),
+            endTime: new Date('1970-01-01T18:00:00Z'),
+            businessId: business8.id,
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.service.create({
+    data: {
+      name: 'Ciberseguridad',
+      price: 5000.0,
+      time: 240,
+      description: 'Auditoría y consultoría en seguridad informática',
+      businessId: business8.id,
+      Availability: {
+        create: [
+          {
+            dayOfWeek: 5,
+            startTime: new Date('1970-01-01T10:00:00Z'),
+            endTime: new Date('1970-01-01T17:00:00Z'),
+            businessId: business8.id,
+          },
+        ],
+      },
+    },
+  });
+
+  // Crear trabajos y reseñas para TechSolutions Pro
+  await prisma.work.create({
+    data: {
+      status: 'Finish',
+      initDate: new Date('2024-03-01T09:00:00Z'),
+      endDate: new Date('2024-03-15T18:00:00Z'),
+      clientId: clientUser.id,
+      businessId: business8.id,
+      payment: {
+        create: {
+          amount: 15000.0,
+          status: 'COMPLETED',
+          paymentMethod: 'Transferencia',
+          clientId: clientUser.id,
+          businessId: business8.id,
+        },
+      },
+      review: {
+        create: {
+          rate: 5,
+          comment:
+            'Excelente trabajo en el desarrollo de mi sitio web. Muy profesionales y atentos a los detalles.',
+          clientId: clientUser.id,
+          businessId: business8.id,
+        },
+      },
+    },
+  });
+
+  await prisma.work.create({
+    data: {
+      status: 'Finish',
+      initDate: new Date('2024-02-15T10:00:00Z'),
+      endDate: new Date('2024-02-15T12:00:00Z'),
+      clientId: clientUser.id,
+      businessId: business8.id,
+      payment: {
+        create: {
+          amount: 1200.0,
+          status: 'COMPLETED',
+          paymentMethod: 'Tarjeta de Crédito',
+          clientId: clientUser.id,
+          businessId: business8.id,
+        },
+      },
+      review: {
+        create: {
+          rate: 4,
+          comment:
+            'Buena asesoría en tecnología, ayudaron a optimizar nuestros procesos empresariales.',
+          clientId: clientUser.id,
+          businessId: business8.id,
+        },
+      },
+    },
+  });
+
+  await prisma.work.create({
+    data: {
+      status: 'Finish',
+      initDate: new Date('2024-02-01T09:00:00Z'),
+      endDate: new Date('2024-02-01T12:00:00Z'),
+      clientId: clientUser.id,
+      businessId: business8.id,
+      payment: {
+        create: {
+          amount: 800.0,
+          status: 'COMPLETED',
+          paymentMethod: 'Efectivo',
+          clientId: clientUser.id,
+          businessId: business8.id,
+        },
+      },
+      review: {
+        create: {
+          rate: 5,
+          comment:
+            'Servicio de mantenimiento rápido y eficiente. Resolvieron todos los problemas de mi equipo.',
+          clientId: clientUser.id,
+          businessId: business8.id,
+        },
+      },
+    },
+  });
+
+  await prisma.work.create({
+    data: {
+      status: 'Finish',
+      initDate: new Date('2024-01-15T09:00:00Z'),
+      endDate: new Date('2024-02-28T18:00:00Z'),
+      clientId: clientUser.id,
+      businessId: business8.id,
+      payment: {
+        create: {
+          amount: 20000.0,
+          status: 'COMPLETED',
+          paymentMethod: 'Transferencia',
+          clientId: clientUser.id,
+          businessId: business8.id,
+        },
+      },
+      review: {
+        create: {
+          rate: 5,
+          comment:
+            'Increíble trabajo en el desarrollo de nuestra app móvil. El equipo fue muy profesional y entregó antes del plazo.',
+          clientId: clientUser.id,
+          businessId: business8.id,
+        },
+      },
+    },
+  });
+
+  await prisma.work.create({
+    data: {
+      status: 'Finish',
+      initDate: new Date('2024-01-10T10:00:00Z'),
+      endDate: new Date('2024-01-11T14:00:00Z'),
+      clientId: clientUser.id,
+      businessId: business8.id,
+      payment: {
+        create: {
+          amount: 5000.0,
+          status: 'COMPLETED',
+          paymentMethod: 'Tarjeta de Débito',
+          clientId: clientUser.id,
+          businessId: business8.id,
+        },
+      },
+      review: {
+        create: {
+          rate: 4,
+          comment:
+            'Muy buen servicio de auditoría de seguridad. Identificaron vulnerabilidades importantes y proporcionaron soluciones efectivas.',
+          clientId: clientUser.id,
+          businessId: business8.id,
+        },
+      },
     },
   });
 }
