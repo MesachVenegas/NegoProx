@@ -28,7 +28,7 @@ async function bootstrap() {
   // Security
   app.use(cookieParser());
   app.enableCors({
-    origin: urlOrigin ?? '*',
+    origin: [urlOrigin ?? '*', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: urlOrigin ? true : false,
   });
@@ -44,6 +44,7 @@ async function bootstrap() {
             "'self'",
             'https://accounts.google.com',
             'https://*.googleapis.com',
+            'http://localhost:3000',
             urlOrigin ?? '*',
             // payment provider url
           ],
