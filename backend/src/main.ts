@@ -30,7 +30,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [urlOrigin ?? '*', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    credentials: urlOrigin ? true : false,
+    credentials: true,
   });
   app.use(
     helmet({
