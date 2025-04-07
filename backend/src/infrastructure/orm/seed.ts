@@ -53,7 +53,7 @@ async function main(): Promise<void> {
       {
         name: 'Rentas y Servicios',
         en_name: 'Rentals & Services',
-        icon: 'HandShake',
+        icon: 'Handshake',
       },
       {
         name: 'Eventos y Celebraciones',
