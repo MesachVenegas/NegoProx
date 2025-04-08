@@ -1,9 +1,16 @@
-import { Role, TRole } from '@/domain/constants/role.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
-import { IsBoolean, IsDate, IsEnum, IsString } from 'class-validator';
-import { BusinessResponseDto } from '../business';
+import {
+  IsBoolean,
+  IsDate,
+  IsEnum,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
+import { BusinessResponseDto } from '../business';
+import { Role, TRole } from '@/domain/constants/role.enum';
+import { UserProfileResponseDto } from './userprofile-response.dto';
 
 @Exclude()
 export class ResponseUserDto {
@@ -56,4 +63,12 @@ export class ResponseUserDto {
   @Expose()
   @Type(() => BusinessResponseDto)
   business?: BusinessResponseDto[];
+}
+
+export class ReviewUserWithProfileDto extends ResponseUserDto {
+  @ApiProperty({ type: UserProfileResponseDto })
+  @Expose()
+  @Type(() => UserProfileResponseDto)
+  @ValidateNested({ each: true })
+  userProfile?: UserProfileResponseDto;
 }
