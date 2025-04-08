@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Review } from '@/domain/entities';
 import { PrismaService } from '../orm/prisma.service';
 import { ReviewRepository } from '@/domain/interfaces/review-repository';
+import { User, UserProfile } from '@/domain/entities/user';
+import { Role } from '@/domain/constants/role.enum';
 
 @Injectable()
 export class ReviewPrismaRepository implements ReviewRepository {
@@ -61,6 +63,13 @@ export class ReviewPrismaRepository implements ReviewRepository {
       where: {
         businessId: id,
       },
+      include: {
+        client: {
+          include: {
+            userProfile: true,
+          },
+        },
+      },
       skip,
       take: limit,
       orderBy: {
@@ -68,7 +77,17 @@ export class ReviewPrismaRepository implements ReviewRepository {
       },
     });
 
-    return result.map((review) => new Review(review));
+    return result.map(
+      (review) =>
+        new Review({
+          ...review,
+          client: new User({
+            ...review.client,
+            userType: review.client.userType as Role,
+            userProfile: review.client.userProfile as UserProfile,
+          }),
+        }),
+    );
   }
 
   /**
