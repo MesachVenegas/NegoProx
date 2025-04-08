@@ -1,5 +1,3 @@
-import { Type } from 'class-transformer';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsDate,
   IsNumber,
@@ -7,9 +5,11 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { WorkResponseDto } from '@/infrastructure/dto/work/res-work.dto';
-import { ResponseUserDto } from '@/infrastructure/dto/user/user-response.dto';
+import { ReviewUserWithProfileDto } from '@/infrastructure/dto/user/user-response.dto';
 import { BusinessResponseDto } from '@/infrastructure/dto/business/business-response.dto';
 
 export class ResReviewsDto {
@@ -43,10 +43,10 @@ export class ResReviewsDto {
   @IsString()
   clientId: string;
 
-  @ApiPropertyOptional({ type: ResponseUserDto })
-  @Type(() => ResponseUserDto)
+  @ApiPropertyOptional({ type: ReviewUserWithProfileDto })
+  @Type(() => ReviewUserWithProfileDto)
   @ValidateNested({ each: true })
-  client?: ResponseUserDto;
+  client?: ReviewUserWithProfileDto;
 
   @ApiProperty({ example: '1' })
   @IsString()
