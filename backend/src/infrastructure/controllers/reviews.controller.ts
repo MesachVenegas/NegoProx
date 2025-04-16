@@ -27,6 +27,7 @@ import { UpdateReviewDto } from '@/application/reviews/dto/update-review.dto';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { UserProfileAccDto } from '../dto/user';
 import { DeleteReviewUseCase } from '@/application/reviews/use-cases/delete-review';
+import { GetCountReviewsUseCase } from '@/application/reviews/use-cases/get-count';
 
 @Controller('reviews')
 @UseGuards(JwtGuard, RoleGuard)
@@ -102,6 +103,14 @@ export class ReviewsController {
 
     if (!result)
       throw new InternalServerErrorException('Error deleting review');
+
+    return result;
+  }
+
+  @Get('count/:id')
+  async getCountReviews(@Param('id') id: string) {
+    const useCase = new GetCountReviewsUseCase(this.reviewsPrismaRepository);
+    const result = await useCase.execute(id);
 
     return result;
   }
